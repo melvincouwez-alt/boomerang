@@ -2,4 +2,4 @@
 # SPDX-FileCopyrightText: 2026 melvincouwez-alt
 """Covalence daemon package."""
 
-__version__ = "0.3.3"
+__version__ = "0.5.0"
