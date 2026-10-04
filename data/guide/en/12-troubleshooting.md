@@ -2,8 +2,8 @@ title: Troubleshooting
 icon: dialog-question
 summary: Common problems and what to try.
 ---
-### "The Covalence service is not responding"
-The background service is stopped. Open a Terminal and type `systemctl --user restart covalenced`. Its log: `journalctl --user -u covalenced`.
+### "The Boomerang service is not responding"
+The background service is stopped. Open a Terminal and type `systemctl --user restart boomerangd`. Its log: `journalctl --user -u boomerangd`.
 
 ### The iPhone does not reconnect
 1. Check that Bluetooth is on, on both sides.
@@ -13,13 +13,13 @@ The background service is stopped. Open a Terminal and type `systemctl --user re
 5. As a last resort, click **Forget** in the Overview, forget the computer on the iPhone too, then [pair](guide:link) again.
 
 ### No notifications
-The low energy link is not open. Check **Share System Notifications** (Settings › Bluetooth › ⓘ), then turn the iPhone's Bluetooth off and on. As a last resort, the free nRF Connect app can open the link by hand: tap **Connect** next to "Covalence".
+The low energy link is not open. Check **Share System Notifications** (Settings › Bluetooth › ⓘ), then turn the iPhone's Bluetooth off and on. As a last resort, the free nRF Connect app can open the link by hand: tap **Connect** next to "Boomerang".
 
 ### The iPhone refuses messages
 Turn on **Show Notifications** (Settings › Bluetooth › ⓘ), then click **Check** in the setup.
 
 ### A message shows twice
-Delete the extra copy (right-click, **Delete from Covalence**). If it happens again, report it on the project page.
+Delete the extra copy (right-click, **Delete from Boomerang**). If it happens again, report it on the project page.
 
 ### A message only shows its beginning
 That is intended until it is read on the iPhone. See [Messages](guide:messages).
@@ -31,7 +31,7 @@ During the call, turn on **PC audio**. Check the output and microphone in System
 If your PipeWire is older than 1.4, calls are not available. See [Phone](guide:phone).
 
 ### iCloud Drive or Photos is empty
-Apple probably wants the sign-in confirmed again: **Reconnect…** in [Apple Services](app:services). Log: `journalctl --user -u covalence-icloud-drive`.
+Apple probably wants the sign-in confirmed again: **Reconnect…** in [Apple Services](app:services). Log: `journalctl --user -u boomerang-icloud-drive`.
 
 ### "rclone not found" or too old
 rclone 1.69 or newer is needed. Follow the **Missing components** card in [Settings](app:settings).

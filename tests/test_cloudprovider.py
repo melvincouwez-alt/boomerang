@@ -6,7 +6,7 @@ import unittest
 
 from gi.repository import Gio, GLib
 
-from covalenced import cloudprovider as cp
+from boomerangd import cloudprovider as cp
 
 
 class StatusTest(unittest.TestCase):
@@ -86,7 +86,7 @@ class ExportTest(unittest.TestCase):
         self.assertEqual(account["Status"], cp.IDLE)
         name = self.call(cp.PROVIDER, "org.freedesktop.DBus.Properties", "Get",
                          GLib.Variant("(ss)", (cp.PROVIDER_IFACE, "Name")))
-        self.assertEqual(name, "Covalence")
+        self.assertEqual(name, "Boomerang")
         self.provider._set_account(None)
         self.assertEqual(list(self.managed()), [cp.PROVIDER])
 

@@ -11,8 +11,8 @@ from unittest import mock
 
 from gi.repository import GLib
 
-from covalenced import link
-from covalenced.config import Config
+from boomerangd import link
+from boomerangd.config import Config
 
 ADAPTER = "/org/bluez/hci0"
 PHONE = ADAPTER + "/dev_B8_01_1F_20_DB_5E"
@@ -21,7 +21,7 @@ SHADOW = ADAPTER + "/dev_77_D8_78_8E_88_24"  # LE object of the same iPhone
 
 def private_config(tmp):
     config = Config()
-    config.dir, config.path = tmp, os.path.join(tmp, "covalenced.conf")
+    config.dir, config.path = tmp, os.path.join(tmp, "boomerangd.conf")
     config.keyfile = GLib.KeyFile()
     return config
 

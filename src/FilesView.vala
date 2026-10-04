@@ -2,12 +2,12 @@
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
  * Fichiers: send and receive files with the free LocalSend app of the iPhone
- * (covalenced/files.py, covalenced/localsend.py). Off until turned on here: it
+ * (boomerangd/files.py, boomerangd/localsend.py). Off until turned on here: it
  * listens on the local network. Incoming files are always asked for in a
  * notification; files are sent by dropping them on a device or with a button.
  */
 
-public class Covalence.FilesView : Gtk.Box {
+public class Boomerang.FilesView : Gtk.Box {
     public Daemon daemon { get; construct; }
 
     private Gtk.Switch toggle;
@@ -61,7 +61,7 @@ public class Covalence.FilesView : Gtk.Box {
         content.append (switch_card);
 
         var privacy = new Gtk.Label (
-            _("Tant que c'est activé, Covalence écoute le réseau local (port 53317). Chaque envoi vers "
+            _("Tant que c'est activé, Boomerang écoute le réseau local (port 53317). Chaque envoi vers "
               + "ce PC vous est demandé, sauf depuis un appareil que vous avez choisi de toujours accepter.")
         ) { xalign = 0, wrap = true };
         privacy.add_css_class (Granite.CssClass.DIM);

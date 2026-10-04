@@ -5,7 +5,7 @@ summary: The iPhone's screen on the PC, and the PC's mouse and keyboard on the i
 ## Show the iPhone's screen
 1. Open [Mirroring](app:mirror) and click **Receive the iPhone's screen**.
 2. On the iPhone, open **Control Centre** (swipe down from the top right corner).
-3. Tap **Screen Mirroring**, then choose **Covalence (name of the PC)**.
+3. Tap **Screen Mirroring**, then choose **Boomerang (name of the PC)**.
 4. Type on the iPhone the four-digit code shown in Mirroring. It changes at each start: another device on the network cannot show its screen on the PC.
 5. A window opens on the PC with the iPhone's screen. To finish, click **Stop** in Mirroring or stop mirroring on the iPhone.
 
@@ -14,14 +14,14 @@ The PC and the iPhone must be on the same Wi-Fi network.
 !tip **Smooth** profile: as little delay as possible, best to control the iPhone. **Quality** profile: sound stays in sync with the picture, better to watch a video.
 
 ## Control the iPhone with the PC's mouse and keyboard
-Covalence can present itself to the iPhone as a Bluetooth mouse and keyboard. This is experimental and off by default.
+Boomerang can present itself to the iPhone as a Bluetooth mouse and keyboard. This is experimental and off by default.
 
 ### 1. Turn on the mouse and keyboard
 1. In [Mirroring](app:mirror), turn on **Bluetooth mouse and keyboard**.
 2. On the iPhone, open **Settings › Bluetooth**.
-3. Tap **Covalence** in the list of devices, then accept the pairing request.
+3. Tap **Boomerang** in the list of devices, then accept the pairing request.
 
-!warn If the iPhone already knows Covalence (for notifications) but offers no mouse, tap the **ⓘ** next to Covalence, then **Forget This Device**, and pair it again. You will then need to allow notifications again.
+!warn If the iPhone already knows Boomerang (for notifications) but offers no mouse, tap the **ⓘ** next to Boomerang, then **Forget This Device**, and pair it again. You will then need to allow notifications again.
 
 ### 2. Show the pointer with AssistiveTouch
 The iPhone only shows a mouse pointer with AssistiveTouch.

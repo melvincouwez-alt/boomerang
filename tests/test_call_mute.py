@@ -7,13 +7,13 @@ import tempfile
 import unittest
 from unittest import mock
 
-from covalenced import calls
+from boomerangd import calls
 
 
 class CallMuteTest(unittest.TestCase):
     def setUp(self):
         tmp = tempfile.mkdtemp()
-        self.mark = os.path.join(tmp, "covalence", "microphone-muted")
+        self.mark = os.path.join(tmp, "boomerang", "microphone-muted")
         self.commands = []
         patches = [
             mock.patch.object(calls, "MUTE_MARK", self.mark),

@@ -32,7 +32,7 @@ gi.require_version("Secret", "1")
 from gi.repository import Gio, GLib, Granite, Gtk, Secret  # noqa: E402
 
 SOURCES_DIR = os.path.join(GLib.get_user_config_dir(), "evolution", "sources")
-UID_PREFIX = "covalence-icloud"
+UID_PREFIX = "boomerang-icloud"
 COLLECTION_UID = f"{UID_PREFIX}-collection"
 MAIL_ACCOUNT_UID = f"{UID_PREFIX}-mail"
 MAIL_IDENTITY_UID = f"{UID_PREFIX}-mail-identity"
@@ -156,7 +156,7 @@ def remove():
             os.remove(path)
             removed += 1
         Secret.password_clear_sync(EDS_SCHEMA, {"e-source-uid": uid}, None)
-    print(f"[covalence] {removed} source(s) iCloud retirée(s), secrets effacés")
+    print(f"[boomerang] {removed} source(s) iCloud retirée(s), secrets effacés")
 
 
 class SignInWindow(Gtk.ApplicationWindow):
@@ -250,7 +250,7 @@ class SignInWindow(Gtk.ApplicationWindow):
                                           "iCloud Mail est-il activé sur ce compte ?", True)
                 return
             install(apple_id, imap_user, full_name, password)
-            print("[covalence] sources iCloud créées (calendriers, rappels, contacts, mail)", flush=True)
+            print("[boomerang] sources iCloud créées (calendriers, rappels, contacts, mail)", flush=True)
             GLib.idle_add(self._done, "iCloud est connecté. Ouvrez Mail ou Tâches.", False)
         except Exception as error:  # réseau, trousseau verrouillé…
             GLib.idle_add(self._done, f"Échec : {error.__class__.__name__}", True)
@@ -268,13 +268,13 @@ class SignInWindow(Gtk.ApplicationWindow):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--remove", action="store_true", help="retirer les sources iCloud de Covalence")
+    parser.add_argument("--remove", action="store_true", help="retirer les sources iCloud de Boomerang")
     args = parser.parse_args()
     if args.remove:
         remove()
         return 0
 
-    app = Gtk.Application(application_id="io.github.melvincouwez.Covalence.iCloudProbe",
+    app = Gtk.Application(application_id="io.github.melvincouwez.Boomerang.iCloudProbe",
                           flags=Gio.ApplicationFlags.DEFAULT_FLAGS)
 
     def on_activate(application):

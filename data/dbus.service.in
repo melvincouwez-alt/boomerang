@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPDX-FileCopyrightText: 2026 melvincouwez-alt
 [D-BUS Service]
-Name=io.github.melvincouwez.Covalence.Daemon
-Exec=@BINDIR@/covalenced
-SystemdService=covalenced.service
+Name=io.github.melvincouwez.Boomerang.Daemon
+Exec=@BINDIR@/boomerangd
+SystemdService=boomerangd.service

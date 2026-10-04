@@ -5,24 +5,30 @@
   <id>@APP_ID@</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
-  <name>Covalence</name>
+  <name>Boomerang</name>
   <summary>Use your iPhone and iCloud from elementary OS</summary>
   <summary xml:lang="fr">Utiliser un iPhone et iCloud depuis elementary OS</summary>
   <description>
-    <p>Covalence brings notifications, messages, calls, contacts and music from your iPhone, and your iCloud mail, calendars, reminders, contacts and files, to elementary OS. It also shows the battery and settings of AirPods paired with the computer. Everything goes directly between your computer, your iPhone and Apple: there is no Covalence server.</p>
-    <p xml:lang="fr">Covalence apporte à elementary OS les notifications, messages, appels, contacts et la musique de votre iPhone, ainsi que votre courriel, vos agendas, rappels, contacts et fichiers iCloud. Elle affiche aussi la batterie et les réglages des AirPods jumelés à l'ordinateur. Tout passe directement entre votre ordinateur, votre iPhone et Apple : il n'y a pas de serveur Covalence.</p>
-    <p>Covalence is an independent free software project. It is not affiliated with, endorsed, sponsored or approved by Apple Inc. Apple, iPhone, iCloud, iMessage, Apple Music and AirPods are trademarks of Apple Inc., registered in the U.S. and other countries and regions. AirPods support follows the protocol documented by the LibrePods project; thanks to its creator and contributors.</p>
-    <p xml:lang="fr">Covalence est un projet libre et indépendant. Elle n'est ni affiliée à Apple Inc., ni approuvée, sponsorisée ou soutenue par Apple Inc. Apple, iPhone, iCloud, iMessage, Apple Music et AirPods sont des marques d'Apple Inc., déposées aux États-Unis et dans d'autres pays et régions. La prise en charge des AirPods suit le protocole documenté par le projet LibrePods ; merci à son créateur et à ses contributeurs.</p>
+    <p>Boomerang brings notifications, messages, calls, contacts and music from your iPhone, and your iCloud mail, calendars, reminders, contacts and files, to elementary OS. It also shows the battery and settings of AirPods paired with the computer. Everything goes directly between your computer, your iPhone and Apple: there is no Boomerang server.</p>
+    <p xml:lang="fr">Boomerang apporte à elementary OS les notifications, messages, appels, contacts et la musique de votre iPhone, ainsi que votre courriel, vos agendas, rappels, contacts et fichiers iCloud. Il affiche aussi la batterie et les réglages des AirPods jumelés à l'ordinateur. Tout passe directement entre votre ordinateur, votre iPhone et Apple : il n'y a pas de serveur Boomerang.</p>
+    <p>Boomerang is an independent free software project. It is not affiliated with, endorsed, sponsored or approved by Apple Inc. Apple, iPhone, iCloud, iMessage, Apple Music and AirPods are trademarks of Apple Inc., registered in the U.S. and other countries and regions. AirPods support follows the protocol documented by the LibrePods project; thanks to its creator and contributors.</p>
+    <p xml:lang="fr">Boomerang est un projet libre et indépendant. Il n'est ni affilié à Apple Inc., ni approuvé, sponsorisé ou soutenu par Apple Inc. Apple, iPhone, iCloud, iMessage, Apple Music et AirPods sont des marques d'Apple Inc., déposées aux États-Unis et dans d'autres pays et régions. La prise en charge des AirPods suit le protocole documenté par le projet LibrePods ; merci à son créateur et à ses contributeurs.</p>
   </description>
   <launchable type="desktop-id">@APP_ID@.desktop</launchable>
   <developer id="io.github.melvincouwez">
     <name>melvincouwez-alt</name>
   </developer>
-  <url type="homepage">https://github.com/melvincouwez-alt/covalence</url>
-  <url type="vcs-browser">https://github.com/melvincouwez-alt/covalence</url>
+  <url type="homepage">https://github.com/melvincouwez-alt/boomerang</url>
+  <url type="vcs-browser">https://github.com/melvincouwez-alt/boomerang</url>
   <content_rating type="oars-1.1"/>
   <releases>
     <release version="@VERSION@" date="2026-10-04" type="development">
+      <description>
+        <p>Covalence is now Boomerang: new name, new icon. Settings, messages, iCloud accounts, the dock and notification settings are carried over at the first start.</p>
+        <p xml:lang="fr">Covalence devient Boomerang : nouveau nom, nouvelle icône. Réglages, messages, comptes iCloud, dock et réglages des notifications sont repris au premier lancement.</p>
+      </description>
+    </release>
+    <release version="0.6.1" date="2026-10-04" type="development">
       <description>
         <p>Calls from the PC are heard again: a microphone muted during a call is always given back, even after a restart. Agenda and Cassette now come from their own repositories and releases. Missing English strings and credits added.</p>
         <p xml:lang="fr">Les appels depuis le PC s'entendent de nouveau : un micro coupé pendant un appel est toujours rétabli, même après un redémarrage. Agenda et Cassette viennent désormais de leurs propres dépôts et versions. Chaînes anglaises et crédits manquants ajoutés.</p>
@@ -36,8 +42,8 @@
     </release>
     <release version="0.5.1" date="2026-09-28" type="development">
       <description>
-        <p>AirPods Pro 3 recognised: noise control, adaptive audio and conversation awareness are back; headphones newer than Covalence keep every control. The app-specific password step no longer runs past its card.</p>
-        <p xml:lang="fr">AirPods Pro 3 reconnus : contrôle du bruit, audio adaptatif et détection de conversation reviennent ; des écouteurs plus récents que Covalence gardent toutes leurs commandes. L'étape du mot de passe pour app ne déborde plus de sa carte.</p>
+        <p>AirPods Pro 3 recognised: noise control, adaptive audio and conversation awareness are back; headphones newer than Boomerang keep every control. The app-specific password step no longer runs past its card.</p>
+        <p xml:lang="fr">AirPods Pro 3 reconnus : contrôle du bruit, audio adaptatif et détection de conversation reviennent ; des écouteurs plus récents que Boomerang gardent toutes leurs commandes. L'étape du mot de passe pour app ne déborde plus de sa carte.</p>
       </description>
     </release>
     <release version="0.5.0" date="2026-09-28" type="development">

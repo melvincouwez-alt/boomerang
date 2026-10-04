@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
- * Client of the covalenced session bus API. Properties are read from the proxy
+ * Client of the boomerangd session bus API. Properties are read from the proxy
  * cache, which GDBus keeps current from PropertiesChanged.
  */
 
-public class Covalence.Daemon : Object {
-    public const string NAME = "io.github.melvincouwez.Covalence.Daemon";
-    public const string PATH = "/io/github/melvincouwez/Covalence/Daemon";
-    public const string IFACE = "io.github.melvincouwez.Covalence1";
+public class Boomerang.Daemon : Object {
+    public const string NAME = "io.github.melvincouwez.Boomerang.Daemon";
+    public const string PATH = "/io/github/melvincouwez/Boomerang/Daemon";
+    public const string IFACE = "io.github.melvincouwez.Boomerang1";
 
     public signal void changed ();
     public signal void pairing_code (uint passkey);
@@ -30,9 +30,9 @@ public class Covalence.Daemon : Object {
 
     public async void connect_bus () {
         try {
-            // Without DO_NOT_AUTO_START the bus starts covalenced through its service file.
-            // Development: COVALENCE_DAEMON_NAME points the app at a stand-in daemon (demo screenshots).
-            var name = Environment.get_variable ("COVALENCE_DAEMON_NAME") ?? NAME;
+            // Without DO_NOT_AUTO_START the bus starts boomerangd through its service file.
+            // Development: BOOMERANG_DAEMON_NAME points the app at a stand-in daemon (demo screenshots).
+            var name = Environment.get_variable ("BOOMERANG_DAEMON_NAME") ?? NAME;
             proxy = yield new DBusProxy.for_bus (
                 BusType.SESSION, DBusProxyFlags.NONE, null, name, PATH, IFACE, null
             );
@@ -71,7 +71,7 @@ public class Covalence.Daemon : Object {
                 }
             });
         } catch (Error e) {
-            warning ("covalenced unreachable: %s", e.message);
+            warning ("boomerangd unreachable: %s", e.message);
         }
         changed ();
     }
@@ -127,7 +127,7 @@ public class Covalence.Daemon : Object {
     /* The Sync button: number of new messages, or the daemon's error. */
     public async uint sync_all () throws Error {
         if (proxy == null) {
-            throw new IOError.NOT_CONNECTED ("Covalence ne répond pas");
+            throw new IOError.NOT_CONNECTED ("Boomerang ne répond pas");
         }
         var reply = yield proxy.call ("Sync", null, DBusCallFlags.NONE, 180000, null);
         return reply.get_child_value (0).get_uint32 ();
@@ -190,7 +190,7 @@ public class Covalence.Daemon : Object {
     /* Any method, errors passed on to the caller (contact editing shows them). */
     public async Variant call_checked (string method, Variant? args = null) throws Error {
         if (proxy == null) {
-            throw new IOError.NOT_CONNECTED ("Covalence ne répond pas");
+            throw new IOError.NOT_CONNECTED ("Boomerang ne répond pas");
         }
         return yield proxy.call (method, args, DBusCallFlags.NONE, 60000, null);
     }
@@ -226,7 +226,7 @@ public class Covalence.Daemon : Object {
     /* SendMessage can take a while: the iPhone answers over Bluetooth. */
     public async void send_message (string thread, string text) throws Error {
         if (proxy == null) {
-            throw new IOError.NOT_CONNECTED ("covalenced unreachable");
+            throw new IOError.NOT_CONNECTED ("boomerangd unreachable");
         }
         yield proxy.call ("SendMessage", new Variant ("(ss)", thread, text),
                           DBusCallFlags.NONE, 90000, null);

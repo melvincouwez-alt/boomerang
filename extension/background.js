@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
-// Asks covalence-otp-host (native messaging) for the latest code on behalf of the pages.
+// Asks boomerang-otp-host (native messaging) for the latest code on behalf of the pages.
 // Chrome runs this file as a service worker, Firefox as a background script after compat.js.
 if (typeof importScripts === "function") {
     importScripts("compat.js");
 }
 
-const HOST = "com.covalence.otp";
+const HOST = "com.boomerang.otp";
 
 api.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (!message || message.type !== "latest") {

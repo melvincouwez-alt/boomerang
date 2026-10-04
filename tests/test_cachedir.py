@@ -7,7 +7,7 @@ import tempfile
 import time
 import unittest
 
-from covalenced import cachedir
+from boomerangd import cachedir
 
 
 class PruneTest(unittest.TestCase):
@@ -33,12 +33,12 @@ class PruneTest(unittest.TestCase):
             self.assertEqual(cachedir.prune(d, 10, 30), 0)
 
     def test_missing_directory_is_harmless(self):
-        self.assertEqual(cachedir.prune("/nonexistent/covalence-test", 1, 1), 0)
+        self.assertEqual(cachedir.prune("/nonexistent/boomerang-test", 1, 1), 0)
 
 
 class MethodGuardTest(unittest.TestCase):
     def test_exception_answers_the_caller(self):
-        from covalenced import service
+        from boomerangd import service
 
         class Invocation:
             error = None

@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from gi.repository import GLib  # noqa: E402
 
-from covalenced import hid, mirror  # noqa: E402
+from boomerangd import hid, mirror  # noqa: E402
 
 
 def items(report_map):
@@ -152,7 +152,7 @@ class ControlTest(unittest.TestCase):
 
 class MirrorOptionsTest(unittest.TestCase):
     def test_fluid_nvidia(self):
-        args = mirror.build_args("Covalence (PC)", "fluid", "", False, "2560x1600", "nvidia")
+        args = mirror.build_args("Boomerang (PC)", "fluid", "", False, "2560x1600", "nvidia")
         self.assertIn("-vsync", args)
         self.assertEqual(args[args.index("-s") + 1], "1920x1200@60")
         self.assertEqual(args[args.index("-vd") + 1], "nvh264dec")

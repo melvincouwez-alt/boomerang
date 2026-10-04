@@ -18,12 +18,12 @@
  *     !warn A warning, until a blank line.
  *     ### A question (troubleshooting)
  *
- * The folder next to the sources (COVALENCE_GUIDE_DIR) is read first when set, for development.
+ * The folder next to the sources (BOOMERANG_GUIDE_DIR) is read first when set, for development.
  */
 
-namespace Covalence.Guide {
+namespace Boomerang.Guide {
     public string language () {
-        var forced = Environment.get_variable ("COVALENCE_GUIDE_LANG");
+        var forced = Environment.get_variable ("BOOMERANG_GUIDE_LANG");
         if (forced == "fr" || forced == "en") {
             return forced;
         }
@@ -71,7 +71,7 @@ namespace Covalence.Guide {
     }
 }
 
-public class Covalence.GuideWindow : Gtk.Window {
+public class Boomerang.GuideWindow : Gtk.Window {
     private string lang;
     private Guide.Topic[] topics = {};
     private Gtk.ListBox list;
@@ -91,7 +91,7 @@ public class Covalence.GuideWindow : Gtk.Window {
 
     construct {
         lang = Guide.language ();
-        title = lang == "fr" ? "Guide de Covalence" : "Covalence Guide";
+        title = lang == "fr" ? "Guide de Boomerang" : "Boomerang Guide";
 
         // Sidebar: search + topics, same layout as the main window.
         search = new Gtk.SearchEntry () {
@@ -207,7 +207,7 @@ public class Covalence.GuideWindow : Gtk.Window {
         });
         ((Gtk.Widget) this).add_controller (keys);
         // Typing anywhere searches (not in snapshot runs: they must not catch the user's keys).
-        if (Environment.get_variable ("COVALENCE_SNAPSHOT") == null) {
+        if (Environment.get_variable ("BOOMERANG_SNAPSHOT") == null) {
             search.set_key_capture_widget (this);
         } else {
             search.focusable = false;
@@ -216,9 +216,9 @@ public class Covalence.GuideWindow : Gtk.Window {
 
         load ();
         update_texts ();
-        show_topic (Environment.get_variable ("COVALENCE_GUIDE_TOPIC") ?? "");
-        // Development: COVALENCE_GUIDE_SEARCH fills the search box (snapshot of a search).
-        var query = Environment.get_variable ("COVALENCE_GUIDE_SEARCH");
+        show_topic (Environment.get_variable ("BOOMERANG_GUIDE_TOPIC") ?? "");
+        // Development: BOOMERANG_GUIDE_SEARCH fills the search box (snapshot of a search).
+        var query = Environment.get_variable ("BOOMERANG_GUIDE_SEARCH");
         if (query != null) {
             search.text = query;
         }
@@ -227,7 +227,7 @@ public class Covalence.GuideWindow : Gtk.Window {
     private void update_texts () {
         search.placeholder_text = lang == "fr" ? "Rechercher dans le guide" : "Search the guide";
         side_title.label = "Guide";
-        title = lang == "fr" ? "Guide de Covalence" : "Covalence Guide";
+        title = lang == "fr" ? "Guide de Boomerang" : "Boomerang Guide";
         fr_button.tooltip_text = "Français";
         en_button.tooltip_text = "English";
     }
@@ -297,7 +297,7 @@ public class Covalence.GuideWindow : Gtk.Window {
     // --- loading ---------------------------------------------------------------------------
 
     private static string guide_dir () {
-        var dev = Environment.get_variable ("COVALENCE_GUIDE_DIR");
+        var dev = Environment.get_variable ("BOOMERANG_GUIDE_DIR");
         if (dev != null && dev != "") {
             return dev;
         }
@@ -584,7 +584,7 @@ public class Covalence.GuideWindow : Gtk.Window {
         }
         if (uri.has_prefix ("app:")) {
             var page = uri.substring (4);
-            var app = application as Covalence.Application;
+            var app = application as Boomerang.Application;
             if (app != null && app.mode == Mode.HUB) {
                 app.activate_action ("show-page", new Variant ("s", page));
             } else {

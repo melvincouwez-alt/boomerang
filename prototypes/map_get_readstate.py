@@ -7,16 +7,16 @@ Run by the user only, on a message they chose (for instance one they sent
 themselves from another device): the test may mark that message read.
 It prints handles, dates, read flags and lengths, never text or numbers.
 
-    systemctl --user stop covalenced
-    ~/.local/libexec/covalence/obexd -n -p bluetooth,mns &   # unless bluez-obexd is installed
-    export COVALENCE_PHONE=XX:XX:XX:XX:XX:XX               # the iPhone Bluetooth address
+    systemctl --user stop boomerangd
+    ~/.local/libexec/boomerang/obexd -n -p bluetooth,mns &   # unless bluez-obexd is installed
+    export BOOMERANG_PHONE=XX:XX:XX:XX:XX:XX               # the iPhone Bluetooth address
     python3 prototypes/map_get_readstate.py                # list unread inbox handles
     python3 prototypes/map_get_readstate.py HANDLE --get   # download that one, compare Read
-    systemctl --user start covalenced
+    systemctl --user start boomerangd
 
 If "Read" stays False after --get (and the message is still unread in Messages
 on the iPhone), set fetch_unread=true in the [messages] group of
-~/.config/covalence/covalenced.conf so that Covalence fetches the full text of long
+~/.config/boomerang/boomerangd.conf so that Boomerang fetches the full text of long
 unread messages.
 """
 
@@ -27,7 +27,7 @@ import time
 
 from gi.repository import Gio, GLib
 
-ADDRESS = os.environ.get("COVALENCE_PHONE") or sys.exit("set COVALENCE_PHONE to the iPhone Bluetooth address (bluetoothctl devices)")
+ADDRESS = os.environ.get("BOOMERANG_PHONE") or sys.exit("set BOOMERANG_PHONE to the iPhone Bluetooth address (bluetoothctl devices)")
 bus = Gio.bus_get_sync(Gio.BusType.SESSION)
 
 

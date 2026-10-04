@@ -26,8 +26,8 @@ from gi.repository import Gio, GLib  # noqa: E402
 
 BLUEZ = "org.bluez"
 ADAPTER_PATH = "/org/bluez/hci0"
-AGENT_PATH = "/io/github/melvincouwez/Covalence/agent"
-ADV_PATH = "/io/github/melvincouwez/Covalence/advertisement"
+AGENT_PATH = "/io/github/melvincouwez/Boomerang/agent"
+ADV_PATH = "/io/github/melvincouwez/Boomerang/advertisement"
 
 ANCS_SERVICE = "7905f431-b5ce-4e99-a40f-4b1e122d00d0"
 NOTIFICATION_SOURCE = "9fbf120d-6301-42d9-8c58-25e699a21dbd"
@@ -78,7 +78,7 @@ ADV_XML = """
 
 
 def log(message):
-    print(f"[covalence] {message}", flush=True)
+    print(f"[boomerang] {message}", flush=True)
 
 
 class NotificationBridge:
@@ -94,7 +94,7 @@ class NotificationBridge:
             summary = f"{app_name} · {title}"
         replaces = self.desktop_ids.get(uid, 0)
         # Pas de hint desktop-entry : le serveur afficherait le nom du lanceur
-        # au lieu de « Covalence (nom de l'iPhone) ».
+        # au lieu de « Boomerang (nom de l'iPhone) ».
         hints = {}
         if category in (1, 2):
             hints["urgency"] = GLib.Variant("y", 2)
@@ -102,7 +102,7 @@ class NotificationBridge:
             "org.freedesktop.Notifications", "/org/freedesktop/Notifications",
             "org.freedesktop.Notifications", "Notify",
             GLib.Variant("(susssasa{sv}i)", (
-                f"Covalence ({device_name})", replaces, "phone", summary, body or "", [], hints, -1,
+                f"Boomerang ({device_name})", replaces, "phone", summary, body or "", [], hints, -1,
             )),
             GLib.VariantType("(u)"), Gio.DBusCallFlags.NONE, -1, None,
         )
@@ -290,7 +290,7 @@ class Probe:
             "org.freedesktop.Notifications", "/org/freedesktop/Notifications",
             "org.freedesktop.Notifications", "Notify",
             GLib.Variant("(susssasa{sv}i)", (
-                "Covalence", 0, "bluetooth", "Appairage avec l'iPhone",
+                "Boomerang", 0, "bluetooth", "Appairage avec l'iPhone",
                 f"Vérifiez que l'iPhone affiche le code {passkey:06d}", [], {}, -1,
             )),
             None, Gio.DBusCallFlags.NONE, -1, None,
@@ -302,7 +302,7 @@ class Probe:
     def _adv_property(self, _conn, _sender, _path, _iface, name):
         return {
             "Type": GLib.Variant("s", "peripheral"),
-            "LocalName": GLib.Variant("s", "Covalence"),
+            "LocalName": GLib.Variant("s", "Boomerang"),
             "SolicitUUIDs": GLib.Variant("as", [ANCS_SERVICE]),
             # Drapeau « découvrable général » : sans lui, l'iPhone ne liste pas l'accessoire.
             # Pas d'Appearance : avec l'UUID 128 bits, le paquet dépasserait 31 octets.
@@ -426,7 +426,7 @@ class Probe:
     def _on_advertising(self, bus, result, _data):
         try:
             bus.call_finish(result)
-            log("annonce Bluetooth « Covalence » active. Sur l'iPhone : Réglages > Bluetooth > Covalence")
+            log("annonce Bluetooth « Boomerang » active. Sur l'iPhone : Réglages > Bluetooth > Boomerang")
         except GLib.Error as error:
             log(f"annonce refusée par BlueZ : {error.message}")
             self.stop()

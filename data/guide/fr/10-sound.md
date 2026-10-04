@@ -9,9 +9,9 @@ La page [Lecture en cours](app:nowplaying) montre ce que joue l'iPhone : musique
 - Les boutons pilotent l'iPhone : précédent, lecture ou pause, suivant, et le volume de l'iPhone.
 - **Lecture** fonctionne même quand rien n'est affiché : l'iPhone reprend sa dernière écoute.
 - Un mini-lecteur apparaît en bas de la barre latérale, au-dessus de **Réglages**. Un clic dessus ouvre la page.
-- L'iPhone n'envoie pas la pochette. Covalence la cherche sur le service public de recherche d'Apple (iTunes), avec seulement l'artiste et le titre, et ne la garde que si les deux correspondent. Détails dans [Vie privée](guide:privacy).
+- L'iPhone n'envoie pas la pochette. Boomerang la cherche sur le service public de recherche d'Apple (iTunes), avec seulement l'artiste et le titre, et ne la garde que si les deux correspondent. Détails dans [Vie privée](guide:privacy).
 
-!tip La ligne **Musique de l'iPhone** de l'[Aperçu](app:device) active ou coupe ce suivi. Sans le lien Bluetooth basse consommation, Covalence passe par la télécommande Bluetooth classique (AVRCP) : le nom de l'app et le volume manquent alors.
+!tip La ligne **Musique de l'iPhone** de l'[Aperçu](app:device) active ou coupe ce suivi. Sans le lien Bluetooth basse consommation, Boomerang passe par la télécommande Bluetooth classique (AVRCP) : le nom de l'app et le volume manquent alors.
 
 ## Son de l'iPhone
 Quand l'iPhone relié lit de la musique ou une vidéo, le son peut sortir par l'ordinateur.

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPDX-FileCopyrightText: 2026 melvincouwez-alt
-project('io.github.melvincouwez.Covalence', 'vala', 'c',
-  version: '0.6.1',
+project('io.github.melvincouwez.Boomerang', 'vala', 'c',
+  version: '0.7.0',
   license: 'GPL-3.0-or-later',
   meson_version: '>= 1.0',
 )
@@ -10,10 +10,10 @@ app_id = meson.project_name()
 prefix = get_option('prefix')
 bindir = prefix / get_option('bindir')
 datadir = prefix / get_option('datadir')
-pkgdatadir = datadir / 'covalence'
-pkglibexecdir = prefix / get_option('libexecdir') / 'covalence'
+pkgdatadir = datadir / 'boomerang'
+pkglibexecdir = prefix / get_option('libexecdir') / 'boomerang'
 localedir = prefix / get_option('localedir')
-gettext_package = 'covalence'
+gettext_package = 'boomerang'
 
 python = find_program('python3')
 
@@ -31,19 +31,19 @@ conf.set('LOCALEDIR', localedir)
 add_project_arguments('-DGETTEXT_PACKAGE="@0@"'.format(gettext_package), language: 'c')
 
 # Daemon (Python + Gio): see README for why it is not Vala yet.
-install_subdir('covalenced', install_dir: pkgdatadir, exclude_directories: ['__pycache__'])
-foreach script : ['covalenced', 'covalence-icloud-signin', 'covalence-icloud-drive', 'covalence-rclone',
-               'covalence-otp-host']
+install_subdir('boomerangd', install_dir: pkgdatadir, exclude_directories: ['__pycache__'])
+foreach script : ['boomerangd', 'boomerang-icloud-signin', 'boomerang-icloud-drive', 'boomerang-rclone',
+               'boomerang-otp-host']
   configure_file(input: 'bin' / script + '.in', output: script, configuration: conf,
                  install: true, install_dir: bindir, install_mode: 'rwxr-xr-x')
 endforeach
 
 # Update installer run as root through pkexec, and its polkit action (see updates.py).
-configure_file(input: 'bin' / 'covalence-install-update.in', output: 'covalence-install-update',
+configure_file(input: 'bin' / 'boomerang-install-update.in', output: 'boomerang-install-update',
                configuration: conf, install: true, install_dir: pkglibexecdir,
                install_mode: 'rwxr-xr-x')
-configure_file(input: 'data' / 'io.github.melvincouwez.Covalence.policy.in',
-               output: 'io.github.melvincouwez.Covalence.policy', configuration: conf,
+configure_file(input: 'data' / 'io.github.melvincouwez.Boomerang.policy.in',
+               output: 'io.github.melvincouwez.Boomerang.policy', configuration: conf,
                install: true, install_dir: datadir / 'polkit-1' / 'actions')
 
 install_subdir('data' / 'guide', install_dir: pkgdatadir)
@@ -52,7 +52,7 @@ install_subdir('data' / 'guide', install_dir: pkgdatadir)
 meson.add_install_script(python, files('extension' / 'build.py'), '--install',
                          pkgdatadir / 'extension')
 
-# Sounds shipped with Covalence (credits: docs/credits-sons.md, data/sounds/LICENSES).
+# Sounds shipped with Boomerang (credits: docs/credits-sons.md, data/sounds/LICENSES).
 install_subdir('data' / 'sounds', install_dir: pkgdatadir)
 
 # rclone release keys, to check the signature of a downloaded rclone (rclone_fetch.py).

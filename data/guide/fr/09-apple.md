@@ -4,9 +4,9 @@ summary: Courriel, agendas, rappels, contacts, iCloud Drive et Photos.
 ---
 ## Courriel, agendas, rappels et contacts
 Ces services utilisent un **mot de passe pour app**, différent de celui de votre compte Apple.
-1. Sur account.apple.com : **Connexion et sécurité › Mots de passe pour les apps**, puis créez-en un nommé « Covalence ».
+1. Sur account.apple.com : **Connexion et sécurité › Mots de passe pour les apps**, puis créez-en un nommé « Boomerang ».
 2. Dans [Services Apple](app:services), cliquez sur **Se connecter…**
-3. Saisissez votre identifiant Apple et ce mot de passe. Covalence le vérifie auprès d'Apple et le range dans le trousseau de votre session.
+3. Saisissez votre identifiant Apple et ce mot de passe. Boomerang le vérifie auprès d'Apple et le range dans le trousseau de votre session.
 4. Vos comptes apparaissent dans Courriel, Tâches et Agenda.
 
 Pour tout retirer : **Déconnecter** dans Services Apple, puis supprimez le mot de passe pour app sur account.apple.com.
@@ -22,6 +22,6 @@ Ces deux services passent par **rclone**, un outil libre qui se connecte comme l
 4. Pour les photos : **Connecter…** à côté d'iCloud Photos. Le dossier **iCloud Photos** apparaît dans vos Images, en lecture seule. Chaque album est un dossier.
 
 - Les options (roue dentée) règlent l'emplacement, le montage à l'ouverture de session, la lecture seule, l'espace utilisé hors ligne et le délai d'apparition des changements.
-- Covalence ne fait pas de synchronisation complète dans les deux sens : un conflit ou une suppression massive pourrait faire perdre des fichiers.
+- Boomerang ne fait pas de synchronisation complète dans les deux sens : un conflit ou une suppression massive pourrait faire perdre des fichiers.
 - Environ une fois par mois, Apple demande de reconfirmer la connexion : **Reconnecter…** dans Services Apple, avec un nouveau code.
 - Il faut rclone 1.69 ou plus récent. Si votre système a une version plus ancienne, la carte Composants manquants l'indique.

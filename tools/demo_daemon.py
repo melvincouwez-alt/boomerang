@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPDX-FileCopyrightText: 2026 melvincouwez-alt
-"""Stand-in for covalenced with made-up data, for screenshots and demos.
+"""Stand-in for boomerangd with made-up data, for screenshots and demos.
 
-It serves the real D-Bus interface (covalenced.service.XML) under another bus
+It serves the real D-Bus interface (boomerangd.service.XML) under another bus
 name, so it never touches Bluetooth, iCloud or the user's messages:
 
     python3 tools/demo_daemon.py &
-    COVALENCE_DAEMON_NAME=io.github.melvincouwez.Covalence.Demo \\
-        COVALENCE_SNAPSHOT=/tmp/shot.png build/src/io.github.melvincouwez.Covalence --page messages
+    BOOMERANG_DAEMON_NAME=io.github.melvincouwez.Boomerang.Demo \\
+        BOOMERANG_SNAPSHOT=/tmp/shot.png build/src/io.github.melvincouwez.Boomerang --page messages
 
 Everything shown (people, numbers, messages, notifications) is fictitious.
 """
@@ -21,18 +21,18 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 
 from gi.repository import Gio, GLib  # noqa: E402
 
-from covalenced import service  # noqa: E402
-from covalenced.headphones import features_for  # noqa: E402
-from covalenced.util import APP_ID  # noqa: E402
+from boomerangd import service  # noqa: E402
+from boomerangd.headphones import features_for  # noqa: E402
+from boomerangd.util import APP_ID  # noqa: E402
 
-# COVALENCE_DEMO_BUS picks another name, so that two demo runs never collide.
-DEMO_NAME = os.environ.get("COVALENCE_DEMO_BUS", "io.github.melvincouwez.Covalence.Demo")
+# BOOMERANG_DEMO_BUS picks another name, so that two demo runs never collide.
+DEMO_NAME = os.environ.get("BOOMERANG_DEMO_BUS", "io.github.melvincouwez.Boomerang.Demo")
 ARTWORK = ""
 NOW = int(time.time())
 MIN, HOUR, DAY = 60, 3600, 86400
 
 PROPS = {
-    "Version": "0.6.1", "BluetoothAvailable": True, "Advertising": True, "Pairing": False, "LinkProblem": "", "AdapterName": "Covalence-PC",
+    "Version": "0.7.0", "BluetoothAvailable": True, "Advertising": True, "Pairing": False, "LinkProblem": "", "AdapterName": "Boomerang-PC",
     "DeviceName": "iPhone de Camille", "DeviceAddress": "00:11:22:33:44:55", "Paired": True,
     "Connected": True, "NotificationsLinked": True, "MediaLinked": True, "CallsLinked": True,
     "CallsSupported": True, "Battery": 78, "ICloudState": "connected", "MessagesState": "ready",
@@ -43,8 +43,8 @@ PROPS = {
                                   "icloud")},
 }
 
-# Demo data in the language of the screenshot (COVALENCE_DEMO_LANG, else LANGUAGE).
-LANG = (os.environ.get("COVALENCE_DEMO_LANG") or os.environ.get("LANGUAGE") or "fr")[:2]
+# Demo data in the language of the screenshot (BOOMERANG_DEMO_LANG, else LANGUAGE).
+LANG = (os.environ.get("BOOMERANG_DEMO_LANG") or os.environ.get("LANGUAGE") or "fr")[:2]
 EN = LANG == "en"
 
 PEOPLE = [
@@ -82,7 +82,7 @@ if EN:
         (2, "com.apple.mobilemail", "Mail", "Club newsletter", "This season's programme", 18 * MIN,
          "io.elementary.mail"),
         (3, "com.apple.mobilecal", "Calendar", "Dentist", "Tomorrow at 9:30", HOUR,
-         "io.github.melvincouwez.Covalence.Calendar"),
+         "io.github.melvincouwez.Boomerang.Calendar"),
         (4, "com.apple.reminders", "Reminders", "Water the plants", "", 2 * HOUR,
          "io.elementary.tasks"),
     ]
@@ -113,7 +113,7 @@ else:
         (2, "com.apple.mobilemail", "Mail", "Newsletter du club", "Programme de la saison", 18 * MIN,
          "io.elementary.mail"),
         (3, "com.apple.mobilecal", "Calendrier", "Dentiste", "Demain à 9:30", HOUR,
-         "io.github.melvincouwez.Covalence.Calendar"),
+         "io.github.melvincouwez.Boomerang.Calendar"),
         (4, "com.apple.reminders", "Rappels", "Arroser les plantes", "", 2 * HOUR,
          "io.elementary.tasks"),
     ]
@@ -142,16 +142,16 @@ def demo_artwork():
     pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(GLib.Bytes.new(bytes(pixels)),
                                              GdkPixbuf.Colorspace.RGB, False, 8, size, size,
                                              size * 3)
-    path = os.path.join(tempfile.mkdtemp(prefix="covalence-demo-"), "cover.png")
+    path = os.path.join(tempfile.mkdtemp(prefix="boomerang-demo-"), "cover.png")
     pixbuf.savev(path, "png", [], [])
     return path
 
 
 def now_playing():
-    if os.environ.get("COVALENCE_DEMO_NOWPLAYING") == "0":
+    if os.environ.get("BOOMERANG_DEMO_NOWPLAYING") == "0":
         return {"source": "avrcp-control", "status": "stopped", "volume": -1.0,
                 "can_play": True}
-    return {"source": "ams", "app": "Music" if EN else "Musique", "app_icon": "io.github.melvincouwez.Covalence.NowPlaying", "app_image": "",
+    return {"source": "ams", "app": "Music" if EN else "Musique", "app_icon": "io.github.melvincouwez.Boomerang.NowPlaying", "app_image": "",
             "title": "October Light" if EN else "Lumière d'octobre",
             "artist": "The Evening Travellers" if EN else "Les Voyageurs du Soir",
             "album": "Horizons", "duration": 214.0, "position": 83.0,

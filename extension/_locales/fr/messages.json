@@ -1,12 +1,12 @@
 {
   "name": {
-    "message": "Covalence : codes SMS"
+    "message": "Boomerang : codes SMS"
   },
   "description": {
-    "message": "Propose sous le champ de code d'un site le code reçu par SMS sur votre iPhone (Covalence, alpha)."
+    "message": "Propose sous le champ de code d'un site le code reçu par SMS sur votre iPhone (Boomerang, alpha)."
   },
   "pill": {
-    "message": "Code de Covalence : $CODE$",
+    "message": "Code de Boomerang : $CODE$",
     "placeholders": {
       "code": {
         "content": "$1"

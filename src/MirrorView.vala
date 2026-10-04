@@ -2,16 +2,16 @@
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
  * Recopie d'écran (experimental): the iPhone's screen in a window on the PC,
- * through UxPlay, a free AirPlay receiver (covalenced/mirror.py). The receiver
+ * through UxPlay, a free AirPlay receiver (boomerangd/mirror.py). The receiver
  * only runs between « Recevoir l'écran de l'iPhone » and « Arrêter ».
  *
  * The picture stays in UxPlay's own window (another program: its video cannot be
  * drawn in this GTK window without passing frames between processes). This page
  * is the control panel: start and stop, profile, rotation, full screen, and the
- * iPhone control pad (covalenced/hid.py: the PC as a Bluetooth mouse and keyboard).
+ * iPhone control pad (boomerangd/hid.py: the PC as a Bluetooth mouse and keyboard).
  */
 
-public class Covalence.MirrorView : Gtk.Box {
+public class Boomerang.MirrorView : Gtk.Box {
     public Daemon daemon { get; construct; }
 
     // HID usages and modifier bits for iOS shortcuts (⌘ = GUI).
@@ -85,7 +85,7 @@ public class Covalence.MirrorView : Gtk.Box {
         ready_box.append (new Granite.HeaderLabel (_("Sur l'iPhone")));
         ready_box.append (steps);
         var note = new Gtk.Label (
-            _("Covalence utilise UxPlay, un récepteur AirPlay libre. Il n'écoute le réseau que pendant "
+            _("Boomerang utilise UxPlay, un récepteur AirPlay libre. Il n'écoute le réseau que pendant "
               + "la recopie. Fermez la fenêtre de recopie ou touchez « Arrêter » pour finir.")
         ) { xalign = 0, wrap = true };
         note.add_css_class (Granite.CssClass.DIM);
@@ -461,9 +461,9 @@ public class Covalence.MirrorView : Gtk.Box {
         } else if (control_error != "") {
             control_state.label = _("Bluetooth a refusé la souris et le clavier : %s").printf (control_error);
         } else if (Props.flag (control, "connected")) {
-            control_state.label = _("L'iPhone utilise la souris et le clavier de Covalence.");
+            control_state.label = _("L'iPhone utilise la souris et le clavier de Boomerang.");
         } else {
-            control_state.label = _("Publiés. Sur l'iPhone : Réglages › Bluetooth, touchez « Covalence » "
+            control_state.label = _("Publiés. Sur l'iPhone : Réglages › Bluetooth, touchez « Boomerang » "
                                     + "sous Autres appareils (ou reconnectez-le).");
         }
         var width = Props.integer (control, "width");

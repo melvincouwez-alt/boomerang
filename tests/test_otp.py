@@ -8,7 +8,7 @@ import tempfile
 import time
 import unittest
 
-from covalenced import browser_host, messages, otp, store
+from boomerangd import browser_host, messages, otp, store
 from tests.test_offline import FakeNotifier, MessagesHooks, listing
 
 
@@ -182,22 +182,22 @@ class BrowserHostTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as home:
             os.makedirs(os.path.join(home, ".config", "google-chrome"))
             os.makedirs(os.path.join(home, ".mozilla"))
-            os.environ["COVALENCE_OTP_HOST"] = "/opt/covalence/covalence-otp-host"
+            os.environ["BOOMERANG_OTP_HOST"] = "/opt/boomerang/boomerang-otp-host"
             try:
                 installed = browser_host.install(home=home, which=lambda _c: None)
             finally:
-                del os.environ["COVALENCE_OTP_HOST"]
+                del os.environ["BOOMERANG_OTP_HOST"]
             self.assertEqual(installed, ["Google Chrome", "Firefox"])
             with open(os.path.join(home, ".config/google-chrome/NativeMessagingHosts",
-                                   "com.covalence.otp.json")) as f:
+                                   "com.boomerang.otp.json")) as f:
                 chrome = json.load(f)
             self.assertEqual(chrome["allowed_origins"],
                              ["chrome-extension://bbnmajflfndmkepfcnmpabhmneoplfkk/"])
-            self.assertEqual(chrome["path"], "/opt/covalence/covalence-otp-host")
+            self.assertEqual(chrome["path"], "/opt/boomerang/boomerang-otp-host")
             with open(os.path.join(home, ".mozilla/native-messaging-hosts",
-                                   "com.covalence.otp.json")) as f:
+                                   "com.boomerang.otp.json")) as f:
                 firefox = json.load(f)
-            self.assertEqual(firefox["allowed_extensions"], ["otp@covalence.melvincouwez.github.io"])
+            self.assertEqual(firefox["allowed_extensions"], ["otp@boomerang.melvincouwez.github.io"])
             self.assertNotIn("allowed_origins", firefox)
 
     def test_extension_id_matches_key(self):

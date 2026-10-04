@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
- * Default apps for the calendar and the contacts: the app made for Covalence, or
+ * Default apps for the calendar and the contacts: the app made for Boomerang, or
  * elementary's own (Flatpak from AppCenter). Both read the same iCloud account
  * through Evolution Data Server.
  *
  * The choice is kept in apps.conf [default-apps]. For the calendar it also
  * makes the chosen app the handler of text/calendar. For the contacts it
- * decides which launcher shows in the Applications menu (Covalence's Contacts
+ * decides which launcher shows in the Applications menu (Boomerang's Contacts
  * is hidden when elementary's is chosen).
  */
 
-namespace Covalence {
+namespace Boomerang {
     public class AppChoice : Object {
         public string key { get; construct; }
         public string title { get; construct; }
@@ -23,13 +23,13 @@ namespace Covalence {
         public static AppChoice calendar () {
             return new AppChoice ("calendar", _("Agenda"), "io.github.melvincouwez.Agenda",
                                   { "io.github.melvincouwez.Agenda", "io.elementary.calendar" },
-                                  { _("Agenda (Covalence)"), _("Calendrier (elementary)") }, "text/calendar");
+                                  { _("Agenda (Boomerang)"), _("Calendrier (elementary)") }, "text/calendar");
         }
 
         public static AppChoice contacts () {
             return new AppChoice ("contacts", _("Contacts"), Config.APP_ID + ".Contacts",
                                   { Config.APP_ID + ".Contacts", "io.elementary.contacts" },
-                                  { _("Contacts (Covalence)"), _("Contacts (elementary)") }, null);
+                                  { _("Contacts (Boomerang)"), _("Contacts (elementary)") }, null);
         }
 
         private AppChoice (string key, string title, string icon_name, string[] ids, string[] labels,
@@ -39,14 +39,14 @@ namespace Covalence {
         }
 
         private static string prefs_path () {
-            return Path.build_filename (Environment.get_user_config_dir (), "covalence", "apps.conf");
+            return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
         }
 
         public static bool installed (string id) {
             return new DesktopAppInfo (id + ".desktop") != null;
         }
 
-        /* Index of the chosen app (0 = Covalence's, the default). */
+        /* Index of the chosen app (0 = Boomerang's, the default). */
         public int chosen () {
             var prefs = new KeyFile ();
             try {

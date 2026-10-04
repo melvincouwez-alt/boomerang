@@ -1,29 +1,32 @@
 <div align="center">
 
-<img src="data/icons/io.github.melvincouwez.Covalence.svg" width="128" alt="Icône de Covalence">
+<img src="data/icons/io.github.melvincouwez.Boomerang.svg" width="128" alt="Icône de Boomerang">
 
-# Covalence
+# Boomerang
 
 **Votre iPhone et votre compte Apple, chez eux sur elementary OS.**
 
 [![Licence : GPL-3.0-or-later](https://img.shields.io/badge/licence-GPL--3.0--or--later-blue)](LICENSE)
-![Version 0.6.1 alpha](https://img.shields.io/badge/version-0.6.1%20alpha-orange)
+![Version 0.7.0 alpha](https://img.shields.io/badge/version-0.7.0%20alpha-orange)
 ![elementary OS 8+](https://img.shields.io/badge/elementary%20OS-8%2B-64baff)
 
-[Site](https://melvincouwez-alt.github.io/covalence/fr/) ·
-[Télécharger](https://github.com/melvincouwez-alt/covalence/releases/latest) ·
+[Site](https://melvincouwez-alt.github.io/boomerang/fr/) ·
+[Télécharger](https://github.com/melvincouwez-alt/boomerang/releases/latest) ·
 [English](README.md)
 
-<img src="docs/screenshots/fr/device.png" width="760" alt="Covalence : aperçu de l'iPhone">
+<img src="docs/screenshots/fr/device.png" width="760" alt="Boomerang : aperçu de l'iPhone">
 
 </div>
 
-Covalence amène l'iPhone et iCloud sur elementary OS : notifications, messages, appels,
+Boomerang amène l'iPhone et iCloud sur elementary OS : notifications, messages, appels,
 contacts, AirPods, courriel, agendas, rappels, iCloud Drive et Photos. Tout tourne sur votre
 ordinateur. L'iPhone passe par le Bluetooth, iCloud par Internet, et rien ne transite par un
 serveur à nous.
 
-> **Alpha.** La version 0.5 est un aperçu public. Elle sert tous les jours sur
+*Boomerang s'appelait Covalence jusqu'à la version 0.6. Installer la 0.7 garde vos réglages,
+vos messages et vos comptes iCloud.*
+
+> **Alpha.** La version 0.7 est un aperçu public. Elle sert tous les jours sur
 > l'ordinateur de son auteur, mais attendez-vous à quelques accrocs. L'interface est en
 > français, l'anglais est en bêta.
 
@@ -36,7 +39,7 @@ serveur à nous.
 | **Notifications** | Toutes les notifications de l'iPhone sur le bureau, avec leurs actions et l'icône de l'app qui les envoie. Vous choisissez les apps affichées. |
 | **Lecture en cours** | Ce que joue l'iPhone, avec pochette, progression et volume, dans sa page et dans un mini-lecteur au-dessus de Réglages. Lecture relance la musique de l'iPhone même à l'arrêt. |
 | **Batterie** | Niveau dans le panneau, alertes à 20 % et 10 %. |
-| **Messages** | Lire vos conversations SMS, répondre à une personne, brouillons, recherche. Supprimer un message ou une conversation de Covalence (il reste sur l'iPhone). |
+| **Messages** | Lire vos conversations SMS, répondre à une personne, brouillons, recherche. Supprimer un message ou une conversation de Boomerang (il reste sur l'iPhone). |
 | **Téléphone** | Répondre, refuser et passer des appels avec le micro et les haut-parleurs de l'ordinateur, clavier, journal d'appels. Demande PipeWire 1.4 ou plus récent. |
 | **Contacts** | Les contacts de l'iPhone en Bluetooth (lecture seule), ou vos contacts iCloud, modifiables. |
 | **AirPods** | Batterie de chaque écouteur et du boîtier, contrôle du bruit, détection de conversation, détection des oreilles, renommage. D'après le protocole documenté par LibrePods. |
@@ -66,33 +69,33 @@ serveur à nous.
 > l'autorisent à suspendre un compte. Il faut aussi désactiver la Protection avancée des
 > données, ce qui réduit le chiffrement de bout en bout de vos données iCloud. Le jeton de
 > connexion expire environ une fois par mois. Vous utilisez cette fonction à vos risques ;
-> Covalence vous demande d'accepter ces risques avant la connexion.
+> Boomerang vous demande d'accepter ces risques avant la connexion.
 
 ## Installation
 
 ### Depuis le paquet (conseillé)
 
-1. Téléchargez `covalence_0.6.1-1_amd64.deb` depuis la
-   [dernière version](https://github.com/melvincouwez-alt/covalence/releases/latest).
-2. Double-cliquez dessus. Eddy (elementary OS) ou l'App Center (Ubuntu) installe Covalence et
-   tous les paquets nécessaires. En terminal : `sudo apt install ./covalence_*.deb`.
-3. Fermez puis rouvrez votre session (ou lancez `systemctl --user start covalenced`), puis
-   ouvrez Covalence. L'assistant vous guide pour appairer l'iPhone et vous connecter à iCloud.
+1. Téléchargez `boomerang_0.7.0-1_amd64.deb` depuis la
+   [dernière version](https://github.com/melvincouwez-alt/boomerang/releases/latest).
+2. Double-cliquez dessus. Eddy (elementary OS) ou l'App Center (Ubuntu) installe Boomerang et
+   tous les paquets nécessaires. En terminal : `sudo apt install ./boomerang_*.deb`.
+3. Fermez puis rouvrez votre session (ou lancez `systemctl --user start boomerangd`), puis
+   ouvrez Boomerang. L'assistant vous guide pour appairer l'iPhone et vous connecter à iCloud.
 
-S'il manque quelque chose plus tard, Covalence l'affiche dans « Composants manquants » avec un
+S'il manque quelque chose plus tard, Boomerang l'affiche dans « Composants manquants » avec un
 bouton « Installer » (PackageKit demande votre mot de passe). Pour iCloud Drive et Photos, le
 bouton « Télécharger rclone » récupère la version officielle de rclone et vérifie son empreinte
-SHA-256 (`covalenced --fetch-rclone` fait la même chose en terminal).
+SHA-256 (`boomerangd --fetch-rclone` fait la même chose en terminal).
 
-Désinstallation : `sudo apt remove covalence`. Vos données restent dans
-`~/.local/share/covalence` et `~/.config/covalence` tant que vous ne les supprimez pas (voir
+Désinstallation : `sudo apt remove boomerang`. Vos données restent dans
+`~/.local/share/boomerang` et `~/.config/boomerang` tant que vous ne les supprimez pas (voir
 [confidentialité](docs/confidentialite.md)).
 
 ### Compatibilité
 
 | Système | État |
 |---|---|
-| elementary OS 8 ou plus récent | Tout fonctionne. Les appels demandent PipeWire 1.4 ou plus récent : avec un PipeWire plus ancien, Covalence grise les appels et explique pourquoi. |
+| elementary OS 8 ou plus récent | Tout fonctionne. Les appels demandent PipeWire 1.4 ou plus récent : avec un PipeWire plus ancien, Boomerang grise les appels et explique pourquoi. |
 | Ubuntu 24.04 ou plus récent | Demande Granite 7.7 ou plus récent. Les appels demandent PipeWire 1.4 ou plus récent. Ubuntu 24.04 fournit rclone 1.60, trop ancien pour iCloud : utilisez le bouton « Télécharger rclone ». |
 
 Matériel : un adaptateur Bluetooth compatible Bluetooth Low Energy (presque tous les modèles
@@ -103,14 +106,14 @@ récents).
 ```sh
 meson setup build --prefix=$HOME/.local
 ninja -C build && meson install -C build
-systemctl --user daemon-reload && systemctl --user enable --now covalenced
+systemctl --user daemon-reload && systemctl --user enable --now boomerangd
 ```
 
 Dépendances de construction : `valac`, `meson`, `libgranite-7-dev` (7.7 ou plus récent),
 `libgtk-4-dev`. Les dépendances d'exécution sont listées dans `debian/control`. Tests hors
 ligne : `python3 -m unittest tests.test_offline`. Paquet : `packaging/build-deb.sh`.
 
-## Ce que Covalence ne sait pas faire
+## Ce que Boomerang ne sait pas faire
 
 Des limites honnêtes, fixées surtout par ce qu'un iPhone accepte d'un ordinateur non Apple :
 
@@ -118,7 +121,7 @@ Des limites honnêtes, fixées surtout par ce qu'un iPhone accepte d'un ordinate
   n'envoie qu'un SMS à une seule personne.
 - Pas de presse-papiers universel, de Handoff, d'AirDrop ni de Caméra de continuité : il leur
   faut le chiffrement et la pile Wi-Fi d'Apple.
-- Supprimer un message ne le retire que de Covalence. iOS ignore les suppressions par
+- Supprimer un message ne le retire que de Boomerang. iOS ignore les suppressions par
   Bluetooth.
 - L'iPhone ne se reconnecte pas toujours seul à un accessoire Bluetooth LE. Le
   [guide](data/guide/fr/12-troubleshooting.md) explique quoi faire.
@@ -149,15 +152,15 @@ Depuis la 0.3.3 :
 
 ## Aide
 
-Covalence contient un guide intégré, en français et en anglais (F1, ou Guide dans la barre latérale). Il
+Boomerang contient un guide intégré, en français et en anglais (F1, ou Guide dans la barre latérale). Il
 explique l'appairage, les réglages à activer sur l'iPhone, iCloud, les AirPods et le
 dépannage. Questions et signalements :
-[Issues](https://github.com/melvincouwez-alt/covalence/issues).
+[Issues](https://github.com/melvincouwez-alt/boomerang/issues).
 
 ## Qui le fait
 
 Je ne suis pas développeur. Je suis un passionné d'elementary OS avec quelques idées et un
-iPhone dans la poche, et je construis Covalence en « vibe coding » avec Claude, l'assistant
+iPhone dans la poche, et je construis Boomerang en « vibe coding » avec Claude, l'assistant
 d'Anthropic : je décris ce que je veux, je teste tous les jours sur mon propre ordinateur, et
 on corrige ensemble. Le code est ouvert pour que les personnes qui s'y connaissent mieux
 puissent le lire, signaler les erreurs et aider. Contributions, signalements et conseils
@@ -167,38 +170,38 @@ melvincouwez-alt
 
 ## Comment ça marche
 
-- **covalenced**, le service (Python, PyGObject) : il tient la liaison Bluetooth et les
+- **boomerangd**, le service (Python, PyGObject) : il tient la liaison Bluetooth et les
   secrets. Il parle à l'iPhone par BlueZ (ANCS et AMS en Bluetooth LE, MAP et PBAP par obexd,
   HFP par `org.pipewire.Telephony` de PipeWire), à iCloud par Evolution Data Server et
   libsecret, et lance rclone pour Drive et Photos.
 - **L'application** (Vala, GTK 4, Granite) : une fenêtre, plus des apps séparées Messages,
   Téléphone, Contacts et Écouteurs pour le dock. Elle parle au service par D-Bus
-  (`io.github.melvincouwez.Covalence.Daemon`).
+  (`io.github.melvincouwez.Boomerang.Daemon`).
 - Les journaux ne contiennent jamais le texte des notifications ou des messages, ni noms ni
   numéros.
 
 ## Merci
 
-Covalence repose sur le travail de nombreux logiciels libres :
+Boomerang repose sur le travail de nombreux logiciels libres :
 
 | Projet | Sert à | Licence |
 |---|---|---|
 | [rclone](https://github.com/rclone/rclone) (Nick Craig-Wood et contributeurs) | iCloud Drive et Photos | MIT |
-| [LibrePods](https://github.com/librepods-org/librepods) (Kavish Devar et contributeurs) | Protocole des AirPods, porté en Python dans `covalenced/headphones.py` | GPL-3.0-or-later |
+| [LibrePods](https://github.com/librepods-org/librepods) (Kavish Devar et contributeurs) | Protocole des AirPods, porté en Python dans `boomerangd/headphones.py` | GPL-3.0-or-later |
 | [BlueZ](https://github.com/bluez/bluez) et obexd | Bluetooth, messages et contacts | GPL-2.0-or-later (bibliothèques LGPL-2.1-or-later) |
 | [PipeWire](https://gitlab.freedesktop.org/pipewire/pipewire) et [WirePlumber](https://gitlab.freedesktop.org/pipewire/wireplumber) | Appels et son de l'iPhone | MIT |
 | [Evolution Data Server](https://gitlab.gnome.org/GNOME/evolution-data-server) | Comptes iCloud | LGPL |
 | [libsecret](https://gitlab.gnome.org/GNOME/libsecret) | Mots de passe dans le trousseau | LGPL-2.1-or-later |
 | [GTK](https://gitlab.gnome.org/GNOME/gtk), [Granite](https://github.com/elementary/granite), [Vala](https://gitlab.gnome.org/GNOME/vala), [PyGObject](https://gitlab.gnome.org/GNOME/pygobject) | L'application et le service | LGPL (Granite : LGPL-3.0-or-later) |
 | [LocalSend](https://github.com/localsend/protocol) | Fichiers avec l'iPhone, protocole v2 | protocole public |
-| [UxPlay](https://github.com/FDH2/UxPlay) | Recopie de l'écran (lancé par Covalence, facultatif) | GPL-3.0 |
+| [UxPlay](https://github.com/FDH2/UxPlay) | Recopie de l'écran (lancé par Boomerang, facultatif) | GPL-3.0 |
 | [libimobiledevice](https://github.com/libimobiledevice/libimobiledevice) et [ifuse](https://github.com/libimobiledevice/ifuse) | Import des photos par câble USB (facultatif) | LGPL-2.1-or-later |
 | [libheif](https://github.com/strukturag/libheif) | Photos HEIC converties en JPEG (facultatif) | LGPL-3.0 |
-| [Icônes elementary](https://github.com/elementary/icons) | Objets à partir desquels les icônes de Covalence sont dessinées | GPL-3.0 |
+| [Icônes elementary](https://github.com/elementary/icons) | Objets à partir desquels les icônes de Boomerang sont dessinées | GPL-3.0 |
 | [Inter](https://github.com/rsms/inter) (Rasmus Andersson) | Texte de l'icône Calendrier, en contours | SIL OFL 1.1 |
 | Android Open Source Project et [Kenney](https://kenney.nl/assets/interface-sounds) | Sons des notifications (détail dans [docs/credits-sons.md](docs/credits-sons.md)) | Apache-2.0 / CC0 |
 
-Covalence installe deux applications compagnes depuis l'onglet Services Apple, chacune publiée
+Boomerang installe deux applications compagnes depuis l'onglet Services Apple, chacune publiée
 dans son propre dépôt avec ses versions : **Agenda**
 ([code source et téléchargements](https://github.com/melvincouwez-alt/agenda), GPL-3.0-or-later) et **Cassette**,
 un client Apple Music issu de [Sidra](https://github.com/wimpysworld/sidra), de Martin Wimpress,
@@ -211,18 +214,18 @@ et à [nRF Connect](https://www.nordicsemi.com/Products/Development-tools/nRF-Co
 
 ## Mentions légales
 
-Covalence est un logiciel libre sous [licence GNU GPL version 3 ou ultérieure](LICENSE). Il est
+Boomerang est un logiciel libre sous [licence GNU GPL version 3 ou ultérieure](LICENSE). Il est
 fourni sans aucune garantie.
 
-Covalence est un projet indépendant. Il n'est ni affilié à Apple Inc. ou à elementary, Inc., ni
+Boomerang est un projet indépendant. Il n'est ni affilié à Apple Inc. ou à elementary, Inc., ni
 approuvé, sponsorisé ou soutenu par eux. Apple, iPhone, iCloud, iMessage, AirPods, AirPlay et
 Apple Music sont des marques d'Apple Inc., déposées aux États-Unis et dans d'autres pays et
-régions. Elles ne sont citées que pour indiquer ce avec quoi Covalence fonctionne.
+régions. Elles ne sont citées que pour indiquer ce avec quoi Boomerang fonctionne.
 
-Covalence utilise des protocoles publiés (Bluetooth HFP, MAP, PBAP ; ANCS et AMS, spécifiés par
+Boomerang utilise des protocoles publiés (Bluetooth HFP, MAP, PBAP ; ANCS et AMS, spécifiés par
 Apple ; CalDAV, CardDAV, IMAP). Deux fonctions reposent sur des interfaces non documentées : les
 AirPods (protocole AAP décrit par LibrePods) et iCloud Drive et Photos (via rclone). Elles
-peuvent cesser de fonctionner sans préavis. Covalence n'a décompilé aucun logiciel Apple.
+peuvent cesser de fonctionner sans préavis. Boomerang n'a décompilé aucun logiciel Apple.
 
 - Confidentialité : [français](docs/confidentialite.md) · [English](docs/privacy.md). Pas de
   télémétrie, pas de compte, pas de serveur.

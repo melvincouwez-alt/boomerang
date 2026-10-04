@@ -4,19 +4,19 @@
 
 import unittest
 
-from covalenced import updates
+from boomerangd import updates
 
 SHA = "0" * 63 + "1"
 
 
 def release(tag, prerelease=False, draft=False, digest=True, name=None):
-    asset = {"name": name or f"covalence_{tag.lstrip('v')}-1_amd64.deb", "size": 1000,
-             "browser_download_url": f"https://github.com/melvincouwez-alt/covalence/releases/"
-                                     f"download/{tag}/covalence_{tag.lstrip('v')}-1_amd64.deb"}
+    asset = {"name": name or f"boomerang_{tag.lstrip('v')}-1_amd64.deb", "size": 1000,
+             "browser_download_url": f"https://github.com/melvincouwez-alt/boomerang/releases/"
+                                     f"download/{tag}/boomerang_{tag.lstrip('v')}-1_amd64.deb"}
     if digest:
         asset["digest"] = "sha256:" + SHA
     return {"tag_name": tag, "prerelease": prerelease, "draft": draft, "assets": [asset],
-            "html_url": f"https://github.com/melvincouwez-alt/covalence/releases/tag/{tag}",
+            "html_url": f"https://github.com/melvincouwez-alt/boomerang/releases/tag/{tag}",
             "body": "Nouveautés"}
 
 

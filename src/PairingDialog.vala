@@ -5,7 +5,7 @@
  * comparison code and reports the outcome.
  */
 
-public class Covalence.PairingDialog : Gtk.Window {
+public class Boomerang.PairingDialog : Gtk.Window {
     public Daemon daemon { get; construct; }
 
     private Gtk.Stack stack;

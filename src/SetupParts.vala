@@ -8,7 +8,7 @@
  * stays available in the other tabs.
  */
 
-namespace Covalence {
+namespace Boomerang {
     private const string APPLE_ACCOUNT_URL = "https://account.apple.com/account/manage/section/security";
 
     /* Launchers of the detached apps: shown in the Applications menu or not. */
@@ -19,7 +19,7 @@ namespace Covalence {
         }
 
         private static string prefs_path () {
-            return Path.build_filename (Environment.get_user_config_dir (), "covalence", "apps.conf");
+            return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
         }
 
         public static bool is_visible (Mode mode) {

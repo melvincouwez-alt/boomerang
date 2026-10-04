@@ -7,7 +7,7 @@ import tempfile
 import time
 import unittest
 
-from covalenced import ancs, messages, store
+from boomerangd import ancs, messages, store
 from tests.test_offline import FakeNotifier, MessagesHooks
 
 AMIE = "+33600000001"

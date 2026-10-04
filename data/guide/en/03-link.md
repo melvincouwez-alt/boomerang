@@ -26,6 +26,6 @@ Depending on the iOS version, some switches only appear after a first connection
 These two features use a second, "low energy" link that only the iPhone can open. It comes up by itself after pairing, once **Share System Notifications** is on. If notifications do not arrive, turn the iPhone's Bluetooth off and on.
 
 ## Reconnecting
-Covalence reconnects the iPhone when it comes back in range, and right after waking from sleep. If it does not, click **Reconnect** in the [Overview](app:device).
+Boomerang reconnects the iPhone when it comes back in range, and right after waking from sleep. If it does not, click **Reconnect** in the [Overview](app:device).
 
-If you forgot the computer on the iPhone, Covalence notices, stops retrying and shows **Pair again…**
+If you forgot the computer on the iPhone, Boomerang notices, stops retrying and shows **Pair again…**

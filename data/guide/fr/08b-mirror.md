@@ -5,7 +5,7 @@ summary: L'écran de l'iPhone sur le PC, et la souris et le clavier du PC sur l'
 ## Afficher l'écran de l'iPhone
 1. Ouvrez [Recopie](app:mirror) et touchez **Recevoir l'écran de l'iPhone**.
 2. Sur l'iPhone, ouvrez le **Centre de contrôle** (glissez du coin en haut à droite vers le bas).
-3. Touchez **Recopie de l'écran**, puis choisissez **Covalence (nom du PC)**.
+3. Touchez **Recopie de l'écran**, puis choisissez **Boomerang (nom du PC)**.
 4. Saisissez sur l'iPhone le code à quatre chiffres affiché dans Recopie. Il change à chaque démarrage : un autre appareil du réseau ne peut pas afficher son écran sur le PC.
 5. Une fenêtre s'ouvre sur le PC avec l'écran de l'iPhone. Pour finir, touchez **Arrêter** dans Recopie ou arrêtez la recopie sur l'iPhone.
 
@@ -14,14 +14,14 @@ Le PC et l'iPhone doivent être sur le même réseau Wi-Fi.
 !tip Profil **Fluide** : le moins de retard possible, idéal pour piloter l'iPhone. Profil **Qualité** : le son reste calé sur l'image, mieux pour regarder une vidéo.
 
 ## Piloter l'iPhone avec la souris et le clavier du PC
-Covalence peut se présenter à l'iPhone comme une souris et un clavier Bluetooth. C'est une fonction expérimentale, désactivée par défaut.
+Boomerang peut se présenter à l'iPhone comme une souris et un clavier Bluetooth. C'est une fonction expérimentale, désactivée par défaut.
 
 ### 1. Activer la souris et le clavier
 1. Dans [Recopie](app:mirror), activez **Souris et clavier Bluetooth**.
 2. Sur l'iPhone, ouvrez **Réglages › Bluetooth**.
-3. Touchez **Covalence** dans la liste des appareils, puis acceptez la demande de jumelage.
+3. Touchez **Boomerang** dans la liste des appareils, puis acceptez la demande de jumelage.
 
-!warn Si l'iPhone connaît déjà Covalence (pour les notifications) mais ne propose pas la souris, touchez le **ⓘ** à côté de Covalence, puis **Oublier cet appareil**, et jumelez-le à nouveau. Vous devrez ensuite réautoriser les notifications.
+!warn Si l'iPhone connaît déjà Boomerang (pour les notifications) mais ne propose pas la souris, touchez le **ⓘ** à côté de Boomerang, puis **Oublier cet appareil**, et jumelez-le à nouveau. Vous devrez ensuite réautoriser les notifications.
 
 ### 2. Afficher le pointeur avec AssistiveTouch
 L'iPhone n'affiche un pointeur de souris qu'avec AssistiveTouch.

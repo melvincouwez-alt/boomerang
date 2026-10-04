@@ -3,15 +3,15 @@
 /*
  * Écouteurs: battery and settings of AirPods paired with this PC.
  *
- * The daemon talks to the AirPods (covalenced/headphones.py, protocol from
+ * The daemon talks to the AirPods (boomerangd/headphones.py, protocol from
  * LibrePods). The AirPods do not report every setting back, so a change shows
  * at once here and the view catches up on the next HeadphonesChanged.
  *
- * COVALENCE_HEADPHONES_DEMO=1 shows a made-up pair (for screenshots); nothing is
+ * BOOMERANG_HEADPHONES_DEMO=1 shows a made-up pair (for screenshots); nothing is
  * sent to the daemon then.
  */
 
-namespace Covalence {
+namespace Boomerang {
     public class HeadphonesView : Gtk.Box {
         public Daemon daemon { get; construct; }
 
@@ -54,7 +54,7 @@ namespace Covalence {
         }
 
         construct {
-            demo = Environment.get_variable ("COVALENCE_HEADPHONES_DEMO") == "1";
+            demo = Environment.get_variable ("BOOMERANG_HEADPHONES_DEMO") == "1";
 
             var none = new Granite.Placeholder (_("Aucun écouteur appairé")) {
                 description = _("Pour appairer vos AirPods : ouvrez le boîtier près du PC, écouteurs "
@@ -237,7 +237,7 @@ namespace Covalence {
             cycle_box.append (checks);
             cycle_box.append (cycle_hint);
 
-            var notice = small (_("Compatible avec les AirPods. Covalence n'est pas affiliée à Apple. "
+            var notice = small (_("Compatible avec les AirPods. Boomerang n'est pas affilié à Apple. "
                                 + "Protocole documenté par le projet LibrePods, merci à ses contributeurs."));
             notice.justify = Gtk.Justification.CENTER;
             notice.max_width_chars = 60;
@@ -418,7 +418,7 @@ namespace Covalence {
             var cycle = num (p, "cycle", 0);
             for (int i = 0; i < cycle_checks.length; i++) {
                 cycle_checks[i].visible = has_feature (p, MODE_FEATURES[i]);
-                // Never set from Covalence: show the usual default (noise cancellation and transparency).
+                // Never set from Boomerang: show the usual default (noise cancellation and transparency).
                 cycle_checks[i].active = cycle != 0 ? (cycle & CYCLE_BITS[i]) != 0 : (i == 1 || i == 2);
             }
             updating = false;

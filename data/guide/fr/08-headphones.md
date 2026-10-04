@@ -14,7 +14,7 @@ summary: Batterie et réglages de vos AirPods.
 - Détection de conversation, réduction du bruit avec un seul écouteur, modes parcourus par l'appui long, nom des écouteurs.
 - Pause automatique quand vous retirez un écouteur, reprise quand vous le remettez (réglable).
 
-Les réglages proposés dépendent du modèle. L'appui long est réécrit par Covalence à chaque connexion, car les AirPods ne le renvoient pas.
+Les réglages proposés dépendent du modèle. L'appui long est réécrit par Boomerang à chaque connexion, car les AirPods ne le renvoient pas.
 
 !warn Le multipoint et la réduction des sons forts ne sont pas proposés : ils demanderaient de faire passer l'ordinateur pour un appareil Apple.
 

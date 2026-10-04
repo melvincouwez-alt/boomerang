@@ -9,13 +9,13 @@ from unittest import mock
 
 from gi.repository import GLib
 
-from covalenced import calls, sounds
-from covalenced.config import Config
+from boomerangd import calls, sounds
+from boomerangd.config import Config
 
 
 def private_config(tmp):
     config = Config()
-    config.dir, config.path = tmp, os.path.join(tmp, "covalenced.conf")
+    config.dir, config.path = tmp, os.path.join(tmp, "boomerangd.conf")
     config.keyfile = GLib.KeyFile()
     return config
 
@@ -92,7 +92,7 @@ class SoundsTest(unittest.TestCase):
         c.calls["/call1"]["State"] = "active"
         c._update_ring()
         self.assertFalse(self.s.ringing)
-        # the iPhone rings in-band over the hands-free audio: Covalence stays quiet
+        # the iPhone rings in-band over the hands-free audio: Boomerang stays quiet
         c.calls["/call1"]["State"] = "incoming"
         c.transport["/gw"] = {"State": "active"}
         c._update_ring()

@@ -2,18 +2,18 @@
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
  * iCloud Drive (or iCloud Photos) options. They are written to
- * ~/.config/covalence/drive.env (photos.env), which the covalence-icloud-drive
- * (covalence-icloud-photos) user unit reads (rclone takes its flags from
+ * ~/.config/boomerang/drive.env (photos.env), which the boomerang-icloud-drive
+ * (boomerang-icloud-photos) user unit reads (rclone takes its flags from
  * RCLONE_* variables), then the mount is restarted.
  *
  * iCloud Photos is always read-only: the unit passes --read-only itself.
  *
- * Covalence does not offer a two-way full sync (rclone bisync): a conflict or a
+ * Boomerang does not offer a two-way full sync (rclone bisync): a conflict or a
  * mass deletion could lose files. "Hors ligne" keeps the files you open, for
  * as long as you choose, within the size you choose.
  */
 
-public class Covalence.DriveOptions : Gtk.Window {
+public class Boomerang.DriveOptions : Gtk.Window {
     public bool photos { get; construct; }
     private string unit;
     private string service_name;
@@ -112,7 +112,7 @@ public class Covalence.DriveOptions : Gtk.Window {
             ? _("iCloud Photos est en lecture seule : rien ne peut être modifié ni supprimé depuis ce PC. "
               + "Chaque album est un dossier ; « All Photos » contient toute la photothèque. Les photos "
               + "que vous ouvrez sont gardées hors ligne ; pour en garder une copie, copiez-la ailleurs.")
-            : _("Covalence ne propose pas de synchronisation complète dans les deux sens : un conflit ou "
+            : _("Boomerang ne propose pas de synchronisation complète dans les deux sens : un conflit ou "
               + "une suppression massive pourrait faire perdre des fichiers. Les fichiers que vous "
               + "ouvrez sont gardés hors ligne, et vos modifications sont envoyées à iCloud en quelques "
               + "secondes.")
@@ -273,7 +273,7 @@ public class Covalence.DriveOptions : Gtk.Window {
     }
 
     private void apply () {
-        var text = new StringBuilder ("# Written by Covalence (%s options).\n".printf (service_name));
+        var text = new StringBuilder ("# Written by Boomerang (%s options).\n".printf (service_name));
         text.append_printf ("%s=\"%s\"\n", Setup.drive_env_key (photos), folder.replace ("\"", ""));
         text.append_printf ("RCLONE_VFS_CACHE_MAX_SIZE=%s\n", SIZE_VALUES[cache_size.selected]);
         text.append_printf ("RCLONE_VFS_CACHE_MAX_AGE=%s\n", AGE_VALUES[cache_age.selected]);
@@ -299,7 +299,7 @@ public class Covalence.DriveOptions : Gtk.Window {
             if (bookmark_changed) {
                 // The old mount point is empty once unmounted (rmdir leaves it otherwise).
                 DirUtils.remove (old_folder);
-                Setup.run_helper ("covalence-icloud-drive",
+                Setup.run_helper ("boomerang-icloud-drive",
                                   photos ? new string[] { "--photos", "--bookmark" } : new string[] { "--bookmark" });
             }
         });

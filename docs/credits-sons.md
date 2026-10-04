@@ -1,10 +1,10 @@
 # Crédits des sons
 
-Covalence fournit dix-neuf sons, en plus de ceux du thème sonore du système. Ils ne sont pas sous la licence GPL de Covalence mais sous leur propre licence, libre. Les textes complets des licences sont dans `data/sounds/LICENSES/` (installés dans `share/covalence/sounds/LICENSES/`).
+Boomerang fournit dix-neuf sons, en plus de ceux du thème sonore du système. Ils ne sont pas sous la licence GPL de Boomerang mais sous leur propre licence, libre. Les textes complets des licences sont dans `data/sounds/LICENSES/` (installés dans `share/boomerang/sounds/LICENSES/`).
 
 ## Messages et notifications
 
-| Nom dans Covalence | Fichier | Titre d'origine | Auteur | Licence |
+| Nom dans Boomerang | Fichier | Titre d'origine | Auteur | Licence |
 |---|---|---|---|---|
 | Rosée | `rosee.oga` | Tethys | The Android Open Source Project | Apache-2.0 |
 | Envol | `envol.oga` | Ariel | The Android Open Source Project | Apache-2.0 |
@@ -20,12 +20,12 @@ Covalence fournit dix-neuf sons, en plus de ceux du thème sonore du système. I
 
 ## Sonneries
 
-| Nom dans Covalence | Fichier | Titre d'origine | Auteur | Licence |
+| Nom dans Boomerang | Fichier | Titre d'origine | Auteur | Licence |
 |---|---|---|---|---|
 | Aurore | `aurore.oga` | Atria | The Android Open Source Project | Apache-2.0 |
 | Orbite | `orbite.oga` | Ganymede | The Android Open Source Project | Apache-2.0 |
 | Horizon | `horizon.oga` | Sedna | The Android Open Source Project | Apache-2.0 |
-| Téléphone | `telephone.oga` | (création) | Covalence | CC0 1.0 |
+| Téléphone | `telephone.oga` | (création) | Boomerang | CC0 1.0 |
 | Écume | `ecume.oga` | Luna | The Android Open Source Project | Apache-2.0 |
 | Brise | `brise.oga` | Umbriel | The Android Open Source Project | Apache-2.0 |
 | Cascade | `cascade.oga` | Dione | The Android Open Source Project | Apache-2.0 |
@@ -39,11 +39,11 @@ Covalence fournit dix-neuf sons, en plus de ceux du thème sonore du système. I
 - **Kenney, Interface Sounds 1.0** (créé le 11/02/2020) : fichiers `Audio/confirmation_002.ogg`, `glass_001.ogg`, `pluck_001.ogg`, `drop_002.ogg` et `glass_005.ogg`.
   https://kenney.nl/assets/interface-sounds
   Licence : Creative Commons Zero (CC0 1.0), indiquée sur la page et dans le `License.txt` du paquet. Vérifié le 27/09/2026. Le crédit n'est pas obligatoire, nous le donnons quand même.
-- **Téléphone** : sonnerie de téléphone à cloche synthétisée pour Covalence en 2026 (deux tons de 440 et 480 Hz frappés à 20 Hz, deux sonneries puis une pause). Versée dans le domaine public (CC0 1.0).
+- **Téléphone** : sonnerie de téléphone à cloche synthétisée pour Boomerang en 2026 (deux tons de 440 et 480 Hz frappés à 20 Hz, deux sonneries puis une pause). Versée dans le domaine public (CC0 1.0).
 
 ## Modifications
 
-Pour chaque son repris, en 2026 pour Covalence :
+Pour chaque son repris, en 2026 pour Boomerang :
 
 - silence de début et de fin coupé (seuil -50 dBFS) ;
 - volume harmonisé : niveau moyen (RMS) à -20 dBFS, crête à -1,5 dBFS au plus ;

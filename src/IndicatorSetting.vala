@@ -2,14 +2,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  * SPDX-FileCopyrightText: 2026 melvincouwez-alt
  *
- * « Afficher dans la barre du haut »: the Covalence indicator in Wingpanel reads
+ * « Afficher dans la barre du haut »: the Boomerang indicator in Wingpanel reads
  * apps.conf [general] indicator (true unless turned off) and follows changes live.
  */
 
-namespace Covalence.IndicatorSetting {
+namespace Boomerang.IndicatorSetting {
 
     private static string prefs_path () {
-        return Path.build_filename (Environment.get_user_config_dir (), "covalence", "apps.conf");
+        return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
     }
 
     public bool enabled () {
@@ -42,7 +42,7 @@ namespace Covalence.IndicatorSetting {
     public bool installed () {
         foreach (var dir in new string[] { "/usr/lib/x86_64-linux-gnu/wingpanel-9", "/usr/lib/wingpanel-9",
                                            "/usr/lib64/wingpanel-9" }) {
-            if (FileUtils.test (Path.build_filename (dir, "libcovalence-indicator.so"), FileTest.EXISTS)) {
+            if (FileUtils.test (Path.build_filename (dir, "libboomerang-indicator.so"), FileTest.EXISTS)) {
                 return true;
             }
         }
@@ -55,7 +55,7 @@ namespace Covalence.IndicatorSetting {
         var subtitle_label = new Gtk.Label (
             installed ()
             ? _("Batterie de l'iPhone, lecture en cours, appel et messages non lus, à côté de l'horloge.")
-            : _("L'indicateur n'est pas installé avec cette version de Covalence.")
+            : _("L'indicateur n'est pas installé avec cette version de Boomerang.")
         ) { xalign = 0, wrap = true };
         subtitle_label.add_css_class (Granite.CssClass.DIM);
         subtitle_label.add_css_class (Granite.CssClass.SMALL);

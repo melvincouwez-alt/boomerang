@@ -6,7 +6,7 @@
  * The version last shown is kept in apps.conf [general] whats-new.
  */
 
-namespace Covalence.WhatsNew {
+namespace Boomerang.WhatsNew {
 
     private struct Item {
         string icon;
@@ -16,11 +16,14 @@ namespace Covalence.WhatsNew {
 
     private static Item[] items () {
         return {
+            { "emblem-synchronizing-symbolic", _("Covalence devient Boomerang"),
+              _("Nouveau nom, nouvelle icône : comme un boomerang, tout part de l'iPhone et y "
+                + "revient. Vos réglages, messages et comptes iCloud sont repris tels quels.") },
             { "audio-input-microphone-symbolic", _("Micro rétabli"),
-              _("Un micro coupé pendant un appel est toujours rétabli à la fin, même si Covalence "
+              _("Un micro coupé pendant un appel est toujours rétabli à la fin, même si Boomerang "
                 + "s'arrête en cours d'appel : vos correspondants vous entendent de nouveau.") },
             { "system-software-install-symbolic", _("Agenda et Cassette à part"),
-              _("Les deux applications ont leur propre dépôt et leurs versions ; Covalence les "
+              _("Les deux applications ont leur propre dépôt et leurs versions ; Boomerang les "
                 + "installe et affiche leur vraie version.") },
             { "x-office-calendar-symbolic", _("Agenda"),
               _("Installez Agenda depuis Services Apple : vos agendas iCloud par mois, par semaine "
@@ -35,11 +38,11 @@ namespace Covalence.WhatsNew {
               _("Ni sonnerie, ni fenêtre, ni son sur le PC : l'appel reste sur l'iPhone. Pratique "
                 + "quand Teams sonne déjà. Réglages › Connexion ou barre du haut.") },
             { "applications-graphics-symbolic", _("Icônes redessinées"),
-              _("Covalence, Messages, Téléphone, Contacts, Lecture en cours et Recopie, dessinées "
+              _("Boomerang, Messages, Téléphone, Contacts, Lecture en cours et Recopie, dessinées "
                 + "pour chaque taille. Les notifications du Calendrier prennent l'icône d'Agenda.") },
             { "audio-headphones-symbolic", _("AirPods Pro 3"),
               _("Contrôle du bruit, audio adaptatif et détection de conversation sont reconnus. "
-                + "Des écouteurs plus récents que Covalence gardent toutes leurs commandes.") },
+                + "Des écouteurs plus récents que Boomerang gardent toutes leurs commandes.") },
             { "security-high-symbolic", _("Sécurité renforcée"),
               _("Le code d'appairage se confirme aussi sur le PC. Un autre programme doit vous "
                 + "demander avant d'appeler, d'envoyer ou d'appairer. Mises à jour, fichiers "
@@ -74,7 +77,7 @@ namespace Covalence.WhatsNew {
                 + "jamais de déverrouillage).") },
             { "preferences-system-symbolic", _("Réglages en onglets"),
               _("Connexion, Messages, Sons, Affichage, Mises à jour, Expérimental, À propos ; les sons libres "
-                + "de Covalence s'essaient d'un clic.") },
+                + "de Boomerang s'essaient d'un clic.") },
             { "face-smile-symbolic", _("Émojis automatiques"),
               _("« :) » devient 🙂 pendant la saisie. Retour arrière annule ; réglable dans Réglages.") },
             { "object-select-symbolic", _("Messages envoyés"),
@@ -92,9 +95,9 @@ namespace Covalence.WhatsNew {
               _("Un bouton dans Messages relit les messages, les contacts et le journal d'appels.") },
             { "audio-volume-high-symbolic", _("Sons"),
               _("Choisissez le son des messages, des notifications de l'iPhone et la sonnerie "
-                + "des appels, dont 8 sons libres fournis avec Covalence (Réglages › Sons).") },
+                + "des appels, dont 8 sons libres fournis avec Boomerang (Réglages › Sons).") },
             { "system-software-update-symbolic", _("Mises à jour"),
-              _("Covalence recherche les nouvelles versions et s'installe depuis Réglages.") },
+              _("Boomerang recherche les nouvelles versions et s'installe depuis Réglages.") },
             { "applications-science-symbolic", _("Fonctionnalités expérimentales"),
               _("À essayer dans Réglages : historique étendu, marquer comme lu sur l'iPhone, "
                 + "actions des notifications, favoris des contacts.") }
@@ -102,7 +105,7 @@ namespace Covalence.WhatsNew {
     }
 
     private static string prefs_path () {
-        return Path.build_filename (Environment.get_user_config_dir (), "covalence", "apps.conf");
+        return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
     }
 
     private static string last_shown () {
@@ -179,7 +182,7 @@ namespace Covalence.WhatsNew {
             max_content_height = 420
         };
         var dialog = new Granite.MessageDialog.with_image_from_icon_name (
-            _("Nouveautés de Covalence %s").printf (Config.VERSION),
+            _("Nouveautés de Boomerang %s").printf (Config.VERSION),
             _("Ce qui change dans cette version."),
             Config.APP_ID, Gtk.ButtonsType.NONE) {
             transient_for = parent,

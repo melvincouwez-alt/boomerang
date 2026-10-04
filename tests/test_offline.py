@@ -8,8 +8,8 @@ import unittest
 
 import tempfile
 
-from covalenced import ams, ancs, bmsg, calls, messages, notifications, store
-from covalenced.config import Config
+from boomerangd import ams, ancs, bmsg, calls, messages, notifications, store
+from boomerangd.config import Config
 
 
 class FakeNotifier:
@@ -105,7 +105,7 @@ class AmsTest(unittest.TestCase):
 def _config(tmp):
     from gi.repository import GLib
     config = Config()
-    config.dir, config.path = tmp, os.path.join(tmp, "covalenced.conf")
+    config.dir, config.path = tmp, os.path.join(tmp, "boomerangd.conf")
     config.keyfile = GLib.KeyFile()  # never the user's real settings
     return config
 
@@ -127,7 +127,7 @@ class FakeAms:
 
 class NowPlayingTest(unittest.TestCase):
     def setUp(self):
-        from covalenced import nowplaying
+        from boomerangd import nowplaying
         self.np = nowplaying
         self.tmp = tempfile.TemporaryDirectory()
         self.config = _config(self.tmp.name)
@@ -184,7 +184,7 @@ class NowPlayingTest(unittest.TestCase):
         self.assertEqual(state["source"], "avrcp-control")
         self.assertTrue(state["can_play"])
         calls_made = []
-        import covalenced.nowplaying as mod
+        import boomerangd.nowplaying as mod
         original = mod.call_async
         mod.call_async = lambda bus, name, path, iface, method, *a, **k: calls_made.append(
             (path, iface, method))
@@ -263,7 +263,7 @@ class NotificationsTest(unittest.TestCase):
         import os
         tmp = tempfile.TemporaryDirectory()
         config = Config()
-        config.dir, config.path = tmp.name, os.path.join(tmp.name, "covalenced.conf")
+        config.dir, config.path = tmp.name, os.path.join(tmp.name, "boomerangd.conf")
         from gi.repository import GLib
         config.keyfile = GLib.KeyFile()  # not the user's real choices
         changes = []
@@ -541,11 +541,11 @@ class MessagesTest(unittest.TestCase):
         st = self.m.store
         tid = self.m.open_conversation("0600000002")["id"]
         text = "Salut\nligne deux " + "x" * 200
-        st.upsert("covalence:1", tid, True, "", "", 1000, text, True,
-                  kind="sms", source="covalence", status="sent")
+        st.upsert("boomerang:1", tid, True, "", "", 1000, text, True,
+                  kind="sms", source="boomerang", status="sent")
         subject = " ".join(text.split())[:120]  # iOS listing: flattened and cut
-        self.assertEqual(st.find_pending_outgoing(tid, subject, 1003), "covalence:1")
-        self.assertEqual(st.find_pending_outgoing(tid, text, 1003), "covalence:1")
+        self.assertEqual(st.find_pending_outgoing(tid, subject, 1003), "boomerang:1")
+        self.assertEqual(st.find_pending_outgoing(tid, text, 1003), "boomerang:1")
         self.assertIsNone(st.find_pending_outgoing(tid, "autre chose " * 5, 1003))
 
     def test_drafts_search_and_viewing(self):
@@ -607,12 +607,12 @@ class HeadphonesTest(unittest.TestCase):
             self.ears.append((before, list(pods.ear)))
 
     def pods(self):
-        from covalenced import headphones
+        from boomerangd import headphones
         return headphones.Pods(self.Owner(), "/dev", {"Address": "AA:BB:CC:DD:EE:FF",
                                                       "Alias": "AirPods", "Connected": False})
 
     def test_battery(self):
-        from covalenced import headphones as h
+        from boomerangd import headphones as h
         p = self.pods()
         p._parse(bytes.fromhex("040004000400030201640201040163010108011102 01".replace(" ", "")))
         self.assertEqual(p.battery, {h.LEFT: 99, h.RIGHT: 100, h.CASE: 17})
@@ -622,7 +622,7 @@ class HeadphonesTest(unittest.TestCase):
         self.assertTrue(p.linked)
 
     def test_ear_and_modes(self):
-        from covalenced import headphones as h
+        from boomerangd import headphones as h
         p = self.pods()
         p._parse(bytes.fromhex("040004000400030201640201040163010108011102 01".replace(" ", "")))
         p._parse(bytes.fromhex("0400040006000001"))
@@ -644,14 +644,14 @@ class HeadphonesTest(unittest.TestCase):
 class ComponentsTest(unittest.TestCase):
     def test_old_pipewire_is_not_installable(self):
         from unittest import mock
-        from covalenced import components
+        from boomerangd import components
         with mock.patch.object(components, "_pipewire_version", return_value=(1, 0, 5)):
             found = {package: installable for package, _label, installable in components.missing()}
         self.assertIs(found.get("pipewire"), False)
 
     def test_everything_missing_maps_to_packages(self):
         from unittest import mock
-        from covalenced import components
+        from boomerangd import components
         with mock.patch.object(components, "_any", return_value=False), \
                 mock.patch.object(components.shutil, "which", return_value=None), \
                 mock.patch.object(components, "PRIVATE_OBEXD", "/nonexistent"), \
@@ -663,14 +663,14 @@ class ComponentsTest(unittest.TestCase):
 
     def test_rclone_missing_is_downloadable(self):
         from unittest import mock
-        from covalenced import components
+        from boomerangd import components
         with mock.patch.object(components, "rclone_ok", return_value=False):
             found = {package: installable for package, _label, installable in components.missing()}
         self.assertEqual(found.get("rclone"), components.DOWNLOADABLE)
 
     def test_calls_unsupported_on_old_pipewire(self):
         from unittest import mock
-        from covalenced import components
+        from boomerangd import components
         with mock.patch.object(components, "_pipewire_version", return_value=(1, 0, 5)):
             c = calls.Calls(None, None, FakeNotifier(), lambda: None)
         self.assertFalse(c.supported)
@@ -686,7 +686,7 @@ class RcloneFetchTest(unittest.TestCase):
         import hashlib
         import io
         import zipfile
-        from covalenced import rclone_fetch
+        from boomerangd import rclone_fetch
         self.fetch = rclone_fetch
         self.name = f"rclone-v1.71.0-linux-{rclone_fetch.arch()}"
         buffer = io.BytesIO()
@@ -754,7 +754,7 @@ class RcloneFetchTest(unittest.TestCase):
 
 
 class MigrationTest(unittest.TestCase):
-    """Tandem (the former name) to Covalence, on a throwaway home folder."""
+    """Tandem (the former name) to Boomerang, on a throwaway home folder."""
 
     def test_cache_from_tandem(self):
         import os
@@ -769,16 +769,16 @@ class MigrationTest(unittest.TestCase):
         st.db.commit()
         st.close()
         st = store.Store(d)
-        row = st.message("covalence:ab")
-        self.assertEqual(row["source"], "covalence")
-        self.assertTrue(st.db.execute("SELECT 1 FROM hidden WHERE key='covalence:cd'").fetchone())
+        row = st.message("boomerang:ab")
+        self.assertEqual(row["source"], "boomerang")
+        self.assertTrue(st.db.execute("SELECT 1 FROM hidden WHERE key='boomerang:cd'").fetchone())
         photo = st.db.execute("SELECT photo FROM contacts").fetchone()[0]
         self.assertEqual(photo, os.path.join(d, "photos", "p1"))
 
     def test_move_from_tandem(self):
         import os
         import subprocess
-        from covalenced.migrate import Migration
+        from boomerangd.migrate import migrate
 
         home = tempfile.mkdtemp()
         j = os.path.join
@@ -826,35 +826,108 @@ class MigrationTest(unittest.TestCase):
                 out = "active\n"
             return subprocess.CompletedProcess(args, code, out, "")
 
-        done = Migration(home=home, run=run, log=lambda m: None).run_all()
+        done = migrate(home=home, run=run, log=lambda m: None)
         self.assertTrue(done)
         self.assertFalse(os.path.exists(j(conf, "tandem")))
-        with open(j(conf, "covalence", "covalenced.conf")) as f:
+        with open(j(conf, "boomerang", "boomerangd.conf")) as f:
             self.assertIn("address=AA", f.read())
-        with open(j(conf, "covalence", "apps.conf")) as f:
+        with open(j(conf, "boomerang", "apps.conf")) as f:
             apps = f.read()
-        self.assertIn("COVALENCE_MODE_MESSAGES=false", apps)
-        self.assertIn("io.github.melvincouwez.Covalence.Contacts", apps)
-        with open(j(conf, "covalence", "drive.env")) as f:
-            self.assertIn('COVALENCE_DRIVE_DIR="/x/iCloud Drive"', f.read())
-        self.assertEqual(os.stat(j(conf, "covalence", "drive.env")).st_mode & 0o777, 0o600)
-        self.assertTrue(os.path.exists(j(share, "covalence", "messages", "messages.db")))
+        self.assertIn("BOOMERANG_MODE_MESSAGES=false", apps)
+        self.assertIn("io.github.melvincouwez.Boomerang.Contacts", apps)
+        with open(j(conf, "boomerang", "drive.env")) as f:
+            self.assertIn('BOOMERANG_DRIVE_DIR="/x/iCloud Drive"', f.read())
+        self.assertEqual(os.stat(j(conf, "boomerang", "drive.env")).st_mode & 0o777, 0o600)
+        self.assertTrue(os.path.exists(j(share, "boomerang", "messages", "messages.db")))
         self.assertFalse(os.path.exists(j(share, "tandem")))
-        self.assertTrue(os.path.exists(j(local, "libexec", "covalence", "obexd")))
-        self.assertEqual(keyring, {"io.github.melvincouwez.Covalence": "secret\n"})
+        self.assertTrue(os.path.exists(j(local, "libexec", "boomerang", "obexd")))
+        self.assertEqual(keyring, {"io.github.melvincouwez.Boomerang": "secret\n"})
         self.assertFalse(os.path.exists(j(share, "systemd", "user", "tandemd.service")))
-        self.assertIn(["systemctl", "--user", "disable", "--now", "tandem-icloud-drive.service"], calls)
-        self.assertIn(["systemctl", "--user", "enable", "covalence-icloud-drive.service"], calls)
-        self.assertIn(["systemctl", "--user", "start", "covalence-icloud-drive.service"], calls)
-        self.assertIn(["systemctl", "--user", "enable", "covalenced.service"], calls)
-        self.assertNotIn(["systemctl", "--user", "start", "covalenced.service"], calls)
+        self.assertIn(["systemctl", "--user", "stop", "tandem-icloud-drive.service"], calls)
+        self.assertIn(["systemctl", "--user", "disable", "tandem-icloud-drive.service"], calls)
+        self.assertIn(["systemctl", "--user", "enable", "boomerang-icloud-drive.service"], calls)
+        self.assertIn(["systemctl", "--user", "start", "boomerang-icloud-drive.service"], calls)
+        self.assertIn(["systemctl", "--user", "enable", "boomerangd.service"], calls)
+        self.assertNotIn(["systemctl", "--user", "start", "boomerangd.service"], calls)
         self.assertFalse(os.path.exists(j(local, "bin", "tandemd")))
         self.assertFalse(os.path.exists(
             j(share, "applications", "io.github.melvincouwez.Tandem.Messages.desktop")))
         self.assertTrue(os.path.exists(j(share, "applications", "other.desktop")))
         # Second start: nothing left to do.
         calls.clear()
-        self.assertEqual(Migration(home=home, run=run, log=lambda m: None).run_all(), [])
+        self.assertEqual(migrate(home=home, run=run, log=lambda m: None), [])
+
+    def test_move_from_covalence_package(self):
+        """Covalence 0.6 installed from its .deb: config, cache, sounds, units links, dock."""
+        import os
+        import subprocess
+        from boomerangd.migrate import migrate
+
+        home = tempfile.mkdtemp()
+        j = os.path.join
+
+        def write(path, text="x", mode=0o644):
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, "w") as f:
+                f.write(text)
+            os.chmod(path, mode)
+
+        conf, share, local = j(home, ".config"), j(home, ".local", "share"), j(home, ".local")
+        write(j(conf, "covalence", "covalenced.conf"), "[sounds]\nmessage=covalence:rosee\n[calls]\nquiet=false\n")
+        write(j(conf, "covalence", "apps.conf"), "[default-apps]\ncontacts=io.github.melvincouwez.Covalence.Contacts\n")
+        write(j(conf, "covalence", "drive.env"), "# Written by Covalence\nCOVALENCE_DRIVE_DIR=/x\n", 0o600)
+        write(j(share, "covalence", "messages", "messages.db"), "db", 0o600)
+        write(j(local, "state", "covalence", "microphone-muted"), "0")
+        write(j(local, "libexec", "covalence", "rclone"))
+        wants = j(conf, "systemd", "user", "graphical-session.target.wants")
+        os.makedirs(wants)
+        os.symlink("/usr/lib/systemd/user/covalence-icloud-drive.service",
+                   j(wants, "covalence-icloud-drive.service"))  # dangling: the package is gone
+        write(j(share, "applications", "io.github.melvincouwez.Covalence.Messages.desktop"))
+        write(j(share, "icons", "hicolor", "48x48", "apps", "io.github.melvincouwez.Covalence.Messages.svg"))
+        write(j(share, "icons", "hicolor", "48x48", "apps", "other.svg"))
+        write(j(conf, "mimeapps.list"), "[Default Applications]\nx-scheme-handler/sms=io.github.melvincouwez.Covalence.Messages.desktop\n")
+        dock = ["['io.elementary.files.desktop', 'io.github.melvincouwez.Covalence.Messages.desktop']"]
+        calls = []
+
+        def run(args, stdin=None):
+            calls.append(args)
+            out, code = "", 0
+            if args[:2] == ["secret-tool", "lookup"]:
+                code = 1
+            elif args[:3] == ["gsettings", "get", "io.elementary.dock"]:
+                out = dock[0] + "\n"
+            elif args[:3] == ["gsettings", "set", "io.elementary.dock"]:
+                dock[0] = args[4]
+            elif args[:2] == ["gsettings", "list-recursively"] or args[:2] == ["dconf", "dump"]:
+                code = 1
+            return subprocess.CompletedProcess(args, code, out, "")
+
+        done = migrate(home=home, run=run, log=lambda m: None)
+        self.assertTrue(done)
+        with open(j(conf, "boomerang", "boomerangd.conf")) as f:
+            self.assertIn("message=boomerang:rosee", f.read())
+        with open(j(conf, "boomerang", "apps.conf")) as f:
+            self.assertIn("io.github.melvincouwez.Boomerang.Contacts", f.read())
+        with open(j(conf, "boomerang", "drive.env")) as f:
+            self.assertIn("BOOMERANG_DRIVE_DIR=/x", f.read())
+        self.assertTrue(os.path.exists(j(share, "boomerang", "messages", "messages.db")))
+        self.assertTrue(os.path.exists(j(local, "state", "boomerang", "microphone-muted")))
+        self.assertTrue(os.path.exists(j(local, "libexec", "boomerang", "rclone")))
+        self.assertFalse(os.path.lexists(j(wants, "covalence-icloud-drive.service")))
+        self.assertIn(["systemctl", "--user", "stop", "covalence-icloud-drive.service"], calls)
+        self.assertIn(["systemctl", "--user", "enable", "boomerang-icloud-drive.service"], calls)
+        self.assertFalse(os.path.exists(
+            j(share, "applications", "io.github.melvincouwez.Covalence.Messages.desktop")))
+        self.assertFalse(os.path.exists(
+            j(share, "icons", "hicolor", "48x48", "apps", "io.github.melvincouwez.Covalence.Messages.svg")))
+        self.assertTrue(os.path.exists(j(share, "icons", "hicolor", "48x48", "apps", "other.svg")))
+        with open(j(conf, "mimeapps.list")) as f:
+            self.assertIn("sms=io.github.melvincouwez.Boomerang.Messages.desktop", f.read())
+        self.assertEqual(dock[0], "['io.elementary.files.desktop', 'io.github.melvincouwez.Boomerang.Messages.desktop']")
+        calls.clear()
+        dock[0] = "['io.elementary.files.desktop']"
+        self.assertEqual(migrate(home=home, run=run, log=lambda m: None), [])
 
 
 if __name__ == "__main__":

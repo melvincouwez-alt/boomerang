@@ -10,15 +10,15 @@ import unittest
 
 from gi.repository import GLib
 
-from covalenced import hotspot, proximity
-from covalenced.config import Config
+from boomerangd import hotspot, proximity
+from boomerangd.config import Config
 
 PHONE = "AA:BB:CC:00:11:22"
 
 
 def private_config(tmp):
     config = Config()
-    config.dir, config.path = tmp, os.path.join(tmp, "covalenced.conf")
+    config.dir, config.path = tmp, os.path.join(tmp, "boomerangd.conf")
     config.keyfile = GLib.KeyFile()
     return config
 

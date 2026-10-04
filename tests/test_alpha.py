@@ -8,13 +8,13 @@ import unittest
 
 from gi.repository import GLib
 
-from covalenced import messages, notifications, store
-from covalenced.config import ALPHA, Config
+from boomerangd import messages, notifications, store
+from boomerangd.config import ALPHA, Config
 
 
 def private_config(tmp):
     config = Config()
-    config.dir, config.path = tmp, os.path.join(tmp, "covalenced.conf")
+    config.dir, config.path = tmp, os.path.join(tmp, "boomerangd.conf")
     config.keyfile = GLib.KeyFile()  # not the user's real choices
     return config
 

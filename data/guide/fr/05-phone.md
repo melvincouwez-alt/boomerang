@@ -2,12 +2,12 @@ title: Téléphone et appels
 icon: @APP_ID@.Phone
 summary: Passer et recevoir les appels de l'iPhone sur l'ordinateur.
 ---
-!warn Les appels demandent PipeWire 1.4 ou plus récent. Avec un PipeWire plus ancien, ils restent indisponibles : le reste de Covalence fonctionne normalement.
+!warn Les appels demandent PipeWire 1.4 ou plus récent. Avec un PipeWire plus ancien, ils restent indisponibles : le reste de Boomerang fonctionne normalement.
 
 ## Recevoir un appel
 Quand l'iPhone sonne, une notification et une fenêtre d'appel s'ouvrent sur l'ordinateur :
 - **Répondre** ou **Refuser**.
-- Pendant l'appel, une barre verte en haut des fenêtres de Covalence montre qui appelle et depuis combien de temps.
+- Pendant l'appel, une barre verte en haut des fenêtres de Boomerang montre qui appelle et depuis combien de temps.
 - **Audio PC** fait passer la voix par le micro et les haut-parleurs de l'ordinateur. Désactivé, le son reste sur l'iPhone.
 - Micro coupé, clavier (pour les serveurs vocaux) et raccrocher sont dans la fenêtre d'appel.
 

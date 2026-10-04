@@ -5,7 +5,7 @@
 
 /* Réglages › Sons: one sound for messages, one for iPhone notifications, one ringtone.
    The daemon plays them (Sounds on the bus: none, default, a theme sound name or a file). */
-public class Covalence.SoundsCard : Gtk.Box {
+public class Boomerang.SoundsCard : Gtk.Box {
     private Daemon daemon;
     private SoundRow[] rows = {};
 
@@ -28,7 +28,7 @@ public class Covalence.SoundsCard : Gtk.Box {
 
         var hint = new Gtk.Label (
             _("Aucun son en mode Ne pas déranger. Si l'iPhone fait déjà sonner l'appel sur ce PC, "
-              + "la sonnerie de Covalence se tait.")
+              + "la sonnerie de Boomerang se tait.")
         ) { xalign = 0, wrap = true };
         hint.add_css_class (Granite.CssClass.DIM);
         hint.add_css_class (Granite.CssClass.SMALL);
@@ -63,7 +63,7 @@ public class Covalence.SoundsCard : Gtk.Box {
     }
 }
 
-private class Covalence.SoundRow : Gtk.ListBoxRow {
+private class Boomerang.SoundRow : Gtk.ListBoxRow {
     private Daemon daemon;
     private string kind;
     private Gtk.DropDown choice;

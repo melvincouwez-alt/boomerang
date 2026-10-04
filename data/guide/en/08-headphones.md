@@ -14,7 +14,7 @@ summary: Battery and settings of your AirPods.
 - Conversation awareness, noise cancellation with one earbud, modes cycled by a long press, earbuds' name.
 - Automatic pause when you take an earbud out, resume when you put it back (adjustable).
 
-The settings offered depend on the model. The long press is written again by Covalence at each connection, because AirPods do not report it.
+The settings offered depend on the model. The long press is written again by Boomerang at each connection, because AirPods do not report it.
 
 !warn Multipoint and loud sound reduction are not offered: they would require the computer to pass itself off as an Apple device.
 

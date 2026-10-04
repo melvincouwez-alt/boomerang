@@ -6,7 +6,7 @@
  * reminders, contacts), iCloud Drive, iCloud Photos, and the apps that show them.
  */
 
-public class Covalence.ServicesView : Gtk.Box {
+public class Boomerang.ServicesView : Gtk.Box {
     public Daemon daemon { get; construct; }
 
     private Gtk.Label account_state;
@@ -45,7 +45,7 @@ public class Covalence.ServicesView : Gtk.Box {
             }
         });
         account_button = new Gtk.Button.with_label (_("Se connecter…")) { valign = Gtk.Align.CENTER };
-        account_button.clicked.connect (() => Setup.run_helper ("covalence-icloud-signin"));
+        account_button.clicked.connect (() => Setup.run_helper ("boomerang-icloud-signin"));
         var account = card_row ("preferences-desktop-online-accounts", _("Compte iCloud"), account_state,
                                 { Guide.help_button ("apple", _("Mot de passe pour app : comment faire")),
                                   account_button, account_switch });
@@ -55,7 +55,7 @@ public class Covalence.ServicesView : Gtk.Box {
         drive_open = new Gtk.Button.with_label (_("Ouvrir")) { valign = Gtk.Align.CENTER };
         drive_open.clicked.connect (() => Setup.open_drive_folder (get_root () as Gtk.Window));
         drive_connect = new Gtk.Button.with_label (_("Connecter…")) { valign = Gtk.Align.CENTER };
-        drive_connect.clicked.connect (() => Setup.run_helper ("covalence-icloud-drive"));
+        drive_connect.clicked.connect (() => Setup.run_helper ("boomerang-icloud-drive"));
         drive_remove = new Gtk.Button.from_icon_name ("edit-delete-symbolic") {
             valign = Gtk.Align.CENTER,
             tooltip_text = _("Déconnecter iCloud Drive")
@@ -77,7 +77,7 @@ public class Covalence.ServicesView : Gtk.Box {
         photos_open = new Gtk.Button.with_label (_("Ouvrir")) { valign = Gtk.Align.CENTER };
         photos_open.clicked.connect (() => Setup.open_drive_folder (get_root () as Gtk.Window, true));
         photos_connect = new Gtk.Button.with_label (_("Connecter…")) { valign = Gtk.Align.CENTER };
-        photos_connect.clicked.connect (() => Setup.run_helper ("covalence-icloud-drive", { "--photos" }));
+        photos_connect.clicked.connect (() => Setup.run_helper ("boomerang-icloud-drive", { "--photos" }));
         photos_remove = new Gtk.Button.from_icon_name ("edit-delete-symbolic") {
             valign = Gtk.Align.CENTER,
             tooltip_text = _("Déconnecter iCloud Photos")
@@ -102,7 +102,7 @@ public class Covalence.ServicesView : Gtk.Box {
         // Apps that show the account: open them, or install them from AppCenter;
         // Agenda and Cassette have their own GitHub releases and are installed from here.
         agenda_row = new OptionalAppRow (daemon, "agenda", "io.github.melvincouwez.Agenda", _("Agenda"),
-                                         _("Vos agendas iCloud, l'agenda de Covalence"));
+                                         _("Vos agendas iCloud, l'agenda de Boomerang"));
         cassette_row = new OptionalAppRow (daemon, "cassette", "io.github.melvincouwez.Cassette",
                                            _("Apple Music"), _("Écouter avec Cassette, votre compte Apple Music"));
         apps = new Gtk.ListBox () { selection_mode = Gtk.SelectionMode.NONE, show_separators = true };
@@ -124,7 +124,7 @@ public class Covalence.ServicesView : Gtk.Box {
         content.append (head);
         content.append (new Granite.HeaderLabel (_("Connexions")));
         content.append (services);
-        // Calendar and contacts: Covalence's app or elementary's
+        // Calendar and contacts: Boomerang's app or elementary's
         var defaults = new Gtk.ListBox () { selection_mode = Gtk.SelectionMode.NONE, show_separators = true };
         defaults.add_css_class (Granite.CssClass.CARD);
         defaults.append (new AppChoiceRow (AppChoice.calendar ()));
@@ -302,7 +302,7 @@ public class Covalence.ServicesView : Gtk.Box {
         remove.add_css_class (Granite.CssClass.DESTRUCTIVE);
         dialog.response.connect ((response) => {
             if (response == Gtk.ResponseType.ACCEPT) {
-                Setup.run_helper ("covalence-icloud-drive",
+                Setup.run_helper ("boomerang-icloud-drive",
                                   photos ? new string[] { "--photos", "--remove" } : new string[] { "--remove" });
                 Timeout.add_seconds (3, () => {
                     update ();
@@ -378,7 +378,7 @@ public class Covalence.ServicesView : Gtk.Box {
     }
 }
 
-namespace Covalence {
+namespace Boomerang {
     /* Big icon, title and one line of explanation at the top of a tab. */
     public Gtk.Widget page_header (string icon, string title, string text) {
         var image = new Gtk.Image.from_icon_name (icon) { pixel_size = 64 };

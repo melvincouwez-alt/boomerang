@@ -5,7 +5,7 @@
 import tempfile
 import unittest
 
-from covalenced import messages, reactions, store
+from boomerangd import messages, reactions, store
 from tests.test_offline import FakeNotifier, MessagesHooks, listing
 
 ME = "+33600000009"
@@ -152,10 +152,10 @@ class BadgesTest(unittest.TestCase):
         self.assertEqual(msgs[-1]["status"], "failed")  # retry or delete, like any send
         self.assertEqual(msgs[0]["reactions"], [])
         # while sending, the reaction shows as a pending badge
-        key = "covalence:test"
+        key = "boomerang:test"
         self.m.store.upsert(key, self.tid, True, "", "", 2000000000,
                             reactions.build("👍", "On se voit à demain ?", "fr"), True,
-                            kind="sms", source="covalence", status="sending")
+                            kind="sms", source="boomerang", status="sending")
         self.m._classify(key)
         self.assertIn(("👍", self.m._author_name(""), True, True), self.bubbles()[0]["reactions"])
 

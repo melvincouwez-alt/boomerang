@@ -3,13 +3,13 @@
 # System install (the .deb): /usr/lib/systemd/user; user install: ~/.local/share/systemd/user.
 user_unit_dir = prefix == '/usr' ? '/usr/lib/systemd/user' : datadir / 'systemd' / 'user'
 
-configure_file(input: 'covalenced.service.in', output: 'covalenced.service', configuration: conf,
+configure_file(input: 'boomerangd.service.in', output: 'boomerangd.service', configuration: conf,
                install: true, install_dir: user_unit_dir)
 configure_file(input: 'metainfo.xml.in', output: app_id + '.metainfo.xml', configuration: conf,
                install: true, install_dir: datadir / 'metainfo')
-configure_file(input: 'icloud-drive.service.in', output: 'covalence-icloud-drive.service',
+configure_file(input: 'icloud-drive.service.in', output: 'boomerang-icloud-drive.service',
                configuration: conf, install: true, install_dir: user_unit_dir)
-configure_file(input: 'icloud-photos.service.in', output: 'covalence-icloud-photos.service',
+configure_file(input: 'icloud-photos.service.in', output: 'boomerang-icloud-photos.service',
                configuration: conf, install: true, install_dir: user_unit_dir)
 configure_file(input: 'dbus.service.in', output: app_id + '.Daemon.service', configuration: conf,
                install: true, install_dir: datadir / 'dbus-1' / 'services')

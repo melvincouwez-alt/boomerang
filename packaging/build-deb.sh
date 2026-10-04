@@ -1,7 +1,7 @@
 #!/bin/sh
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPDX-FileCopyrightText: 2026 melvincouwez-alt
-# Build covalence_<version>_<arch>.deb in dist/.
+# Build boomerang_<version>_<arch>.deb in dist/.
 #
 # Normal path: dpkg-buildpackage (needs the Build-Depends of debian/control,
 # debhelper included). When they are not all installed, or with --quick, the
@@ -19,10 +19,11 @@ arch=$(dpkg-architecture -qDEB_HOST_ARCH)
 
 if [ "${1:-}" != "--quick" ] && dpkg-checkbuilddeps 2>/dev/null; then
     dpkg-buildpackage -us -uc -b
-    mv ../covalence_"$version"_"$arch".deb dist/
-    rm -f ../covalence_"$version"_"$arch".buildinfo ../covalence_"$version"_"$arch".changes \
-          ../covalence-dbgsym_"$version"_"$arch".ddeb
-    echo "dist/covalence_${version}_${arch}.deb"
+    mv ../boomerang_"$version"_"$arch".deb dist/
+    rm -f ../boomerang_"$version"_"$arch".buildinfo ../boomerang_"$version"_"$arch".changes \
+          ../boomerang-dbgsym_"$version"_"$arch".ddeb
+    echo "dist/boomerang_${version}_${arch}.deb"
+    sh packaging/transitional-deb.sh "dist/boomerang_${version}_${arch}.deb"
     exit 0
 fi
 
@@ -42,11 +43,11 @@ DESTDIR="$root" meson install -C "$work/build" --no-rebuild >/dev/null
 rm -f "$root/usr/share/icons/hicolor/icon-theme.cache" \
       "$root/usr/share/applications/mimeinfo.cache"
 find "$root" -name __pycache__ -type d -prune -exec rm -rf {} +
-strip --strip-unneeded "$root/usr/bin/io.github.melvincouwez.Covalence"
+strip --strip-unneeded "$root/usr/bin/io.github.melvincouwez.Boomerang"
 
-install -Dm644 debian/copyright "$root/usr/share/doc/covalence/copyright"
+install -Dm644 debian/copyright "$root/usr/share/doc/boomerang/copyright"
 gzip -9n -c debian/changelog > "$work/changelog.Debian.gz"
-install -Dm644 "$work/changelog.Debian.gz" "$root/usr/share/doc/covalence/changelog.Debian.gz"
+install -Dm644 "$work/changelog.Debian.gz" "$root/usr/share/doc/boomerang/changelog.Debian.gz"
 
 mkdir -p "$root/DEBIAN"
 for script in postinst prerm postrm; do
@@ -57,15 +58,16 @@ done
 # ${shlibs:Depends} from the binary, then control from debian/control.
 cp -r debian "$work/pkg-debian"
 ( cd "$work" && ln -s pkg-debian debian &&
-  dpkg-shlibdeps -O "-e$root/usr/bin/io.github.melvincouwez.Covalence" 2>/dev/null ) > "$work/substvars"
+  dpkg-shlibdeps -O "-e$root/usr/bin/io.github.melvincouwez.Boomerang" 2>/dev/null ) > "$work/substvars"
 # elementary's own packages name Granite libgranite7, Ubuntu's libgranite-7-7: accept both.
 sed -i 's/libgranite7 (\([^)]*\))/libgranite7 (\1) | libgranite-7-7 (\1)/' "$work/substvars"
 echo "misc:Depends=" >> "$work/substvars"
 size=$(du -sk --exclude=DEBIAN "$root" | cut -f1)
-dpkg-gencontrol -pcovalence -c"debian/control" -l"debian/changelog" -T"$work/substvars" \
+dpkg-gencontrol -pboomerang -c"debian/control" -l"debian/changelog" -T"$work/substvars" \
     -P"$root" -O"$root/DEBIAN/control" -DInstalled-Size="$size"
 sed -i '/^Installed-Size:/d' "$root/DEBIAN/control"
 echo "Installed-Size: $size" >> "$root/DEBIAN/control"
 
-dpkg-deb --root-owner-group -Zxz --build "$root" "dist/covalence_${version}_${arch}.deb" >/dev/null
-echo "dist/covalence_${version}_${arch}.deb"
+dpkg-deb --root-owner-group -Zxz --build "$root" "dist/boomerang_${version}_${arch}.deb" >/dev/null
+echo "dist/boomerang_${version}_${arch}.deb"
+sh packaging/transitional-deb.sh "dist/boomerang_${version}_${arch}.deb"

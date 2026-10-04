@@ -6,7 +6,7 @@
  * to write a message.
  */
 
-namespace Covalence {
+namespace Boomerang {
     public const string CALLS_UNAVAILABLE =
         N_("Les appels demandent PipeWire 1.4 ou plus récent.");
 
@@ -16,7 +16,7 @@ namespace Covalence {
     }
 }
 
-public class Covalence.CallsView : Gtk.Box {
+public class Boomerang.CallsView : Gtk.Box {
     public Daemon daemon { get; construct; }
     public bool with_dialer { get; construct; }
     public signal void message_requested (string address);
@@ -165,7 +165,7 @@ public class Covalence.CallsView : Gtk.Box {
 }
 
 /* Calls a number from the iPhone through the hands-free link, only when clicked. */
-public class Covalence.CallButton : Gtk.Button {
+public class Boomerang.CallButton : Gtk.Button {
     public delegate string NumberSource ();
 
     public Daemon daemon { get; construct; }

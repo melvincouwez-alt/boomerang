@@ -8,7 +8,7 @@
  * ProximityCard: lock the PC when the iPhone moves away (daemon property Proximity).
  */
 
-namespace Covalence {
+namespace Boomerang {
 
     private static string dict_str (Variant? dict, string key) {
         var v = dict != null ? dict.lookup_value (key, VariantType.STRING) : null;

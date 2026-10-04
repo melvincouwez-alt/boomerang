@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPDX-FileCopyrightText: 2026 melvincouwez-alt
-"""Build the Covalence browser extension for each browser family from one source.
+"""Build the Boomerang browser extension for each browser family from one source.
 
 extension/ itself is the Chromium build (Chrome, Chromium, Edge load it unpacked).
 Firefox needs another manifest: no "key", a background script instead of a service
 worker, and its add-on id. Output (default extension/out/):
   chromium/                         unpacked extension for Chrome, Chromium, Edge
   firefox/                          unpacked extension for Firefox (about:debugging)
-  covalence-codes-firefox.xpi       the same, zipped (unsigned: Developer Edition/Nightly)
+  boomerang-codes-firefox.xpi       the same, zipped (unsigned: Developer Edition/Nightly)
   LISEZMOI.md                       docs/navigateurs.md, the instructions
 
 Usage: build.py [OUTPUT_DIR]; meson runs it at install time with --install DIR.
@@ -22,7 +22,7 @@ import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FILES = ["compat.js", "background.js", "content.js", "_locales", "icons"]
-FIREFOX_ID = "otp@covalence.melvincouwez.github.io"
+FIREFOX_ID = "otp@boomerang.melvincouwez.github.io"
 FIREFOX_MIN = "115.0"  # ESR with Manifest V3 background scripts and nativeMessaging
 
 
@@ -56,7 +56,7 @@ def build(output):
     _copy(os.path.join(output, "chromium"), manifest)
     firefox = os.path.join(output, "firefox")
     _copy(firefox, firefox_manifest(manifest))
-    xpi = os.path.join(output, "covalence-codes-firefox.xpi")
+    xpi = os.path.join(output, "boomerang-codes-firefox.xpi")
     with zipfile.ZipFile(xpi, "w", zipfile.ZIP_DEFLATED) as archive:
         for folder, _dirs, files in os.walk(firefox):
             for name in sorted(files):

@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
- * System components Covalence needs (BlueZ, obexd, EDS typelibs, PipeWire…).
+ * System components Boomerang needs (BlueZ, obexd, EDS typelibs, PipeWire…).
  *
- * Detection runs `covalenced --check-components` (covalenced/components.py), which
+ * Detection runs `boomerangd --check-components` (boomerangd/components.py), which
  * works even when the daemon cannot start. Installing goes through PackageKit
  * on the system bus (Resolve, then InstallPackages): the system asks for the
  * administrator password itself, and nothing is installed without a click.
  * rclone (iCloud Drive and Photos) is not packaged recently enough everywhere: on a
- * click, `covalenced --fetch-rclone` downloads the official build (rclone_fetch.py).
- * COVALENCE_COMPONENTS_DEMO=1 shows two made-up missing components (screenshots).
+ * click, `boomerangd --fetch-rclone` downloads the official build (rclone_fetch.py).
+ * BOOMERANG_COMPONENTS_DEMO=1 shows two made-up missing components (screenshots).
  */
 
-public class Covalence.Component : Object {
+public class Boomerang.Component : Object {
     public string package { get; construct; }
     public string label { get; construct; }
     public bool installable { get; construct; }
-    /* Covalence downloads it itself, on request (rclone). */
+    /* Boomerang downloads it itself, on request (rclone). */
     public bool downloadable { get; construct; }
 
     public Component (string package, string label, bool installable, bool downloadable = false) {
@@ -25,7 +25,7 @@ public class Covalence.Component : Object {
 
     public static async Component[] detect () {
         Component[] found = {};
-        if (Environment.get_variable ("COVALENCE_COMPONENTS_DEMO") == "1") {
+        if (Environment.get_variable ("BOOMERANG_COMPONENTS_DEMO") == "1") {
             found += new Component ("bluez-obexd", _("Messages et contacts par Bluetooth (obexd)"), true);
             found += new Component ("gir1.2-ebook-1.2", _("Contacts iCloud"), true);
             found += new Component ("rclone", _("iCloud Drive et iCloud Photos (rclone 1.69 ou plus récent)"),
@@ -34,7 +34,7 @@ public class Covalence.Component : Object {
         }
         try {
             var process = new Subprocess (SubprocessFlags.STDOUT_PIPE | SubprocessFlags.STDERR_SILENCE,
-                                          Path.build_filename (Config.BINDIR, "covalenced"), "--check-components");
+                                          Path.build_filename (Config.BINDIR, "boomerangd"), "--check-components");
             string output;
             yield process.communicate_utf8_async (null, null, out output, null);
             foreach (var line in (output ?? "").split ("\n")) {
@@ -51,7 +51,7 @@ public class Covalence.Component : Object {
 }
 
 /* Minimal PackageKit client: one transaction per call, waits for Finished. */
-public class Covalence.PackageInstaller : Object {
+public class Boomerang.PackageInstaller : Object {
     private const string PK = "org.freedesktop.PackageKit";
     private const string TRANSACTION = "org.freedesktop.PackageKit.Transaction";
     // PkFilterEnum bits: NOT_INSTALLED (3), NEWEST (16), ARCH (18).
@@ -146,7 +146,7 @@ public class Covalence.PackageInstaller : Object {
 }
 
 /* "Composants manquants": hidden when everything is there. */
-public class Covalence.ComponentsCard : Gtk.Box {
+public class Boomerang.ComponentsCard : Gtk.Box {
     private Gtk.ListBox list;
     private Gtk.Label status;
     private Gtk.ProgressBar bar;
@@ -199,10 +199,10 @@ public class Covalence.ComponentsCard : Gtk.Box {
         installable = names;
         install.visible = names.length > 0;
         status.label = names.length > 0
-            ? _("Covalence a besoin de ces paquets pour fonctionner entièrement. Le système demandera "
+            ? _("Boomerang a besoin de ces paquets pour fonctionner entièrement. Le système demandera "
               + "le mot de passe administrateur.")
             : others ? _("Ces éléments demandent une version plus récente du système.")
-            : _("Covalence peut télécharger cet outil pour vous.");
+            : _("Boomerang peut télécharger cet outil pour vous.");
         visible = found.length > 0;
     }
 
@@ -280,14 +280,14 @@ public class Covalence.ComponentsCard : Gtk.Box {
         }
     }
 
-    /* covalenced --fetch-rclone: "progress N" lines, then "ok VERSION"; errors on stderr. */
+    /* boomerangd --fetch-rclone: "progress N" lines, then "ok VERSION"; errors on stderr. */
     private async void run_fetch (Gtk.Button button, Gtk.Label detail) {
         button.sensitive = false;
         detail.label = _("Téléchargement…");
         string? failure = null;
         try {
             var process = new Subprocess (SubprocessFlags.STDOUT_PIPE | SubprocessFlags.STDERR_PIPE,
-                                          Path.build_filename (Config.BINDIR, "covalenced"), "--fetch-rclone");
+                                          Path.build_filename (Config.BINDIR, "boomerangd"), "--fetch-rclone");
             var lines = new DataInputStream (process.get_stdout_pipe ());
             string? line;
             while ((line = yield lines.read_line_utf8_async ()) != null) {
@@ -315,9 +315,9 @@ public class Covalence.ComponentsCard : Gtk.Box {
     /* The daemon loads obexd, typelibs and PipeWire at start: restart it on the new components. */
     private static void restart_daemon () {
         try {
-            new Subprocess (SubprocessFlags.NONE, "systemctl", "--user", "restart", "covalenced.service");
+            new Subprocess (SubprocessFlags.NONE, "systemctl", "--user", "restart", "boomerangd.service");
         } catch (Error e) {
-            warning ("cannot restart covalenced: %s", e.message);
+            warning ("cannot restart boomerangd: %s", e.message);
         }
     }
 }

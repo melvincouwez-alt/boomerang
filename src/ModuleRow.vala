@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
- * One feature of Covalence: icon, name, live status and an on/off switch.
+ * One feature of Boomerang: icon, name, live status and an on/off switch.
  */
 
-public class Covalence.ModuleRow : Gtk.ListBoxRow {
+public class Boomerang.ModuleRow : Gtk.ListBoxRow {
     public string module { get; construct; }
     public signal void toggled (bool active);
 

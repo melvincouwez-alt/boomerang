@@ -1,14 +1,14 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Covalence
-Source: https://github.com/melvincouwez-alt/covalence
+Upstream-Name: Boomerang
+Source: https://github.com/melvincouwez-alt/boomerang
 Comment: Apple, iPhone, iCloud, AirPods and Apple Music are trademarks of Apple
- Inc. Covalence is not affiliated with or endorsed by Apple.
+ Inc. Boomerang is not affiliated with or endorsed by Apple.
 
 Files: *
 Copyright: 2026 melvincouwez-alt
 License: GPL-3.0-or-later
 
-Files: covalenced/headphones.py
+Files: boomerangd/headphones.py
 Copyright: 2026 melvincouwez-alt
            2025 LibrePods contributors
 Comment: The AirPods protocol (AAP over L2CAP, handshake, battery, ear detection,
@@ -36,7 +36,7 @@ Comment: Notification sounds Tethys, Ariel, Salacia, Titan, Carme and Rhea
  and ringtones Atria, Ganymede, Sedna, Luna, Umbriel, Dione and Callisto
  from AOSP frameworks/base/data/sounds (material/ogg),
  https://android.googlesource.com/platform/frameworks/base/+/main/data/sounds
- Trimmed, loudness-normalised and re-encoded to Ogg Vorbis for Covalence.
+ Trimmed, loudness-normalised and re-encoded to Ogg Vorbis for Boomerang.
  See docs/credits-sons.md.
 License: Apache-2.0
 
@@ -46,12 +46,12 @@ Copyright: Kenney (www.kenney.nl)
 Comment: confirmation_002.ogg, glass_001.ogg, pluck_001.ogg, drop_002.ogg and
  glass_005.ogg from the Interface Sounds pack 1.0,
  https://kenney.nl/assets/interface-sounds
- Loudness-normalised and re-encoded to Ogg Vorbis for Covalence.
+ Loudness-normalised and re-encoded to Ogg Vorbis for Boomerang.
 License: CC0-1.0
 
 Files: data/sounds/telephone.oga
 Copyright: 2026 melvincouwez-alt
-Comment: Bell-telephone ring synthesised for Covalence.
+Comment: Bell-telephone ring synthesised for Boomerang.
 License: CC0-1.0
 
 License: Apache-2.0

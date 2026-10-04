@@ -12,7 +12,7 @@
  * the text back. Off in apps.conf [messages] auto-emoji=false.
  */
 
-public class Covalence.ComposeField : Gtk.Box {
+public class Boomerang.ComposeField : Gtk.Box {
     public signal void submitted ();
 
     public Gtk.TextBuffer buffer { get { return view.buffer; } }
@@ -35,7 +35,7 @@ public class Covalence.ComposeField : Gtk.Box {
     public static bool auto_emoji_enabled () {
         var prefs = new KeyFile ();
         try {
-            prefs.load_from_file (Path.build_filename (Environment.get_user_config_dir (), "covalence",
+            prefs.load_from_file (Path.build_filename (Environment.get_user_config_dir (), "boomerang",
                                                        "apps.conf"), KeyFileFlags.NONE);
             return prefs.get_boolean ("messages", "auto-emoji");
         } catch (Error e) {
@@ -44,7 +44,7 @@ public class Covalence.ComposeField : Gtk.Box {
     }
 
     public static void set_auto_emoji (bool enabled) {
-        var path = Path.build_filename (Environment.get_user_config_dir (), "covalence", "apps.conf");
+        var path = Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
         var prefs = new KeyFile ();
         try {
             prefs.load_from_file (path, KeyFileFlags.KEEP_COMMENTS);

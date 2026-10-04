@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
-// Covalence (alpha): below a one-time code field, offer the code the iPhone just received.
+// Boomerang (alpha): below a one-time code field, offer the code the iPhone just received.
 // HTTPS top-level pages only. A code bound to a site by its SMS ("@example.com #482913")
 // is filled in by itself on that site and never offered anywhere else. Any other code
 // reaches the page only when the user clicks the pill, which names the sender of the SMS;
@@ -109,7 +109,7 @@
         }
         hide();
         shown = code;
-        host = document.createElement("covalence-code");
+        host = document.createElement("boomerang-code");
         host.style.cssText = "position:fixed;z-index:2147483647;left:0;top:0;";
         const root = host.attachShadow({ mode: "closed" });
         const style = document.createElement("style");

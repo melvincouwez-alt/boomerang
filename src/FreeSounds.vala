@@ -3,9 +3,9 @@
  * SPDX-FileCopyrightText: 2026 melvincouwez-alt
  */
 
-/* Réglages › Sons › Sons de Covalence: the free sounds shipped in data/sounds, one row each,
+/* Réglages › Sons › Sons de Boomerang: the free sounds shipped in data/sounds, one row each,
    with a preview and « Utiliser pour… ». Credits in docs/credits-sons.md and in À propos. */
-public class Covalence.FreeSoundsCard : Gtk.Box {
+public class Boomerang.FreeSoundsCard : Gtk.Box {
     private struct FreeSound {
         string id;
         string name;
@@ -29,7 +29,7 @@ public class Covalence.FreeSoundsCard : Gtk.Box {
             { "aurore", _("Aurore"), true, "AOSP (Atria) · Apache-2.0" },
             { "orbite", _("Orbite"), true, "AOSP (Ganymede) · Apache-2.0" },
             { "horizon", _("Horizon"), true, "AOSP (Sedna) · Apache-2.0" },
-            { "telephone", _("Téléphone"), true, "Covalence · CC0" },
+            { "telephone", _("Téléphone"), true, "Boomerang · CC0" },
             { "ecume", _("Écume"), true, "AOSP (Luna) · Apache-2.0" },
             { "brise", _("Brise"), true, "AOSP (Umbriel) · Apache-2.0" },
             { "cascade", _("Cascade"), true, "AOSP (Dione) · Apache-2.0" },
@@ -45,7 +45,7 @@ public class Covalence.FreeSoundsCard : Gtk.Box {
         this.daemon = daemon;
 
         var intro = new Gtk.Label (
-            _("Sons libres fournis avec Covalence : écoutez-les, puis choisissez où les utiliser.")
+            _("Sons libres fournis avec Boomerang : écoutez-les, puis choisissez où les utiliser.")
         ) { xalign = 0, wrap = true };
         intro.add_css_class (Granite.CssClass.DIM);
         append (intro);
@@ -76,7 +76,7 @@ public class Covalence.FreeSoundsCard : Gtk.Box {
     }
 }
 
-private class Covalence.FreeSoundRow : Gtk.ListBoxRow {
+private class Boomerang.FreeSoundRow : Gtk.ListBoxRow {
     private const string[] KINDS = { "messages", "notifications", "calls" };
 
     private Daemon daemon;
@@ -89,7 +89,7 @@ private class Covalence.FreeSoundRow : Gtk.ListBoxRow {
 
     public FreeSoundRow (Daemon daemon, string id, string name, bool ringtone, string credit) {
         this.daemon = daemon;
-        this.value = "covalence:" + id;
+        this.value = "boomerang:" + id;
         this.credit = credit;
         this.ringtone = ringtone;
         activatable = false;

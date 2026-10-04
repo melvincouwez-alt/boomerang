@@ -3,15 +3,15 @@
 /*
  * Interface language: French (source) or English (beta, po/en.po).
  *
- * The choice lives in [general] language of ~/.config/covalence/apps.conf:
+ * The choice lives in [general] language of ~/.config/boomerang/apps.conf:
  * "fr", "en" or "system" (default). "system" means French when the session
- * language is French, English otherwise. The daemon (covalenced/i18n.py) and
+ * language is French, English otherwise. The daemon (boomerangd/i18n.py) and
  * the guide read the same key.
  */
 
-namespace Covalence.Language {
+namespace Boomerang.Language {
     private string prefs_path () {
-        return Path.build_filename (Environment.get_user_config_dir (), "covalence", "apps.conf");
+        return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
     }
 
     /* "fr", "en" or "system". */
@@ -36,7 +36,7 @@ namespace Covalence.Language {
             return value;
         }
         // Read before apply () sets LANGUAGE, and again later: same answer.
-        var session = Environment.get_variable ("COVALENCE_SESSION_LANGUAGE");
+        var session = Environment.get_variable ("BOOMERANG_SESSION_LANGUAGE");
         if (session != null) {
             return session;
         }
@@ -68,7 +68,7 @@ namespace Covalence.Language {
     /* At start-up, before any window: pick the catalog. */
     public void apply () {
         Intl.setlocale (LocaleCategory.ALL, "");
-        if (Environment.get_variable ("COVALENCE_SESSION_LANGUAGE") == null) {
+        if (Environment.get_variable ("BOOMERANG_SESSION_LANGUAGE") == null) {
             string session = "en";
             foreach (var name in Intl.get_language_names ()) {
                 if (name != "C" && name != "POSIX") {
@@ -76,7 +76,7 @@ namespace Covalence.Language {
                     break;
                 }
             }
-            Environment.set_variable ("COVALENCE_SESSION_LANGUAGE", session, true);
+            Environment.set_variable ("BOOMERANG_SESSION_LANGUAGE", session, true);
         }
         var lang = resolved ();
         // French is the source language: no catalog needed, GTK's own strings follow too.
@@ -103,9 +103,9 @@ namespace Covalence.Language {
     /* Restart the app (same program and arguments) and the daemon in the new language. */
     public void restart (Gtk.Application app) {
         try {
-            Process.spawn_command_line_async ("systemctl --user restart covalenced.service");
+            Process.spawn_command_line_async ("systemctl --user restart boomerangd.service");
         } catch (SpawnError e) {
-            warning ("cannot restart covalenced: %s", e.message);
+            warning ("cannot restart boomerangd: %s", e.message);
         }
         var program = Environment.get_prgname () ?? Config.APP_ID;
         var path = Path.build_filename (Config.BINDIR, Path.get_basename (program));
@@ -186,10 +186,10 @@ namespace Covalence.Language {
     private void ask_restart (Gtk.Widget owner, string value) {
         var english = value == "en";
         var dialog = new Granite.MessageDialog.with_image_from_icon_name (
-            english ? "Restart Covalence in English?" : "Relancer Covalence en français ?",
-            english ? "The new language applies once Covalence restarts. English is a beta: "
+            english ? "Restart Boomerang in English?" : "Relancer Boomerang en français ?",
+            english ? "The new language applies once Boomerang restarts. English is a beta: "
                       + "a few texts may still be in French."
-                    : "La nouvelle langue s'applique au redémarrage de Covalence.",
+                    : "La nouvelle langue s'applique au redémarrage de Boomerang.",
             "preferences-desktop-locale", Gtk.ButtonsType.NONE) {
             transient_for = owner.get_root () as Gtk.Window,
             modal = true

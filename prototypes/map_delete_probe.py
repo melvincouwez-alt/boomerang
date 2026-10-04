@@ -3,22 +3,22 @@
 # SPDX-FileCopyrightText: 2026 melvincouwez-alt
 """Does the iPhone honour a MAP delete (SetMessageStatus, deletedStatus)?
 
-Only acts on a test message: its text must contain the marker "covalence-test".
+Only acts on a test message: its text must contain the marker "boomerang-test".
 Ask someone to send you an SMS containing it, or send one from another phone.
 Prints handles, dates, read flags and whether the marker is present, never
 text or numbers.
 
-    export COVALENCE_PHONE=XX:XX:XX:XX:XX:XX                # the iPhone Bluetooth address
+    export BOOMERANG_PHONE=XX:XX:XX:XX:XX:XX                # the iPhone Bluetooth address
     python3 prototypes/map_delete_probe.py                  # list, show test handles
     python3 prototypes/map_delete_probe.py HANDLE --delete  # delete that test message
 
-The iPhone accepts one MAP session only: when covalenced holds it, the probe
-borrows covalenced's session instead of opening its own. After --delete, look in Messages
+The iPhone accepts one MAP session only: when boomerangd holds it, the probe
+borrows boomerangd's session instead of opening its own. After --delete, look in Messages
 on the iPhone: gone from the conversation? in "Recently Deleted"?
 
 Result (2026-09-27): the iPhone accepts the request and moves the message
-to its MAP "deleted" folder, but it stays in the Messages app. Covalence
-therefore deletes messages in Covalence only.
+to its MAP "deleted" folder, but it stays in the Messages app. Boomerang
+therefore deletes messages in Boomerang only.
 """
 
 import os
@@ -26,8 +26,8 @@ import sys
 
 from gi.repository import Gio, GLib
 
-ADDRESS = os.environ.get("COVALENCE_PHONE") or sys.exit("set COVALENCE_PHONE to the iPhone Bluetooth address (bluetoothctl devices)")
-MARKER = "covalence-test"
+ADDRESS = os.environ.get("BOOMERANG_PHONE") or sys.exit("set BOOMERANG_PHONE to the iPhone Bluetooth address (bluetoothctl devices)")
+MARKER = "boomerang-test"
 MAP = "org.bluez.obex.MessageAccess1"
 bus = Gio.bus_get_sync(Gio.BusType.SESSION)
 

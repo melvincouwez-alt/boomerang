@@ -8,7 +8,7 @@ import tempfile
 import time
 import unittest
 
-from covalenced import messages, store
+from boomerangd import messages, store
 from tests.test_offline import FakeNotifier, MessagesHooks
 
 ALICE = "+33600000001"
@@ -38,9 +38,9 @@ class StoreTest(unittest.TestCase):
 
     def test_old_same_text_does_not_take_a_newer_send(self):
         tid = self.s.ensure_thread([ALICE])
-        self.put("covalence:a", tid, "Ok", NOW, outgoing=True, source="covalence")
+        self.put("boomerang:a", tid, "Ok", NOW, outgoing=True, source="boomerang")
         self.assertIsNone(self.s.find_pending_outgoing(tid, "Ok", NOW - 300))
-        self.assertEqual(self.s.find_pending_outgoing(tid, "Ok", NOW + 5), "covalence:a")
+        self.assertEqual(self.s.find_pending_outgoing(tid, "Ok", NOW + 5), "boomerang:a")
 
     def test_missing_timestamp_keeps_the_stored_time(self):
         tid = self.s.ensure_thread([ALICE])

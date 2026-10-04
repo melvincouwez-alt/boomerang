@@ -4,12 +4,12 @@
  * Lecture en cours: what the iPhone is playing (music, podcast, any audio app),
  * with its controls.
  *
- * The daemon publishes a NowPlaying dictionary (covalenced/nowplaying.py): the
+ * The daemon publishes a NowPlaying dictionary (boomerangd/nowplaying.py): the
  * position is sent with the moment it was measured and the rate, so the bar
  * moves here, once a second, only while the page is on screen.
  */
 
-namespace Covalence {
+namespace Boomerang {
     public class NowPlayingView : Gtk.Box {
         public Daemon daemon { get; construct; }
 

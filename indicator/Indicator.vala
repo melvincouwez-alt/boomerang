@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  * SPDX-FileCopyrightText: 2026 melvincouwez-alt
  *
- * Covalence in the top bar (Wingpanel): the iPhone's state at a glance, with a dot for
+ * Boomerang in the top bar (Wingpanel): the iPhone's state at a glance, with a dot for
  * unread messages or missed calls, and a popover with battery, what is playing, the call
- * in progress and shortcuts to the apps. Everything comes from the Covalence daemon over
+ * in progress and shortcuts to the apps. Everything comes from the Boomerang daemon over
  * D-Bus; the indicator hides itself when the daemon is not running or when the user turns
- * it off in Covalence (apps.conf [general] indicator=false).
+ * it off in Boomerang (apps.conf [general] indicator=false).
  */
 
 [CCode (cname = "GETTEXT_PACKAGE")]
@@ -14,11 +14,11 @@ extern const string GETTEXT_PACKAGE;
 [CCode (cname = "LOCALEDIR")]
 extern const string LOCALEDIR;
 
-public class Covalence.Indicator : Wingpanel.Indicator {
-    private const string BUS_NAME = "io.github.melvincouwez.Covalence.Daemon";
-    private const string OBJECT_PATH = "/io/github/melvincouwez/Covalence/Daemon";
-    private const string INTERFACE = "io.github.melvincouwez.Covalence1";
-    private const string APP_ID = "io.github.melvincouwez.Covalence";
+public class Boomerang.Indicator : Wingpanel.Indicator {
+    private const string BUS_NAME = "io.github.melvincouwez.Boomerang.Daemon";
+    private const string OBJECT_PATH = "/io/github/melvincouwez/Boomerang/Daemon";
+    private const string INTERFACE = "io.github.melvincouwez.Boomerang1";
+    private const string APP_ID = "io.github.melvincouwez.Boomerang";
 
     private DBusProxy? proxy = null;
     private uint watch = 0;
@@ -46,7 +46,7 @@ public class Covalence.Indicator : Wingpanel.Indicator {
     private bool quiet_on = false;
 
     public Indicator () {
-        Object (code_name: "covalence");
+        Object (code_name: "boomerang");
     }
 
     construct {
@@ -62,19 +62,19 @@ public class Covalence.Indicator : Wingpanel.Indicator {
             visible = false,
             can_target = false
         };
-        dot.add_css_class ("covalence-indicator-dot");
+        dot.add_css_class ("boomerang-indicator-dot");
         display_widget = new Gtk.Overlay () { child = phone_icon };
         display_widget.add_overlay (dot);
 
         var css = new Gtk.CssProvider ();
         css.load_from_string ("""
-            .covalence-indicator-dot {
+            .boomerang-indicator-dot {
                 background-color: @accent_color;
                 border-radius: 9999px;
                 min-width: 6px;
                 min-height: 6px;
             }
-            .covalence-indicator-off { opacity: 0.5; }
+            .boomerang-indicator-off { opacity: 0.5; }
         """);
         Gtk.StyleContext.add_provider_for_display (Gdk.Display.get_default (), css,
                                                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
@@ -121,7 +121,7 @@ public class Covalence.Indicator : Wingpanel.Indicator {
                 }
             });
         } catch (Error e) {
-            warning ("Covalence daemon unreachable: %s", e.message);
+            warning ("Boomerang daemon unreachable: %s", e.message);
             proxy = null;
         }
         refresh ();
@@ -244,10 +244,10 @@ public class Covalence.Indicator : Wingpanel.Indicator {
         }
     }
 
-    /* --- the user's choice in Covalence ---------------------------------------------------- */
+    /* --- the user's choice in Boomerang ---------------------------------------------------- */
 
     private static string prefs_path () {
-        return Path.build_filename (Environment.get_user_config_dir (), "covalence", "apps.conf");
+        return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
     }
 
     private void read_prefs () {
@@ -282,9 +282,9 @@ public class Covalence.Indicator : Wingpanel.Indicator {
         }
         var connected = prop_bool ("Connected");
         if (connected) {
-            phone_icon.remove_css_class ("covalence-indicator-off");
+            phone_icon.remove_css_class ("boomerang-indicator-off");
         } else {
-            phone_icon.add_css_class ("covalence-indicator-off");
+            phone_icon.add_css_class ("boomerang-indicator-off");
         }
         var unread = prop_number ("UnreadMessages");
         var missed = prop_number ("MissedCalls");
@@ -428,7 +428,7 @@ public class Covalence.Indicator : Wingpanel.Indicator {
             call_daemon ("SetCallsQuiet", new Variant ("(b)", !quiet_on));
             close ();
         });
-        var open = menu_button (_("Ouvrir Covalence"));
+        var open = menu_button (_("Ouvrir Boomerang"));
         open.clicked.connect (() => launch (APP_ID));
 
         popover_widget = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) { width_request = 260 };
@@ -464,5 +464,5 @@ public Wingpanel.Indicator? get_indicator (Module module, Wingpanel.ServerType s
     if (server_type != Wingpanel.ServerType.SESSION) {
         return null;
     }
-    return new Covalence.Indicator ();
+    return new Boomerang.Indicator ();
 }

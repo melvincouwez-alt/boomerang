@@ -10,7 +10,7 @@
  * Apple (Internet), kept apart; a menu reopens the setup, the help and About.
  */
 
-public class Covalence.MainWindow : Gtk.ApplicationWindow {
+public class Boomerang.MainWindow : Gtk.ApplicationWindow {
     private Daemon daemon;
     private Gtk.Stack stack;
     private Gtk.Stack pages;
@@ -37,9 +37,9 @@ public class Covalence.MainWindow : Gtk.ApplicationWindow {
     private string? pending_page = null;  // asked before the daemon answered
 
     public MainWindow (Gtk.Application app) {
-        Object (application: app, title: _("Covalence"), default_width: 1080, default_height: 740);
-        // Development (screenshots): COVALENCE_SNAPSHOT_SIZE=1080x860.
-        var size = Environment.get_variable ("COVALENCE_SNAPSHOT_SIZE");
+        Object (application: app, title: _("Boomerang"), default_width: 1080, default_height: 740);
+        // Development (screenshots): BOOMERANG_SNAPSHOT_SIZE=1080x860.
+        var size = Environment.get_variable ("BOOMERANG_SNAPSHOT_SIZE");
         if (size != null && size.contains ("x")) {
             var parts = size.split ("x");
             set_default_size (int.parse (parts[0]), int.parse (parts[1]));
@@ -138,9 +138,9 @@ public class Covalence.MainWindow : Gtk.ApplicationWindow {
             update_header ();
         });
 
-        var offline = new Granite.Placeholder (_("Le service Covalence ne répond pas")) {
-            description = _("Démarrez-le avec « systemctl --user start covalenced », "
-                          + "ou consultez son journal avec « journalctl --user -u covalenced »."),
+        var offline = new Granite.Placeholder (_("Le service Boomerang ne répond pas")) {
+            description = _("Démarrez-le avec « systemctl --user start boomerangd », "
+                          + "ou consultez son journal avec « journalctl --user -u boomerangd »."),
             icon = new ThemedIcon ("dialog-warning")
         };
         var retry = offline.append_button (new ThemedIcon ("view-refresh"), _("Réessayer"),
@@ -149,7 +149,7 @@ public class Covalence.MainWindow : Gtk.ApplicationWindow {
 
         // Main view: sidebar with its own header (close button), content with the menu.
         var logo = new Gtk.Image.from_icon_name (Config.APP_ID) { pixel_size = 24 };
-        var app_name = new Gtk.Label (_("Covalence"));
+        var app_name = new Gtk.Label (_("Boomerang"));
         app_name.add_css_class (Granite.HeaderLabel.Size.H4.to_string ());
         var brand = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 6) { margin_start = 3 };
         brand.append (logo);
@@ -227,7 +227,7 @@ public class Covalence.MainWindow : Gtk.ApplicationWindow {
         actions.append (action_row ("starred-symbolic", _("Nouveautés"),
                                     _("Ce qui change dans la version %s").printf (Config.VERSION),
                                     _("Afficher"), () => WhatsNew.show (this)));
-        actions.append (action_row (Config.APP_ID, _("À propos de Covalence"),
+        actions.append (action_row (Config.APP_ID, _("À propos de Boomerang"),
                                     _("Version %s, licence, remerciements").printf (Config.VERSION),
                                     _("Afficher"), () => show_about (this)));
 
@@ -258,7 +258,7 @@ public class Covalence.MainWindow : Gtk.ApplicationWindow {
         }), "messages", _("Messages"));
         settings_tabs.add_titled (settings_tab ({
             new Granite.HeaderLabel (_("Choix des sons")), new SoundsCard (daemon),
-            new Granite.HeaderLabel (_("Sons de Covalence")), new FreeSoundsCard (daemon, this)
+            new Granite.HeaderLabel (_("Sons de Boomerang")), new FreeSoundsCard (daemon, this)
         }), "sounds", _("Sons"));
         settings_tabs.add_titled (settings_tab ({
             new Granite.HeaderLabel (_("Langue")), language,
@@ -307,7 +307,7 @@ public class Covalence.MainWindow : Gtk.ApplicationWindow {
 
     /* The tab of Réglages last shown, kept in apps.conf [general] settings-tab. */
     private static string settings_prefs_path () {
-        return Path.build_filename (Environment.get_user_config_dir (), "covalence", "apps.conf");
+        return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
     }
 
     private static string saved_settings_tab () {
@@ -421,7 +421,7 @@ public class Covalence.MainWindow : Gtk.ApplicationWindow {
             }
             var dialog = new Granite.MessageDialog.with_image_from_icon_name (
                 _("Toujours lire les messages en entier ?"),
-                _("Pour avoir le texte complet d'un message non lu, Covalence doit le télécharger : "
+                _("Pour avoir le texte complet d'un message non lu, Boomerang doit le télécharger : "
                   + "il passera en lu sur l'iPhone dès son arrivée, même si vous ne l'avez pas "
                   + "ouvert."),
                 Config.APP_ID + ".Messages", Gtk.ButtonsType.CANCEL) {
@@ -506,7 +506,7 @@ public class Covalence.MainWindow : Gtk.ApplicationWindow {
                                 _("Demande à l'iPhone les messages au-delà de la liste habituelle "
                                   + "(pages suivantes, un an en arrière)")));
         list.append (alpha_row ("mark_read", _("Marquer comme lu sur l'iPhone"),
-                                _("Ouvrir une conversation dans Covalence la marque lue sur l'iPhone")));
+                                _("Ouvrir une conversation dans Boomerang la marque lue sur l'iPhone")));
         list.append (alpha_row ("ancs_actions", _("Actions des notifications"),
                                 _("Boutons de l'iPhone (Marquer comme lu, Supprimer…) dans Notifications")));
         list.append (alpha_row ("pbap_favorites", _("Favoris de l'iPhone"),
@@ -578,7 +578,7 @@ public class Covalence.MainWindow : Gtk.ApplicationWindow {
     }
 
     private void update_header () {
-        title = stack.visible_child_name == "onboarding" ? _("Configurer Covalence") : _("Covalence");
+        title = stack.visible_child_name == "onboarding" ? _("Configurer Boomerang") : _("Boomerang");
         update_badges ();
     }
 
@@ -646,7 +646,7 @@ public class Covalence.MainWindow : Gtk.ApplicationWindow {
         var expander = new Gtk.Expander (_("Guide de connexion")) { child = guide };
 
         var privacy = new Gtk.Label (
-            _("Tout passe directement entre ce PC et l'iPhone, en Bluetooth. Les journaux de Covalence "
+            _("Tout passe directement entre ce PC et l'iPhone, en Bluetooth. Les journaux de Boomerang "
             + "ne contiennent jamais le texte des notifications ni des messages.")
         ) { wrap = true, xalign = 0 };
         privacy.add_css_class (Granite.CssClass.DIM);
@@ -818,7 +818,7 @@ public class Covalence.MainWindow : Gtk.ApplicationWindow {
         forget_button.visible = name != "" && bluetooth;
 
         string waiting_le = connected
-            ? _("En attente : l'iPhone doit se connecter à « Covalence » en Bluetooth basse consommation")
+            ? _("En attente : l'iPhone doit se connecter à « Boomerang » en Bluetooth basse consommation")
             : _("iPhone absent");
 
         var on = daemon.module_enabled ("notifications");

@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
- * A row for an app Covalence can install for you (covalenced/apps.py): Agenda
+ * A row for an app Boomerang can install for you (boomerangd/apps.py): Agenda
  * and Cassette. Installed, it opens the app; not yet, it downloads the package
  * published in the app's own GitHub releases, checked by its SHA-256, and installs it
  * after the password (polkit), with the progress shown in the row.
  */
 
-public class Covalence.OptionalAppRow : Gtk.ListBoxRow {
+public class Boomerang.OptionalAppRow : Gtk.ListBoxRow {
     public Daemon daemon { get; construct; }
     public string package { get; construct; }
     public string desktop_id { get; construct; }
@@ -46,7 +46,7 @@ public class Covalence.OptionalAppRow : Gtk.ListBoxRow {
         child = box;
 
         daemon.changed.connect (update);
-        // Covalence only looks for the package once the row is on screen.
+        // Boomerang only looks for the package once the row is on screen.
         map.connect (() => {
             daemon.call.begin ("CheckApps");
             update ();

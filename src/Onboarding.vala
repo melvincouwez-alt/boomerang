@@ -7,7 +7,7 @@
  * in the tabs.
  */
 
-public class Covalence.Onboarding : Gtk.Box {
+public class Boomerang.Onboarding : Gtk.Box {
     public Daemon daemon { get; construct; }
     public signal void finished ();
     public signal void pair_requested ();
@@ -139,7 +139,7 @@ public class Covalence.Onboarding : Gtk.Box {
         skip.visible = index == 0;
         var page = flow[index];
         next.label = page == "welcome" ? _("Commencer")
-                   : page == "done" ? _("Ouvrir Covalence")
+                   : page == "done" ? _("Ouvrir Boomerang")
                    : _("Continuer");
         next.sensitive = page != "choice" || want_phone.active || want_apple.active;
     }
@@ -184,13 +184,13 @@ public class Covalence.Onboarding : Gtk.Box {
     private Gtk.Widget welcome_page () {
         var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 12);
         box.append (new Gtk.Image.from_icon_name (Config.APP_ID) { pixel_size = 128 });
-        box.append (title (_("Bienvenue dans Covalence")));
+        box.append (title (_("Bienvenue dans Boomerang")));
         var language = Language.welcome_row (this);
         language.margin_bottom = 6;
         box.append (language);
         box.append (body (_("Votre iPhone et iCloud sur elementary OS : notifications, "
                           + "messages, appels, contacts, musique, courriel, agendas et fichiers iCloud.")));
-        var privacy = body (_("Tout passe directement entre ce PC, votre iPhone et Apple. Covalence n'utilise "
+        var privacy = body (_("Tout passe directement entre ce PC, votre iPhone et Apple. Boomerang n'utilise "
                             + "aucun serveur et ne conserve ni ne journalise le contenu de vos messages "
                             + "ailleurs que sur ce PC."));
         privacy.add_css_class (Granite.CssClass.SMALL);
@@ -261,7 +261,7 @@ public class Covalence.Onboarding : Gtk.Box {
         card.add_css_class ("setup-column");
         card.append (guide);
         box.append (card);
-        var later = body (_("Une étape peut attendre : chaque réglage reste disponible dans Covalence."));
+        var later = body (_("Une étape peut attendre : chaque réglage reste disponible dans Boomerang."));
         later.add_css_class (Granite.CssClass.SMALL);
         box.append (later);
         return centered (box);
@@ -304,7 +304,7 @@ public class Covalence.Onboarding : Gtk.Box {
                                  _("Batterie, contrôle du bruit et réglages de vos AirPods.")));
         var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 12);
         box.append (title (_("Apps séparées")));
-        box.append (body (_("Messages, Téléphone, Contacts et Écouteurs sont toujours dans Covalence. Vous pouvez aussi "
+        box.append (body (_("Messages, Téléphone, Contacts et Écouteurs sont toujours dans Boomerang. Vous pouvez aussi "
                           + "les avoir comme apps à part dans le menu des applications et le dock.")));
         list.margin_top = 12;
         box.append (list);
@@ -315,9 +315,9 @@ public class Covalence.Onboarding : Gtk.Box {
         var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 12);
         box.append (new Gtk.Image.from_icon_name ("process-completed") { pixel_size = 96 });
         box.append (title (_("C'est prêt")));
-        box.append (body (_("Covalence tourne en arrière-plan : les notifications, messages et appels "
+        box.append (body (_("Boomerang tourne en arrière-plan : les notifications, messages et appels "
                           + "arrivent même fenêtre fermée. Pour refaire cette configuration, ouvrez le "
-                          + "menu en haut à droite de Covalence.")));
+                          + "menu en haut à droite de Boomerang.")));
         return centered (box);
     }
 }

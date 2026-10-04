@@ -6,7 +6,7 @@
  * in memory by the daemon only.
  */
 
-public class Covalence.NotificationsView : Gtk.Box {
+public class Boomerang.NotificationsView : Gtk.Box {
     public Daemon daemon { get; construct; }
 
     private Gtk.ListBox apps;
@@ -75,7 +75,7 @@ public class Covalence.NotificationsView : Gtk.Box {
         items.set_filter_func ((row) => filter == null || row.get_data<string> ("app") == filter);
         var empty = new Granite.Placeholder (_("Aucune notification")) {
             description = _("Les notifications de l'iPhone s'afficheront ici, tant que l'iPhone est relié "
-                          + "à « Covalence » en Bluetooth basse consommation. Elles ne sont jamais "
+                          + "à « Boomerang » en Bluetooth basse consommation. Elles ne sont jamais "
                           + "enregistrées sur le disque."),
             icon = new ThemedIcon ("preferences-system-notifications")
         };
@@ -90,7 +90,7 @@ public class Covalence.NotificationsView : Gtk.Box {
 
         clear = new Gtk.Button.with_label (_("Effacer la liste")) { halign = Gtk.Align.END };
         clear.add_css_class ("flat");
-        clear.tooltip_text = _("Vide la liste de Covalence ; rien ne change sur l'iPhone");
+        clear.tooltip_text = _("Vide la liste de Boomerang ; rien ne change sur l'iPhone");
         clear.clicked.connect (() => daemon.call.begin ("ClearNotifications"));
         var right_bar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 6) {
             margin_top = 6,

@@ -1,4 +1,4 @@
-Source: covalence
+Source: boomerang
 Section: utils
 Priority: optional
 Maintainer: melvincouwez-alt <301110918+melvincouwez-alt@users.noreply.github.com>
@@ -14,11 +14,14 @@ Build-Depends: debhelper-compat (= 13),
                desktop-file-utils,
                appstream
 Standards-Version: 4.7.0
-Homepage: https://github.com/melvincouwez-alt/covalence
+Homepage: https://github.com/melvincouwez-alt/boomerang
 Rules-Requires-Root: no
 
-Package: covalence
+Package: boomerang
 Architecture: any
+Provides: covalence
+Conflicts: covalence
+Replaces: covalence
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          bluez,
@@ -42,7 +45,7 @@ Recommends: heif-gdk-pixbuf, openssl, pkexec, gnupg
 Suggests: rclone (>= 1.69), uxplay, gstreamer1.0-plugins-bad, avahi-daemon, libimobiledevice-utils, ifuse,
  libheif-examples
 Description: iPhone and iCloud companion for elementary OS
- Covalence links an iPhone to the desktop over Bluetooth: notifications,
+ Boomerang links an iPhone to the desktop over Bluetooth: notifications,
  media controls, messages (MAP), contacts and call history (PBAP), calls
  through PipeWire's hands-free gateway, battery, and AirPods controls.
  .
@@ -50,4 +53,4 @@ Description: iPhone and iCloud companion for elementary OS
  Evolution Data Server, and mounts iCloud Drive and iCloud Photos with
  rclone (1.69 or later).
  .
- Covalence is independent free software, not affiliated with Apple Inc.
+ Boomerang is independent free software, not affiliated with Apple Inc.

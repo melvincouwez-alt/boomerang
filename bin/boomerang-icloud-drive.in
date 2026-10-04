@@ -1,0 +1,10 @@
+#!@PYTHON@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 melvincouwez-alt
+"""Boomerang iCloud Drive sign-in launcher."""
+import sys
+
+sys.path.insert(0, "@PKGDATADIR@")
+from boomerangd.drive import main  # noqa: E402
+
+sys.exit(main())

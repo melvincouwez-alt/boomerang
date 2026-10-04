@@ -1,3 +1,18 @@
+boomerang (0.7.0-1) unstable; urgency=medium
+
+  * Covalence is renamed Boomerang: app id io.github.melvincouwez.Boomerang,
+    daemon boomerangd, package boomerang (Provides, Conflicts and Replaces
+    covalence), new icon (raisin to raspberry boomerang).
+  * Migration at the first start: ~/.config, ~/.local/share, ~/.local/state
+    and ~/.local/libexec folders, sound ids, keyring key, iCloud Drive and
+    Photos units, launchers and icons of the old name, GTK bookmarks,
+    mimeapps.list, dock launchers, notification settings, browser host.
+    iCloud sources keep their covalence-icloud uids.
+  * Each release also carries a covalence package with the same files, so
+    Covalence 0.6 updates itself to Boomerang.
+
+ -- melvincouwez-alt <301110918+melvincouwez-alt@users.noreply.github.com>  Sun, 04 Oct 2026 21:30:00 +0200
+
 covalence (0.6.1-1) unstable; urgency=medium
 
   * Calls: the microphone muted for a call is always given back. A late

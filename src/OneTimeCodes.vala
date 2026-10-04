@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
- * One-time codes received by SMS (covalenced/otp.py finds them).
+ * One-time codes received by SMS (boomerangd/otp.py finds them).
  *
- * `covalence --copy-code` puts the latest code on the clipboard and clears it after two
- * minutes if it is still there. covalenced starts it from the notification with
+ * `boomerang --copy-code` puts the latest code on the clipboard and clears it after two
+ * minutes if it is still there. boomerangd starts it from the notification with
  * GDK_BACKEND=x11: under Wayland only the focused window may set the clipboard, and a
  * click on a notification leaves no window focused; XWayland shares the clipboard with
  * every app without that rule.
@@ -13,7 +13,7 @@
  * notification and browser (alpha), plus the browser integration install.
  */
 
-namespace Covalence.CodeCopy {
+namespace Boomerang.CodeCopy {
     private const uint KEEP_SECONDS = 120;
 
     public static int run () {
@@ -23,7 +23,7 @@ namespace Covalence.CodeCopy {
         string code = "";
         try {
             var bus = Bus.get_sync (BusType.SESSION);
-            var name = Environment.get_variable ("COVALENCE_DAEMON_NAME") ?? Daemon.NAME;
+            var name = Environment.get_variable ("BOOMERANG_DAEMON_NAME") ?? Daemon.NAME;
             var reply = bus.call_sync (name, Daemon.PATH, Daemon.IFACE, "LatestCode",
                                        new Variant ("(s)", "copy"), new VariantType ("(su)"),
                                        DBusCallFlags.NO_AUTO_START, 5000);
@@ -58,7 +58,7 @@ namespace Covalence.CodeCopy {
     }
 }
 
-public class Covalence.CodesCard : Gtk.Box {
+public class Boomerang.CodesCard : Gtk.Box {
     private const string[] MODES = { "off", "copy", "browser" };
 
     private Daemon daemon;

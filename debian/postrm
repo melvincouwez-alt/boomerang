@@ -5,7 +5,7 @@ set -e
 
 if [ "$1" = "purge" ]; then
     # Leftover link if the unit file was already gone when prerm ran.
-    rm -f /etc/systemd/user/graphical-session.target.wants/covalenced.service
+    rm -f /etc/systemd/user/graphical-session.target.wants/boomerangd.service
 fi
 
 #DEBHELPER#

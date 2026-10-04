@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPDX-FileCopyrightText: 2026 melvincouwez-alt
 # Source strings are French; en.po is the English translation (beta).
-# Update the template and en.po: meson compile -C build covalence-pot covalence-update-po
+# Update the template and en.po: meson compile -C build boomerang-pot boomerang-update-po
 i18n = import('i18n')
 i18n.gettext(gettext_package,
   preset: 'glib',

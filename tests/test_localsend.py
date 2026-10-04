@@ -11,7 +11,7 @@ import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from covalenced import localsend  # noqa: E402
+from boomerangd import localsend  # noqa: E402
 
 HAVE_OPENSSL = shutil.which("openssl") is not None
 
@@ -22,7 +22,7 @@ def direct(function, *args):
 
 class MessagesTest(unittest.TestCase):
     def test_device_info(self):
-        info = localsend.device_info("Covalence (pc)", "ab" * 32, 53317, announce=True)
+        info = localsend.device_info("Boomerang (pc)", "ab" * 32, 53317, announce=True)
         self.assertEqual(info["version"], "2.1")
         self.assertEqual(info["protocol"], "https")
         self.assertTrue(info["announce"])
@@ -81,13 +81,13 @@ class FlowTest(unittest.TestCase):
         self.asked = []
         self.events = []
         identity = {"cert": self.cert, "key": self.key, "fingerprint": self.fingerprint,
-                    "alias": "Covalence (test)"}
+                    "alias": "Boomerang (test)"}
         self.receiver = localsend.Receiver(identity, self.inbox, self.ask,
                                            lambda kind, data: self.events.append(kind),
                                            direct, host="127.0.0.1", port=0)
         self.receiver.start()
         self.addCleanup(self.receiver.stop)
-        self.peer = {"id": self.fingerprint, "alias": "Covalence (test)", "model": "",
+        self.peer = {"id": self.fingerprint, "alias": "Boomerang (test)", "model": "",
                      "type": "desktop", "address": "127.0.0.1", "port": self.receiver.port,
                      "protocol": "https"}
         self.sender_info = localsend.device_info("iPhone de Alice", "0" * 64, 53317)

@@ -11,7 +11,7 @@
  * clicking elsewhere with nothing typed closes it too.
  */
 
-public class Covalence.QuickReply : Gtk.Window {
+public class Boomerang.QuickReply : Gtk.Window {
     public string thread_id { get; construct; }
 
     private Daemon daemon;
@@ -39,7 +39,7 @@ public class Covalence.QuickReply : Gtk.Window {
         avatar = new Avatar (36);
         title_label = new Gtk.Label ("") { xalign = 0, ellipsize = Pango.EllipsizeMode.END };
         title_label.add_css_class ("quick-reply-title");
-        var app_label = new Gtk.Label (_("Messages · Covalence")) { xalign = 0 };
+        var app_label = new Gtk.Label (_("Messages · Boomerang")) { xalign = 0 };
         app_label.add_css_class (Granite.CssClass.DIM);
         app_label.add_css_class (Granite.CssClass.SMALL);
         var names = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) { hexpand = true, valign = Gtk.Align.CENTER };

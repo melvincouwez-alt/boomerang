@@ -7,11 +7,11 @@
  * daemon's live state.
  */
 
-namespace Covalence {
+namespace Boomerang {
     /* First-run state and small helpers around iCloud Drive (rclone mount). */
     public class Setup : Object {
         private static string prefs_path () {
-            return Path.build_filename (Environment.get_user_config_dir (), "covalence", "apps.conf");
+            return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
         }
 
         public static bool is_done () {
@@ -42,16 +42,16 @@ namespace Covalence {
 
         /* iCloud Drive (drive) or iCloud Photos (photos): its options file, unit and default folder. */
         public static string drive_env (bool photos = false) {
-            return Path.build_filename (Environment.get_user_config_dir (), "covalence",
+            return Path.build_filename (Environment.get_user_config_dir (), "boomerang",
                                         photos ? "photos.env" : "drive.env");
         }
 
         public static string drive_env_key (bool photos = false) {
-            return photos ? "COVALENCE_PHOTOS_DIR" : "COVALENCE_DRIVE_DIR";
+            return photos ? "BOOMERANG_PHOTOS_DIR" : "BOOMERANG_DRIVE_DIR";
         }
 
         public static string drive_unit (bool photos = false) {
-            return photos ? "covalence-icloud-photos.service" : "covalence-icloud-drive.service";
+            return photos ? "boomerang-icloud-photos.service" : "boomerang-icloud-drive.service";
         }
 
         public static string drive_default_folder (bool photos = false) {
@@ -140,8 +140,8 @@ namespace Covalence {
                 _("Sur l'iPhone : Réglages › Bluetooth › ⓘ à côté de « %s », activez "
                 + "<b>Afficher les notifications</b> (messages) et <b>Synchroniser les contacts</b> "
                 + "(noms, photos, journal d'appels). Ces options n'apparaissent qu'après une "
-                + "première demande de Covalence : attendez quelques secondes après l'appairage. "
-                + "Covalence redemande ensuite toute seule pendant 10 minutes ; "
+                + "première demande de Boomerang : attendez quelques secondes après l'appairage. "
+                + "Boomerang redemande ensuite toute seule pendant 10 minutes ; "
                 + "<b>Vérifier</b> relance tout de suite.").printf (pc));
             settings.add_button (_("Vérifier")).clicked.connect (() => daemon.call.begin ("SyncMessages"));
             notifications = new SetupStep (3, _("Notifications et musique"),
@@ -190,17 +190,17 @@ namespace Covalence {
         construct {
             password = new SetupStep (1, _("Créer un mot de passe pour app"),
                 _("Sur la page de votre compte Apple, ouvrez <b>Connexion et sécurité</b> › "
-                + "<b>Mots de passe pour les apps</b>, touchez <b>+</b>, nommez-le « Covalence » et "
+                + "<b>Mots de passe pour les apps</b>, touchez <b>+</b>, nommez-le « Boomerang » et "
                 + "copiez le code xxxx-xxxx-xxxx-xxxx. La double authentification doit être active."));
             password.add_button (_("Ouvrir la page Apple…")).clicked.connect (() => {
                 new Gtk.UriLauncher (APPLE_ACCOUNT_URL).launch.begin (get_root () as Gtk.Window, null);
             });
             signin = new SetupStep (2, _("Courriel, agendas, rappels et contacts"),
-                _("Saisissez votre identifiant Apple et ce mot de passe pour app : Covalence le vérifie "
+                _("Saisissez votre identifiant Apple et ce mot de passe pour app : Boomerang le vérifie "
                 + "auprès d'Apple et le range dans le trousseau. Vos comptes apparaissent alors dans "
                 + "Courriel, Tâches et Agenda."));
             signin_button = signin.add_button (_("Se connecter…"), true);
-            signin_button.clicked.connect (() => Setup.run_helper ("covalence-icloud-signin"));
+            signin_button.clicked.connect (() => Setup.run_helper ("boomerang-icloud-signin"));
             drive = new SetupStep (3, _("iCloud Drive (facultatif)"),
                 _("Vos fichiers iCloud comme un dossier dans Fichiers. Demande le mot de passe du "
                 + "<b>compte Apple</b> et un code affiché sur l'iPhone, et la <b>Protection avancée "
@@ -210,7 +210,7 @@ namespace Covalence {
                 if (Setup.drive_state () == "mounted") {
                     Setup.open_drive_folder (get_root () as Gtk.Window);
                 } else {
-                    Setup.run_helper ("covalence-icloud-drive");
+                    Setup.run_helper ("boomerang-icloud-drive");
                 }
             });
             append (password);
@@ -245,7 +245,7 @@ namespace Covalence {
     }
 }
 
-namespace Covalence {
+namespace Boomerang {
     /* One detached app: icon, name, what it is, Ouvrir, and shown in the Applications menu or not. */
     public Gtk.Widget launcher_row (Mode mode, string name, string text) {
         var image = new Gtk.Image.from_icon_name (mode.icon_name ()) { pixel_size = 32 };

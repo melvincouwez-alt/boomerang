@@ -5,7 +5,7 @@
  * iCloud then brings the change to the iPhone. Deleting asks first.
  */
 
-public class Covalence.ContactEditor : Gtk.Window {
+public class Boomerang.ContactEditor : Gtk.Window {
     public Daemon daemon { get; construct; }
     public string uid { get; construct; }
 
@@ -296,7 +296,7 @@ public class Covalence.ContactEditor : Gtk.Window {
 }
 
 /* A label + value line of the editor. */
-private class Covalence.EntryRow : Gtk.ListBoxRow {
+private class Boomerang.EntryRow : Gtk.ListBoxRow {
     public string[] keys;
     public Gtk.DropDown dropdown;
     public Gtk.Entry entry;

@@ -7,7 +7,7 @@
  * color1 to color14 picked from the name, "image" when a photo is shown).
  */
 
-public class Covalence.Avatar : Gtk.Widget {
+public class Boomerang.Avatar : Gtk.Widget {
     private const int COLORS = 14;
 
     public int size { get; construct; }

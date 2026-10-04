@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
- * Covalence: iPhone and Apple services on elementary OS.
- * The app is a thin client of the covalenced daemon (io.github.melvincouwez.Covalence1).
+ * Boomerang: iPhone and Apple services on elementary OS.
+ * The app is a thin client of the boomerangd daemon (io.github.melvincouwez.Boomerang1).
  */
 
-public class Covalence.Application : Gtk.Application {
+public class Boomerang.Application : Gtk.Application {
     private const string STYLE = """
         .bubble {
             border-radius: 18px;
@@ -278,7 +278,7 @@ public class Covalence.Application : Gtk.Application {
 
     public Application (Mode mode) {
         // A snapshot run (development) must not take over the user's open windows.
-        var snapshot = Environment.get_variable ("COVALENCE_SNAPSHOT") != null;
+        var snapshot = Environment.get_variable ("BOOMERANG_SNAPSHOT") != null;
         Object (application_id: Config.APP_ID + mode.suffix (),
                 flags: snapshot ? ApplicationFlags.NON_UNIQUE : ApplicationFlags.DEFAULT_FLAGS,
                 mode: mode);
@@ -321,7 +321,7 @@ public class Covalence.Application : Gtk.Application {
         return status;
     }
 
-    /* covalenced opens a conversation from a notification: forward it to the running instance. */
+    /* boomerangd opens a conversation from a notification: forward it to the running instance. */
     protected override int handle_local_options (VariantDict options) {
         string? thread = null;
         string? to = null;
@@ -515,15 +515,15 @@ public class Covalence.Application : Gtk.Application {
         maybe_snapshot ();
     }
 
-    /* Development only: COVALENCE_SNAPSHOT=/path.png renders the first window to a PNG after 3 s,
+    /* Development only: BOOMERANG_SNAPSHOT=/path.png renders the first window to a PNG after 3 s,
      * so the UI can be checked without screenshotting the desktop. */
     private void maybe_snapshot (Gtk.Window? shown = null) {
-        var target = Environment.get_variable ("COVALENCE_SNAPSHOT");
+        var target = Environment.get_variable ("BOOMERANG_SNAPSHOT");
         if (target == null || target == "") {
             return;
         }
-        // COVALENCE_SNAPSHOT_DELAY: seconds before the capture (default 3).
-        var delay = int.parse (Environment.get_variable ("COVALENCE_SNAPSHOT_DELAY") ?? "3");
+        // BOOMERANG_SNAPSHOT_DELAY: seconds before the capture (default 3).
+        var delay = int.parse (Environment.get_variable ("BOOMERANG_SNAPSHOT_DELAY") ?? "3");
         Timeout.add_seconds (delay > 0 ? delay : 3, () => {
             var window = shown ?? active_window ?? (get_windows ().length () > 0 ? get_windows ().nth_data (0) : null);
             if (window == null) {
@@ -547,7 +547,7 @@ public class Covalence.Application : Gtk.Application {
     public static int main (string[] args) {
         Language.apply ();
         if (args.length == 2 && args[1] == "--copy-code") {
-            return CodeCopy.run ();  // from a code notification (covalenced), no window
+            return CodeCopy.run ();  // from a code notification (boomerangd), no window
         }
         return new Application (Mode.from_program (args[0])).run (args);
     }

@@ -9,7 +9,7 @@
  * audio link is up; "Audio : iPhone" hands it back to the phone.
  */
 
-namespace Covalence {
+namespace Boomerang {
     /* 0-9, * and # as a 3 x 4 grid of round buttons, with letters like a phone. */
     public class Keypad : Gtk.Grid {
         public signal void pressed (string key);
@@ -348,9 +348,9 @@ namespace Covalence {
     }
 }
 
-namespace Covalence {
+namespace Boomerang {
     /*
-     * Green bar at the top of Covalence's windows while a call is going on: who,
+     * Green bar at the top of Boomerang's windows while a call is going on: who,
      * how long, and the everyday controls (mute, audio on this PC, keypad in the
      * call window, hang up; answer or decline while it rings).
      */

@@ -5,7 +5,7 @@
 import tempfile
 import unittest
 
-from covalenced import messages, store
+from boomerangd import messages, store
 from tests.test_offline import FakeNotifier, MessagesHooks, listing
 
 ME = "+33600000009"

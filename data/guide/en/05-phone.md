@@ -2,12 +2,12 @@ title: Phone and calls
 icon: @APP_ID@.Phone
 summary: Make and take your iPhone's calls on the computer.
 ---
-!warn Calls need PipeWire 1.4 or newer. With an older PipeWire they are not available: the rest of Covalence works as usual.
+!warn Calls need PipeWire 1.4 or newer. With an older PipeWire they are not available: the rest of Boomerang works as usual.
 
 ## Taking a call
 When the iPhone rings, a notification and a call window open on the computer:
 - **Answer** or **Decline**.
-- During the call, a green bar at the top of Covalence's windows shows who is calling and for how long.
+- During the call, a green bar at the top of Boomerang's windows shows who is calling and for how long.
 - **PC audio** sends your voice through the computer's microphone and speakers. Turned off, the sound stays on the iPhone.
 - Mute, keypad (for voice menus) and hang up are in the call window.
 

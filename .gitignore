@@ -5,7 +5,7 @@ __pycache__/
 build*/
 dist/
 debian/.debhelper/
-debian/covalence/
+debian/boomerang/
 debian/files
 debian/*.substvars
 debian/debhelper-build-stamp

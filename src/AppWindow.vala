@@ -2,12 +2,12 @@
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
  * Messages and Contacts as apps of their own: same program, launched as
- * io.github.melvincouwez.Covalence.Messages or .Contacts (symlinks), so each has
- * its own dock icon, launcher entry and window. Covalence itself keeps the iPhone
+ * io.github.melvincouwez.Boomerang.Messages or .Contacts (symlinks), so each has
+ * its own dock icon, launcher entry and window. Boomerang itself keeps the iPhone
  * settings and the call history.
  */
 
-namespace Covalence {
+namespace Boomerang {
     public enum Mode {
         HUB, MESSAGES, CONTACTS, PHONE, HEADPHONES, MIRROR;
 
@@ -22,7 +22,7 @@ namespace Covalence {
             }
         }
 
-        /* Écouteurs uses elementary's own icon (d9ecca9): its Covalence SVG
+        /* Écouteurs uses elementary's own icon (d9ecca9): its Boomerang SVG
            is gone, so the app id is no icon name for it. */
         public string icon_name () {
             switch (this) {
@@ -38,7 +38,7 @@ namespace Covalence {
                 case PHONE: return _("Téléphone");
                 case HEADPHONES: return _("Écouteurs");
                 case MIRROR: return _("Recopie");
-                default: return "Covalence";
+                default: return "Boomerang";
             }
         }
 
@@ -140,7 +140,7 @@ namespace Covalence {
                 contacts.message_requested.connect ((address) => launch (Mode.MESSAGES, { "--to", address }));
                 content = contacts;
             }
-            // The ongoing call is shown at the top of every Covalence window.
+            // The ongoing call is shown at the top of every Boomerang window.
             var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
             box.append (new CallBar (daemon));
             content.vexpand = true;

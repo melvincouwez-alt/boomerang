@@ -26,6 +26,6 @@ Selon la version d'iOS, certains interrupteurs n'apparaissent qu'après une prem
 Ces deux fonctions passent par une seconde liaison, dite « basse consommation », que seul l'iPhone peut ouvrir. Elle s'établit seule après l'appairage, dès que **Partager les notifications système** est activé. Si les notifications n'arrivent pas, coupez puis réactivez le Bluetooth de l'iPhone.
 
 ## Reconnexion
-Covalence reconnecte l'iPhone quand il revient à portée, et juste après la sortie de veille. Sinon, cliquez sur **Reconnecter** dans l'[Aperçu](app:device).
+Boomerang reconnecte l'iPhone quand il revient à portée, et juste après la sortie de veille. Sinon, cliquez sur **Reconnecter** dans l'[Aperçu](app:device).
 
-Si vous avez oublié l'ordinateur sur l'iPhone, Covalence le détecte, cesse d'insister et affiche **Appairer à nouveau…**
+Si vous avez oublié l'ordinateur sur l'iPhone, Boomerang le détecte, cesse d'insister et affiche **Appairer à nouveau…**

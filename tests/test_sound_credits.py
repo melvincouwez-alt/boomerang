@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPDX-FileCopyrightText: 2026 melvincouwez-alt
-"""Covalence's own sounds: every file present, listed and credited (nothing is played)."""
+"""Boomerang's own sounds: every file present, listed and credited (nothing is played)."""
 
 import os
 import unittest
 
-from covalenced import sounds
+from boomerangd import sounds
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOUNDS = os.path.join(ROOT, "data", "sounds")
@@ -45,7 +45,7 @@ class BundledSoundsTest(unittest.TestCase):
         for value in own:
             self.assertTrue(os.path.isfile(sounds.resolve(value)), value)
         self.assertIsNone(sounds.resolve(sounds.BUNDLED_PREFIX + "missing"))
-        self.assertEqual(sounds.label("covalence:rosee"), "Covalence · Rosée")
+        self.assertEqual(sounds.label("boomerang:rosee"), "Boomerang · Rosée")
 
 
 if __name__ == "__main__":

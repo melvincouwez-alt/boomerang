@@ -16,7 +16,7 @@ from unittest import mock
 
 from gi.repository import GLib
 
-from covalenced import bmsg, callers, link, localsend, mirror, otp, service, updates
+from boomerangd import bmsg, callers, link, localsend, mirror, otp, service, updates
 from tests import test_link
 from tests.test_link import ADAPTER, PHONE
 
@@ -144,7 +144,7 @@ class CallersTest(unittest.TestCase):
         self.tmp = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, self.tmp)
 
-    def binary(self, folder, name="io.github.melvincouwez.Covalence"):
+    def binary(self, folder, name="io.github.melvincouwez.Boomerang"):
         os.makedirs(folder, exist_ok=True)
         path = os.path.join(folder, name)
         with open(path, "w") as out:
@@ -165,7 +165,7 @@ class CallersTest(unittest.TestCase):
         self.assertFalse(callers.is_app_executable(sys.executable, prefix=prefix))
         self.assertFalse(callers.is_app_executable("", prefix=prefix))
         self.assertFalse(callers.is_app_executable(
-            os.path.join(prefix, "bin", "io.github.melvincouwez.Covalence (deleted)"), prefix=prefix))
+            os.path.join(prefix, "bin", "io.github.melvincouwez.Boomerang (deleted)"), prefix=prefix))
 
     def test_files_outside_home(self):
         home = os.path.join(self.tmp, "home")
@@ -332,21 +332,21 @@ class LocalSendPeersTest(unittest.TestCase):
             localsend.parse_prepare(body)
         folder = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, folder)
-        self.assertTrue(localsend.room_for(os.path.join(folder, "Covalence"), 1))
+        self.assertTrue(localsend.room_for(os.path.join(folder, "Boomerang"), 1))
         self.assertFalse(localsend.room_for(folder, 1 << 62))
 
 
 class UpdateInstallerTest(unittest.TestCase):
-    """bin/covalence-install-update, run without root: argument checks only."""
+    """bin/boomerang-install-update, run without root: argument checks only."""
 
     def run_helper(self, *args):
         source = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                              "bin", "covalence-install-update.in")
+                              "bin", "boomerang-install-update.in")
         with open(source, encoding="utf-8") as f:
             code = f.read().replace("@PYTHON@", sys.executable)
         tmp = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, tmp)
-        helper = os.path.join(tmp, "covalence-install-update")
+        helper = os.path.join(tmp, "boomerang-install-update")
         with open(helper, "w", encoding="utf-8") as out:
             out.write(code)
         os.chmod(helper, stat.S_IRWXU)
@@ -371,15 +371,15 @@ class UpdateInstallerTest(unittest.TestCase):
         sha = "b" * 64
         up = updates.Updates(mock.Mock(), mock.Mock(), None, current="0.4.2")
         up.release = {"tag_name": "v0.5.0", "assets": [
-            {"name": "covalence_0.5.0-1_amd64.deb", "size": 1, "digest": "sha256:" + sha,
-             "browser_download_url": "https://github.com/x/covalence_0.5.0-1_amd64.deb"}]}
-        with mock.patch.object(updates, "installer_path", lambda: "/usr/libexec/covalence/h"), \
+            {"name": "boomerang_0.5.0-1_amd64.deb", "size": 1, "digest": "sha256:" + sha,
+             "browser_download_url": "https://github.com/x/boomerang_0.5.0-1_amd64.deb"}]}
+        with mock.patch.object(updates, "installer_path", lambda: "/usr/libexec/boomerang/h"), \
                 mock.patch.object(updates, "_arch", lambda: "amd64"), \
                 mock.patch.object(updates.Gio.Subprocess, "new",
                                   lambda argv, flags: spawned.append(argv) or Process()):
-            up._downloaded("/home/u/.cache/covalence/updates/c.deb", None, lambda e: None)
-        self.assertEqual(spawned[0], ["pkexec", "/usr/libexec/covalence/h",
-                                      "/home/u/.cache/covalence/updates/c.deb", sha])
+            up._downloaded("/home/u/.cache/boomerang/updates/c.deb", None, lambda e: None)
+        self.assertEqual(spawned[0], ["pkexec", "/usr/libexec/boomerang/h",
+                                      "/home/u/.cache/boomerang/updates/c.deb", sha])
 
     def test_no_helper_no_install(self):
         errors = []
@@ -393,9 +393,9 @@ class UpdateInstallerTest(unittest.TestCase):
 
 class MirrorPinTest(unittest.TestCase):
     def test_pin_on_the_command_line(self):
-        args = mirror.build_args("Covalence (PC)", pin="0427")
+        args = mirror.build_args("Boomerang (PC)", pin="0427")
         self.assertEqual(args[args.index("-pin") + 1], "0427")
-        self.assertNotIn("-pin", mirror.build_args("Covalence (PC)"))
+        self.assertNotIn("-pin", mirror.build_args("Boomerang (PC)"))
 
     def test_pins(self):
         for _ in range(200):

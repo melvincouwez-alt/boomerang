@@ -9,7 +9,7 @@
  * browser when one is installed (--app=), else in the default browser.
  */
 
-namespace Covalence.WebShortcuts {
+namespace Boomerang.WebShortcuts {
 
     private struct Shortcut {
         string id;
@@ -75,7 +75,7 @@ namespace Covalence.WebShortcuts {
             + "Icon=%s\n".printf (icon)
             + "Categories=Network;\n"
             + "Keywords=iCloud;Apple;\n"
-            + "X-Covalence-Url=%s\n".printf (url);
+            + "X-Boomerang-Url=%s\n".printf (url);
     }
 
     private static bool installed (string id) {

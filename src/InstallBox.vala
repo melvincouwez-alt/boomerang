@@ -6,7 +6,7 @@
  * (PackageKit, like Components.vala).
  */
 
-namespace Covalence.Props {
+namespace Boomerang.Props {
     public string str (Variant? dict, string key) {
         var v = dict != null ? dict.lookup_value (key, VariantType.STRING) : null;
         return v != null ? v.get_string () : "";
@@ -39,7 +39,7 @@ namespace Covalence.Props {
 }
 
 /* What a page is missing, with an Install button. Hidden when nothing is missing. */
-public class Covalence.InstallBox : Gtk.Box {
+public class Boomerang.InstallBox : Gtk.Box {
     public signal void installed ();
 
     private Gtk.Label text;
@@ -119,7 +119,7 @@ public class Covalence.InstallBox : Gtk.Box {
 }
 
 /* Title, subtitle and an optional pill at the top of a page, like the other pages. */
-namespace Covalence.PageHeader {
+namespace Boomerang.PageHeader {
     public Gtk.Widget build (string title, string subtitle, string? pill = null) {
         var name = new Gtk.Label (title) { xalign = 0 };
         name.add_css_class (Granite.HeaderLabel.Size.H2.to_string ());

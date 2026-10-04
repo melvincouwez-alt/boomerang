@@ -2,11 +2,11 @@
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
  * Photos: import the iPhone's photos and videos over a USB cable
- * (covalenced/photos_usb.py, libimobiledevice). The page looks for the iPhone
+ * (boomerangd/photos_usb.py, libimobiledevice). The page looks for the iPhone
  * every few seconds while it is on screen; nothing is written to the iPhone.
  */
 
-public class Covalence.PhotosView : Gtk.Box {
+public class Boomerang.PhotosView : Gtk.Box {
     public Daemon daemon { get; construct; }
 
     private InstallBox install;

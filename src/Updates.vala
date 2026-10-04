@@ -3,14 +3,14 @@
 /*
  * "Mises à jour" at the top of Réglages, like Software Update on the iPhone.
  *
- * covalenced/updates.py checks the GitHub releases and publishes the Update property.
+ * boomerangd/updates.py checks the GitHub releases and publishes the Update property.
  * With a new version: a card first on the page (icon, version, size, the start of the
  * notes, "Mettre à jour maintenant", progress while downloading and installing). Without:
- * one quiet line "Covalence est à jour" with "Rechercher maintenant" and the automatic
+ * one quiet line "Boomerang est à jour" with "Rechercher maintenant" and the automatic
  * check switch.
  */
 
-public class Covalence.UpdatesCard : Gtk.Box {
+public class Boomerang.UpdatesCard : Gtk.Box {
     private const int NOTES_LENGTH = 280;
 
     private Daemon daemon;
@@ -181,7 +181,7 @@ public class Covalence.UpdatesCard : Gtk.Box {
 
         var when = checked > 0 ? _("vérifié %s").printf (relative (checked)) : _("jamais vérifié");
         if (state == "ready") {
-            status_label.label = _("Mise à jour installée : relancez Covalence pour l'utiliser");
+            status_label.label = _("Mise à jour installée : relancez Boomerang pour l'utiliser");
         } else if (state == "checking") {
             status_label.label = _("Recherche de mises à jour…");
         } else if (latest != "") {
@@ -189,7 +189,7 @@ public class Covalence.UpdatesCard : Gtk.Box {
         } else if (state == "error") {
             status_label.label = error;
         } else {
-            status_label.label = _("Covalence est à jour : %s, %s").printf (current, when);
+            status_label.label = _("Boomerang est à jour : %s, %s").printf (current, when);
         }
 
         card.visible = latest != "" || state == "ready";
@@ -198,16 +198,16 @@ public class Covalence.UpdatesCard : Gtk.Box {
         }
         if (state == "ready") {
             version_label.label = _("Mise à jour installée");
-            size_label.label = _("Relancez Covalence pour passer à la nouvelle version.");
+            size_label.label = _("Relancez Boomerang pour passer à la nouvelle version.");
             notes_label.visible = false;
             more.visible = false;
             progress.visible = false;
             feature_status.visible = false;
-            update_button.label = _("Relancer Covalence");
+            update_button.label = _("Relancer Boomerang");
             update_button.sensitive = true;
             return;
         }
-        version_label.label = "Covalence %s".printf (latest);
+        version_label.label = "Boomerang %s".printf (latest);
         var size = lookup_int64 (v, "size");
         var prerelease = latest.contains ("-") || current.contains ("-");
         size_label.label = size > 0 ? format_size (size) : "";
@@ -285,7 +285,7 @@ public class Covalence.UpdatesCard : Gtk.Box {
             Process.spawn_async (null, { "sh", "-c", "sleep 2; exec \"$0\"", path }, null,
                                  SpawnFlags.SEARCH_PATH, null, null);
         } catch (SpawnError e) {
-            warning ("cannot start Covalence again: %s", e.message);
+            warning ("cannot start Boomerang again: %s", e.message);
             return;
         }
         GLib.Application.get_default ().quit ();

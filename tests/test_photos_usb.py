@@ -10,7 +10,7 @@ import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from covalenced import photos_usb  # noqa: E402
+from boomerangd import photos_usb  # noqa: E402
 
 
 class ImportTest(unittest.TestCase):

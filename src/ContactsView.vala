@@ -6,7 +6,7 @@
  * the body of the new-message picker in the Messages page.
  */
 
-namespace Covalence {
+namespace Boomerang {
     public class Contact : Object {
         public string name { get; construct; }
         public string photo { get; construct; }

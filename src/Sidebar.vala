@@ -6,7 +6,7 @@
  * Internet), with the app's own colour icons and unread / missed badges.
  */
 
-public class Covalence.Sidebar : Gtk.Box {
+public class Boomerang.Sidebar : Gtk.Box {
     public Gtk.Stack pages { get; construct; }
 
     private Gtk.ListBox list;

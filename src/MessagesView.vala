@@ -7,7 +7,7 @@
  * when the iPhone lets the PC send, otherwise a line explaining why not.
  */
 
-namespace Covalence {
+namespace Boomerang {
     private string dict_string (VariantDict d, string key) {
         var v = d.lookup_value (key, VariantType.STRING);
         return v != null ? v.get_string () : "";
@@ -573,7 +573,7 @@ namespace Covalence {
             });
             var compose_row = entry;
             send_hint = new Gtk.Label (
-                _("Premier envoi depuis ce PC : Covalence saura alors si l'iPhone accepte l'envoi "
+                _("Premier envoi depuis ce PC : Boomerang saura alors si l'iPhone accepte l'envoi "
                 + "par Bluetooth. Le message est demandé en SMS, pas en iMessage.")
             ) { wrap = true, xalign = 0 };
             send_hint.add_css_class (Granite.CssClass.DIM);
@@ -716,7 +716,7 @@ namespace Covalence {
                 default:
                     if (contacts == "forbidden") {
                         text = _("Pour afficher les noms, activez « Synchroniser les contacts » "
-                               + "dans les réglages Bluetooth de l'iPhone pour ce PC. Covalence "
+                               + "dans les réglages Bluetooth de l'iPhone pour ce PC. Boomerang "
                                + "redemande toute seule pendant 10 minutes.");
                         retry = true;
                     }
@@ -884,7 +884,7 @@ namespace Covalence {
             });
         }
 
-        /* Right click on a conversation: pin, read state (Covalence only), delete. */
+        /* Right click on a conversation: pin, read state (Boomerang only), delete. */
         private void show_thread_menu (ThreadRow row, double x, double y) {
             var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
                 margin_top = 3,
@@ -909,7 +909,7 @@ namespace Covalence {
             box.append (pin);
 
             var read = menu_item (unread ? _("Marquer comme lu") : _("Marquer comme non lu"));
-            read.tooltip_text = _("Dans Covalence seulement : l'iPhone n'est pas modifié");
+            read.tooltip_text = _("Dans Boomerang seulement : l'iPhone n'est pas modifié");
             read.clicked.connect (() => {
                 popover.popdown ();
                 if (unread) {
@@ -1143,7 +1143,7 @@ namespace Covalence {
         }
 
         private static string prefs_path () {
-            return Path.build_filename (Environment.get_user_config_dir (), "covalence", "apps.conf");
+            return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
         }
 
         private static bool warn_on_delete () {
@@ -1172,11 +1172,11 @@ namespace Covalence {
             }
         }
 
-        /* Deletion only happens in Covalence: say so, until the user no longer wants to be told. */
+        /* Deletion only happens in Boomerang: say so, until the user no longer wants to be told. */
         private void confirm (string title, string detail, owned VoidFunc on_accept) {
             if (!warn_on_delete ()) {
                 on_accept ();
-                toast.title = _("Supprimé de Covalence, toujours sur l'iPhone");
+                toast.title = _("Supprimé de Boomerang, toujours sur l'iPhone");
                 toast.send_notification ();
                 return;
             }
@@ -1203,15 +1203,15 @@ namespace Covalence {
         }
 
         private void confirm_delete_message (string id) {
-            confirm (_("Supprimer ce message de Covalence ?"),
+            confirm (_("Supprimer ce message de Boomerang ?"),
                      _("Il reste sur l'iPhone : iOS ne permet pas de supprimer un message par "
-                     + "Bluetooth. Il ne réapparaîtra pas dans Covalence."),
+                     + "Bluetooth. Il ne réapparaîtra pas dans Boomerang."),
                      () => daemon.call.begin ("DeleteMessage", new Variant ("(s)", id)));
         }
 
         private void confirm_delete_thread (string id, string title) {
             confirm (_("Supprimer la conversation avec %s ?").printf (title),
-                     _("Les messages restent sur l'iPhone et ne réapparaîtront pas dans Covalence. "
+                     _("Les messages restent sur l'iPhone et ne réapparaîtront pas dans Boomerang. "
                      + "Les prochains messages s'afficheront normalement."),
                      () => daemon.call.begin ("DeleteConversation", new Variant ("(s)", id)));
         }
@@ -1330,7 +1330,7 @@ namespace Covalence {
             var dialog = new Granite.MessageDialog.with_image_from_icon_name (
                 _("Lire le message en entier ?"),
                 _("L'iPhone ne donne que les 120 premiers caractères d'un message non lu. Pour "
-                  + "récupérer la suite, Covalence doit le télécharger : le message passera alors "
+                  + "récupérer la suite, Boomerang doit le télécharger : le message passera alors "
                   + "en lu sur l'iPhone."),
                 Config.APP_ID + ".Messages", Gtk.ButtonsType.CANCEL) {
                 transient_for = get_root () as Gtk.Window,
@@ -1405,7 +1405,7 @@ namespace Covalence {
             }
         }
 
-        /* A reaction to a message Covalence does not have (sent from the iPhone): one short line. */
+        /* A reaction to a message Boomerang does not have (sent from the iPhone): one short line. */
         private Gtk.Widget reaction_note (VariantDict d) {
             var note = new Gtk.Label (dict_string (d, "note")) {
                 halign = Gtk.Align.CENTER,
@@ -1491,7 +1491,7 @@ namespace Covalence {
                     menu.append_submenu (_("Réagir"), react_menu);
                 }
                 menu.append (_("Copier"), "bubble.copy");
-                menu.append (_("Supprimer de Covalence…"), "bubble.delete");
+                menu.append (_("Supprimer de Boomerang…"), "bubble.delete");
                 var actions = new SimpleActionGroup ();
                 var react = new SimpleAction ("react", VariantType.STRING);
                 react.activate.connect ((param) => react_to (bubble_id, param.get_string ()));
@@ -1599,7 +1599,7 @@ namespace Covalence {
                 column.append (line);
             }
             if (outgoing && dict_string (d, "source") == "map") {
-                // The iPhone lists it among its sent messages: Covalence has checked it left.
+                // The iPhone lists it among its sent messages: Boomerang has checked it left.
                 var sent = new Gtk.Image.from_icon_name ("object-select-symbolic") {
                     pixel_size = 12,
                     halign = Gtk.Align.END,
@@ -1701,7 +1701,7 @@ namespace Covalence {
                 toast.send_notification ();
             });
             var remove = new Gtk.Button.from_icon_name ("user-trash-symbolic") {
-                tooltip_text = _("Supprimer de Covalence…")
+                tooltip_text = _("Supprimer de Boomerang…")
             };
             remove.add_css_class ("flat");
             remove.add_css_class (Granite.CssClass.SMALL);
