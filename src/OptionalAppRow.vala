@@ -3,7 +3,7 @@
 /*
  * A row for an app Covalence can install for you (covalenced/apps.py): Agenda
  * and Cassette. Installed, it opens the app; not yet, it downloads the package
- * published with Covalence's releases, checked by its SHA-256, and installs it
+ * published in the app's own GitHub releases, checked by its SHA-256, and installs it
  * after the password (polkit), with the progress shown in the row.
  */
 

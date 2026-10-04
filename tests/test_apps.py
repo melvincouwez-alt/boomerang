@@ -5,6 +5,7 @@
 import os
 import sys
 import unittest
+import unittest.mock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -66,10 +67,48 @@ class NewestWith(unittest.TestCase):
     def test_nothing_found(self):
         self.assertIsNone(apps.newest_with([], "agenda", "amd64"))
 
+    def test_version_from_file_name(self):
+        self.assertEqual(apps.package_version("https://github.com/x/agenda_0.1.1_amd64.deb"), "0.1.1")
+        self.assertEqual(apps.package_version("https://github.com/x/odd.deb"), "")
+
     def test_unknown_package_refused(self):
         errors = []
         apps.OptionalApps(None).install("nimporte", errors.append)
         self.assertEqual(len(errors), 1)
+
+
+class Check(unittest.TestCase):
+    def run_check(self, pages):
+        fetched = []
+
+        def fetch(url):
+            fetched.append(url)
+            if isinstance(pages.get(url), Exception):
+                raise pages[url]
+            return pages.get(url, [])
+
+        optional = apps.OptionalApps(None, fetch=fetch)
+        with unittest.mock.patch.object(apps.GLib, "idle_add", lambda f: f()), \
+                unittest.mock.patch.object(apps.threading, "Thread",
+                                           lambda target, **_: unittest.mock.Mock(start=target)):
+            optional.check()
+        return optional, fetched
+
+    def test_each_app_from_its_own_repository(self):
+        own = {apps.SOURCES["agenda"]: [{"tag_name": "v0.1.1", "assets": [asset("agenda_0.1.1_amd64.deb", SHA_A)]}],
+               apps.SOURCES["cassette"]: [{"tag_name": "v0.1.1", "assets": [asset("cassette_0.1.1_amd64.deb", SHA_M)]}]}
+        optional, fetched = self.run_check(own)
+        self.assertNotIn(updates.RELEASES, fetched)
+        state = optional.state()
+        self.assertEqual(state["agenda"]["version"], "0.1.1")
+        self.assertEqual(state["cassette"]["version"], "0.1.1")
+
+    def test_falls_back_on_covalence_releases(self):
+        optional, fetched = self.run_check({apps.SOURCES["agenda"]: OSError("404"),
+                                            updates.RELEASES: [RELEASE]})
+        self.assertEqual(fetched.count(updates.RELEASES), 1)
+        self.assertEqual(optional.state()["agenda"]["version"], "0.1.0")
+        self.assertEqual(optional.state()["cassette"]["version"], "0.1.0")
 
 
 if __name__ == "__main__":

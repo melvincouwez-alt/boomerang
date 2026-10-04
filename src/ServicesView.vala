@@ -100,7 +100,7 @@ public class Covalence.ServicesView : Gtk.Box {
         services.append (photos);
 
         // Apps that show the account: open them, or install them from AppCenter;
-        // Agenda and Cassette come with Covalence's releases and are installed from here.
+        // Agenda and Cassette have their own GitHub releases and are installed from here.
         agenda_row = new OptionalAppRow (daemon, "agenda", "io.github.melvincouwez.Agenda", _("Agenda"),
                                          _("Vos agendas iCloud, l'agenda de Covalence"));
         cassette_row = new OptionalAppRow (daemon, "cassette", "io.github.melvincouwez.Cassette",

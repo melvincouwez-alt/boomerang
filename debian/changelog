@@ -1,3 +1,19 @@
+covalence (0.6.1-1) unstable; urgency=medium
+
+  * Calls: the microphone muted for a call is always given back. A late
+    mute raced the end-of-call restore and left the default source muted,
+    so calls from the PC sent silence; a mark in the state dir also undoes
+    a mute left by a stopped daemon.
+  * Apple Services: Agenda and Cassette are downloaded from their own
+    repositories (melvincouwez-alt/agenda, melvincouwez-alt/cassette), with
+    Covalence's releases as a fallback; the row shows the app's version.
+  * Translations: OptionalAppRow and seven daemon modules added to POTFILES,
+    missing English strings translated, download errors explained.
+  * Credits: companion apps in About; Apple trademark notice in
+    debian/copyright; SPDX headers completed.
+
+ -- melvincouwez-alt <301110918+melvincouwez-alt@users.noreply.github.com>  Sun, 04 Oct 2026 20:30:00 +0200
+
 covalence (0.6.0-1) unstable; urgency=medium
 
   * Apple Services: Agenda and Cassette are published with Covalence's

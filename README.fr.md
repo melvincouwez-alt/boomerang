@@ -7,7 +7,7 @@
 **Votre iPhone et votre compte Apple, chez eux sur elementary OS.**
 
 [![Licence : GPL-3.0-or-later](https://img.shields.io/badge/licence-GPL--3.0--or--later-blue)](LICENSE)
-![Version 0.6.0 alpha](https://img.shields.io/badge/version-0.6.0%20alpha-orange)
+![Version 0.6.1 alpha](https://img.shields.io/badge/version-0.6.1%20alpha-orange)
 ![elementary OS 8+](https://img.shields.io/badge/elementary%20OS-8%2B-64baff)
 
 [Site](https://melvincouwez-alt.github.io/covalence/fr/) ·
@@ -72,7 +72,7 @@ serveur à nous.
 
 ### Depuis le paquet (conseillé)
 
-1. Téléchargez `covalence_0.6.0-1_amd64.deb` depuis la
+1. Téléchargez `covalence_0.6.1-1_amd64.deb` depuis la
    [dernière version](https://github.com/melvincouwez-alt/covalence/releases/latest).
 2. Double-cliquez dessus. Eddy (elementary OS) ou l'App Center (Ubuntu) installe Covalence et
    tous les paquets nécessaires. En terminal : `sudo apt install ./covalence_*.deb`.
@@ -198,11 +198,12 @@ Covalence repose sur le travail de nombreux logiciels libres :
 | [Inter](https://github.com/rsms/inter) (Rasmus Andersson) | Texte de l'icône Calendrier, en contours | SIL OFL 1.1 |
 | Android Open Source Project et [Kenney](https://kenney.nl/assets/interface-sounds) | Sons des notifications (détail dans [docs/credits-sons.md](docs/credits-sons.md)) | Apache-2.0 / CC0 |
 
-Covalence publie aussi deux applications avec ses versions : **Agenda**
-([code source](https://github.com/melvincouwez-alt/agenda), GPL-3.0-or-later) et **Cassette**,
+Covalence installe deux applications compagnes depuis l'onglet Services Apple, chacune publiée
+dans son propre dépôt avec ses versions : **Agenda**
+([code source et téléchargements](https://github.com/melvincouwez-alt/agenda), GPL-3.0-or-later) et **Cassette**,
 un client Apple Music issu de [Sidra](https://github.com/wimpysworld/sidra), de Martin Wimpress,
 et construit sur [CastLabs Electron](https://github.com/castlabs/electron-releases)
-([code source](https://github.com/melvincouwez-alt/cassette), Blue Oak Model License 1.0.0).
+([code source et téléchargements](https://github.com/melvincouwez-alt/cassette), Blue Oak Model License 1.0.0).
 
 Un merci particulier à l'équipe de LibrePods pour son remarquable travail de rétro-ingénierie,
 et à [nRF Connect](https://www.nordicsemi.com/Products/Development-tools/nRF-Connect-for-mobile)

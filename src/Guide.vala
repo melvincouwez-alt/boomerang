@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
  * Built-in guide: a native window (no browser), French and English.
  *

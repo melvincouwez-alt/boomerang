@@ -72,3 +72,11 @@ src/MirrorView.vala
 src/PhotosView.vala
 src/WebShortcuts.vala
 covalenced/cloudprovider.py
+covalenced/apps.py
+covalenced/migrate.py
+covalenced/hid.py
+covalenced/localsend.py
+covalenced/nowplaying.py
+covalenced/otp.py
+covalenced/proximity.py
+src/OptionalAppRow.vala

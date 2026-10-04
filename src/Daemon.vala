@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
  * Client of the covalenced session bus API. Properties are read from the proxy
  * cache, which GDBus keeps current from PropertiesChanged.

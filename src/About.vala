@@ -77,6 +77,10 @@ namespace Covalence {
             "Vala (LGPL-2.1-or-later) https://gitlab.gnome.org/GNOME/vala",
             "PyGObject (LGPL-2.1-or-later) https://gitlab.gnome.org/GNOME/pygobject"
         });
+        about.add_credit_section (_("Applications compagnes"), {
+            _("Agenda, melvincouwez-alt (GPL-3.0-or-later) https://github.com/melvincouwez-alt/agenda"),
+            _("Cassette, issue de Sidra de Martin Wimpress, sur CastLabs Electron (BlueOak-1.0.0) https://github.com/melvincouwez-alt/cassette")
+        });
         about.present ();
     }
 }

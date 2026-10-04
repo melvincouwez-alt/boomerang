@@ -11,6 +11,7 @@ This module never dials: it only follows calls, and answers or hangs up on
 the user's request from the notification buttons.
 """
 
+import os
 import time
 
 from gi.repository import Gio, GLib
@@ -24,6 +25,9 @@ GATEWAY = "org.pipewire.Telephony.AudioGateway1"
 TRANSPORT = "org.pipewire.Telephony.AudioGatewayTransport1"
 CALL = "org.pipewire.Telephony.Call1"
 HFP_AG_UUID = "0000111f-0000-1000-8000-00805f9b34fb"
+# Present while this PC's microphone is muted by Covalence for a call, so the
+# mute is undone at the next start if the daemon stopped in the middle.
+MUTE_MARK = os.path.join(GLib.get_user_state_dir(), "covalence", "microphone-muted")
 
 STATE_LABELS = {
     "incoming": N_("Appel entrant"), "waiting": N_("Appel en attente"),
@@ -62,6 +66,7 @@ class Calls:
         self.supported = version is None or version >= PIPEWIRE_MIN
         self.muted = False
         self.mute_restore = None  # default source mute state before a call
+        self._undo_stale_mute()
         # Demonstration calls: shown like real ones, but nothing reaches the
         # iPhone, PipeWire or the microphone.
         self.demo = set()
@@ -458,24 +463,56 @@ class Calls:
             self.muted = muted  # shown in the interface, the real microphone is untouched
             self._changed()
             return
+        if muted and not any(c.get("State") in STATE_LABELS for c in self.calls.values()):
+            return  # a late click after the call ended: nothing would unmute it
         self.muted = muted
-        try:
-            if muted and self.mute_restore is None:
+        if muted and self.mute_restore is None:
+            try:
                 out = GLib.spawn_command_line_sync("wpctl get-volume @DEFAULT_AUDIO_SOURCE@")[1]
-                self.mute_restore = b"MUTED" in (out or b"")
-            GLib.spawn_command_line_async(
-                f"wpctl set-mute @DEFAULT_AUDIO_SOURCE@ {1 if muted else 0}")
-        except GLib.Error as error:
-            log(f"appels : micro non modifié ({error.message})")
+            except GLib.Error:
+                out = b""
+            self.mute_restore = b"MUTED" in (out or b"")
+            self._write_mute_mark(self.mute_restore)
+        self._set_source_mute(muted)
         log(f"appels : micro {'coupé' if muted else 'rétabli'}")
         self._changed()
 
+    @staticmethod
+    def _set_source_mute(muted):
+        # Synchronous on purpose: two quick clicks then the end of the call must
+        # reach PipeWire in this order, or the last "mute" can land after the restore.
+        try:
+            GLib.spawn_command_line_sync(f"wpctl set-mute @DEFAULT_AUDIO_SOURCE@ {1 if muted else 0}")
+        except GLib.Error as error:
+            log(f"appels : micro non modifié ({error.message})")
+
+    @staticmethod
+    def _write_mute_mark(was_muted):
+        try:
+            os.makedirs(os.path.dirname(MUTE_MARK), exist_ok=True)
+            with open(MUTE_MARK, "w", encoding="utf-8") as mark:
+                mark.write("1" if was_muted else "0")
+        except OSError:
+            pass
+
+    def _undo_stale_mute(self):
+        """Give the microphone back if the daemon stopped while a call had it muted."""
+        try:
+            with open(MUTE_MARK, encoding="utf-8") as mark:
+                was_muted = mark.read().strip() == "1"
+            os.remove(MUTE_MARK)
+        except OSError:
+            return
+        if not was_muted:
+            self._set_source_mute(False)
+            log("appels : micro rétabli (coupé lors d'un appel précédent)")
+
     def _restore_microphone(self):
         if self.mute_restore is not None:
+            self._set_source_mute(self.mute_restore)
             try:
-                GLib.spawn_command_line_async(
-                    f"wpctl set-mute @DEFAULT_AUDIO_SOURCE@ {1 if self.mute_restore else 0}")
-            except GLib.Error:
+                os.remove(MUTE_MARK)
+            except OSError:
                 pass
         self.mute_restore = None
         self.muted = False

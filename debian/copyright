@@ -1,6 +1,8 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Covalence
 Source: https://github.com/melvincouwez-alt/covalence
+Comment: Apple, iPhone, iCloud, AirPods and Apple Music are trademarks of Apple
+ Inc. Covalence is not affiliated with or endorsed by Apple.
 
 Files: *
 Copyright: 2026 melvincouwez-alt

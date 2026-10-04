@@ -2,8 +2,9 @@
 # SPDX-FileCopyrightText: 2026 melvincouwez-alt
 """Optional apps Covalence offers to install: Agenda and Cassette.
 
-Their packages are published with Covalence's own releases on GitHub, beside
-covalence_X.Y.Z_amd64.deb. Installing one goes the same way as an update of
+Each one is published in the releases of its own GitHub repository
+(melvincouwez-alt/agenda, melvincouwez-alt/cassette); Covalence's releases up to
+0.6.0 carried them too and are read as a fallback. Installing one goes the same way as an update of
 Covalence (updates.py): the newest release carrying the package is found, its .deb
 is downloaded to ~/.cache/covalence/apps, checked against the SHA-256 digest GitHub
 publishes, then `pkexec covalence-install-update <deb> <sha256> <package>` installs
@@ -25,6 +26,10 @@ from .util import log
 CATALOG = {"agenda": "io.github.melvincouwez.Agenda",
            "cassette": "io.github.melvincouwez.Cassette"}
 
+# package -> the releases of its own repository
+SOURCES = {"agenda": "https://api.github.com/repos/melvincouwez-alt/agenda/releases",
+           "cassette": "https://api.github.com/repos/melvincouwez-alt/cassette/releases"}
+
 TYPES = {"state": "s", "version": "s", "size": "x", "progress": "d", "error": "s",
          "installed": "b"}
 
@@ -44,6 +49,21 @@ def newest_with(releases, package, arch):
     return best[1:] if best else None
 
 
+def package_version(url):
+    """Version in a Debian file name: agenda_0.1.1_amd64.deb -> 0.1.1."""
+    parts = url.rsplit("/", 1)[-1].split("_")
+    return parts[1] if len(parts) == 3 else ""
+
+
+def _reason(failure):
+    """Short, translated reason for a failed download."""
+    if isinstance(failure, ValueError):
+        return _("le fichier ne correspond pas à son empreinte SHA-256")
+    if isinstance(failure, OSError):
+        return _("connexion impossible")
+    return type(failure).__name__
+
+
 def _installed(package):
     return Gio.DesktopAppInfo.new(CATALOG[package] + ".desktop") is not None
 
@@ -61,7 +81,7 @@ class OptionalApps:
         result = {}
         for package in CATALOG:
             found = self.found.get(package)
-            version = (found[0].get("tag_name") or "").lstrip("vV") if found else ""
+            version = package_version(found[1]) if found else ""
             entry = dict(self.states[package], version=version, size=found[2] if found else 0,
                          installed=_installed(package))
             result[package] = {k: v for k, v in entry.items() if k in TYPES}
@@ -72,30 +92,38 @@ class OptionalApps:
             self.on_changed()
 
     def check(self):
-        """Look for the packages in Covalence's releases (one GET, in a thread)."""
+        """Look for the packages in their repositories (one GET each, in a thread)."""
         if self.checking:
             return
         self.checking = True
 
         def job():
-            try:
-                releases = self.fetch(RELEASES)
-                error = None
-            except Exception as failure:
-                releases, error = None, type(failure).__name__
-            GLib.idle_add(lambda: self._checked(releases, error) and False)
+            found, errors = {}, []
+            fallback = None
+            for package in CATALOG:
+                try:
+                    hit = newest_with(self.fetch(SOURCES[package]), package, _arch())
+                except Exception as failure:
+                    hit = None
+                    errors.append(f"{package}: {type(failure).__name__}")
+                if hit is None:
+                    try:
+                        if fallback is None:
+                            fallback = self.fetch(RELEASES)
+                        hit = newest_with(fallback, package, _arch())
+                    except Exception as failure:
+                        errors.append(f"covalence: {type(failure).__name__}")
+                if hit:
+                    found[package] = hit
+            GLib.idle_add(lambda: self._checked(found, errors) and False)
 
         threading.Thread(target=job, name="covalence-apps-check", daemon=True).start()
 
-    def _checked(self, releases, error):
+    def _checked(self, found, errors):
         self.checking = False
-        if error:
-            log(f"apps : liste des versions indisponible ({error})")
-        else:
-            for package in CATALOG:
-                found = newest_with(releases, package, _arch())
-                if found:
-                    self.found[package] = found
+        if errors:
+            log(f"apps : liste des versions incomplète ({', '.join(errors)})")
+        self.found.update(found)
         self._changed()
 
     def install(self, package, on_done):
@@ -126,7 +154,7 @@ class OptionalApps:
                 os.makedirs(self.dir, mode=0o700, exist_ok=True)
                 download_verified(url, size, sha, target, report)
             except Exception as failure:
-                error = str(failure) if isinstance(failure, ValueError) else type(failure).__name__
+                error = _reason(failure)
             GLib.idle_add(lambda: self._downloaded(package, target, sha, error, on_done) and False)
 
         threading.Thread(target=job, name="covalence-apps-download", daemon=True).start()

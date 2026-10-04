@@ -85,8 +85,8 @@ def pick(releases, current):
 def deb_asset(release, arch="amd64", package="covalence"):
     """(url, size, sha256 or "") of the release's .deb of that package for this architecture.
 
-    A release may carry several packages (Covalence and its optional apps, such as
-    Agenda): only a file named after the package counts, never the first .deb found.
+    A release may carry several packages (Covalence's up to 0.6.0 also carried Agenda
+    and Cassette): only a file named after the package counts, never the first .deb found.
     """
     for asset in release.get("assets") or []:
         name = asset.get("name") or ""

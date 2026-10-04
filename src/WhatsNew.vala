@@ -16,6 +16,12 @@ namespace Covalence.WhatsNew {
 
     private static Item[] items () {
         return {
+            { "audio-input-microphone-symbolic", _("Micro rétabli"),
+              _("Un micro coupé pendant un appel est toujours rétabli à la fin, même si Covalence "
+                + "s'arrête en cours d'appel : vos correspondants vous entendent de nouveau.") },
+            { "system-software-install-symbolic", _("Agenda et Cassette à part"),
+              _("Les deux applications ont leur propre dépôt et leurs versions ; Covalence les "
+                + "installe et affiche leur vraie version.") },
             { "x-office-calendar-symbolic", _("Agenda"),
               _("Installez Agenda depuis Services Apple : vos agendas iCloud par mois, par semaine "
                 + "ou en fil, vérifié puis installé en un clic.") },

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: covalence\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-29 20:23+0200\n"
+"POT-Creation-Date: 2026-10-04 20:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -90,7 +90,7 @@ msgid ""
 msgstr ""
 
 #: src/About.vala:52 src/MainWindow.vala:262 src/SoundsCard.vala:200
-#: src/WhatsNew.vala:87
+#: src/WhatsNew.vala:93
 msgid "Sons"
 msgstr ""
 
@@ -181,7 +181,23 @@ msgid ""
 "libheif"
 msgstr ""
 
-#: src/AppChoice.vala:24 src/ServicesView.vala:104 src/WhatsNew.vala:19
+#: src/About.vala:80
+msgid "Applications compagnes"
+msgstr ""
+
+#: src/About.vala:81
+msgid ""
+"Agenda, melvincouwez-alt (GPL-3.0-or-later) https://github.com/melvincouwez-alt/"
+"agenda"
+msgstr ""
+
+#: src/About.vala:82
+msgid ""
+"Cassette, issue de Sidra de Martin Wimpress, sur CastLabs Electron "
+"(BlueOak-1.0.0) https://github.com/melvincouwez-alt/cassette"
+msgstr ""
+
+#: src/AppChoice.vala:24 src/ServicesView.vala:104 src/WhatsNew.vala:25
 msgid "Agenda"
 msgstr ""
 
@@ -212,6 +228,7 @@ msgstr ""
 #: src/ServicesView.vala:252 src/ServicesView.vala:353
 #: covalenced/messages.py:1190 covalenced/messages.py:1367
 #: src/WebShortcuts.vala:135 covalenced/cloudprovider.py:215
+#: src/OptionalAppRow.vala:74
 msgid "Ouvrir"
 msgstr ""
 
@@ -224,6 +241,7 @@ msgid "App affichée dans le menu Applications"
 msgstr ""
 
 #: src/AppChoice.vala:180 src/ServicesView.vala:262 src/InstallBox.vala:57
+#: src/OptionalAppRow.vala:38 src/OptionalAppRow.vala:85
 msgid "Installer…"
 msgstr ""
 
@@ -326,17 +344,17 @@ msgid "Audio PC"
 msgstr ""
 
 #: src/CallWindow.vala:190 src/CallWindow.vala:200 src/CallWindow.vala:414
-#: src/CallWindow.vala:496 covalenced/calls.py:267 indicator/Indicator.vala:399
+#: src/CallWindow.vala:496 covalenced/calls.py:272 indicator/Indicator.vala:399
 msgid "Raccrocher"
 msgstr ""
 
 #: src/CallWindow.vala:192 src/CallWindow.vala:197 src/CallWindow.vala:496
-#: covalenced/calls.py:260 covalenced/service.py:567 covalenced/files.py:166
+#: covalenced/calls.py:265 covalenced/service.py:567 covalenced/files.py:166
 msgid "Refuser"
 msgstr ""
 
 #: src/CallWindow.vala:194 src/CallWindow.vala:198 src/CallWindow.vala:411
-#: covalenced/calls.py:260
+#: covalenced/calls.py:265
 msgctxt "call"
 msgid "Répondre"
 msgstr ""
@@ -354,12 +372,12 @@ msgstr ""
 msgid "Aucun appel"
 msgstr ""
 
-#: src/CallWindow.vala:327 src/CallWindow.vala:503 covalenced/calls.py:29
+#: src/CallWindow.vala:327 src/CallWindow.vala:503 covalenced/calls.py:33
 #: covalenced/sounds.py:35 indicator/Indicator.vala:236
 msgid "Appel entrant"
 msgstr ""
 
-#: src/CallWindow.vala:327 covalenced/calls.py:29 covalenced/calls.py:31
+#: src/CallWindow.vala:327 covalenced/calls.py:33 covalenced/calls.py:35
 msgid "Appel en attente"
 msgstr ""
 
@@ -499,7 +517,7 @@ msgstr ""
 msgid "Télécharger rclone"
 msgstr ""
 
-#: src/Components.vala:248
+#: src/Components.vala:248 src/OptionalAppRow.vala:90
 msgid "Installation…"
 msgstr ""
 
@@ -508,7 +526,7 @@ msgstr ""
 msgid "L'installation n'a pas abouti : %s"
 msgstr ""
 
-#: src/Components.vala:286 src/Updates.vala:229
+#: src/Components.vala:286 src/Updates.vala:229 src/OptionalAppRow.vala:88
 msgid "Téléchargement…"
 msgstr ""
 
@@ -1240,7 +1258,7 @@ msgstr ""
 msgid "Ce qui change dans la version %s"
 msgstr ""
 
-#: src/MainWindow.vala:229 src/MainWindow.vala:232 covalenced/calls.py:267
+#: src/MainWindow.vala:229 src/MainWindow.vala:232 covalenced/calls.py:272
 msgid "Afficher"
 msgstr ""
 
@@ -1264,11 +1282,11 @@ msgstr ""
 msgid "Appels"
 msgstr ""
 
-#: src/MainWindow.vala:252 src/WhatsNew.vala:52 src/HotspotProximity.vala:33
+#: src/MainWindow.vala:252 src/WhatsNew.vala:58 src/HotspotProximity.vala:33
 msgid "Internet via l'iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:253 src/WhatsNew.vala:66
+#: src/MainWindow.vala:253 src/WhatsNew.vala:72
 msgid "Verrouillage de proximité"
 msgstr ""
 
@@ -1283,7 +1301,7 @@ msgstr ""
 msgid "Lecture"
 msgstr ""
 
-#: src/MainWindow.vala:257 src/WhatsNew.vala:79
+#: src/MainWindow.vala:257 src/WhatsNew.vala:85
 msgid "Codes SMS"
 msgstr ""
 
@@ -1295,7 +1313,7 @@ msgstr ""
 msgid "Sons de Covalence"
 msgstr ""
 
-#: src/MainWindow.vala:265 src/WhatsNew.vala:54
+#: src/MainWindow.vala:265 src/WhatsNew.vala:60
 msgid "Barre du haut"
 msgstr ""
 
@@ -1307,11 +1325,11 @@ msgstr ""
 msgid "Affichage"
 msgstr ""
 
-#: src/MainWindow.vala:271 src/WhatsNew.vala:90
+#: src/MainWindow.vala:271 src/WhatsNew.vala:96
 msgid "Mises à jour"
 msgstr ""
 
-#: src/MainWindow.vala:273 src/WhatsNew.vala:92
+#: src/MainWindow.vala:273 src/WhatsNew.vala:98
 msgid "Fonctionnalités expérimentales"
 msgstr ""
 
@@ -1363,7 +1381,7 @@ msgstr ""
 msgid "Activer"
 msgstr ""
 
-#: src/MainWindow.vala:471 src/WhatsNew.vala:72
+#: src/MainWindow.vala:471 src/WhatsNew.vala:78
 msgid "Émojis automatiques"
 msgstr ""
 
@@ -2195,7 +2213,7 @@ msgstr ""
 msgid "Ouvrir Covalence"
 msgstr ""
 
-#: src/Onboarding.vala:143 src/WhatsNew.vala:183
+#: src/Onboarding.vala:143 src/WhatsNew.vala:189
 msgid "Continuer"
 msgstr ""
 
@@ -2785,24 +2803,24 @@ msgstr ""
 msgid "Effacer"
 msgstr ""
 
-#: covalenced/calls.py:30 covalenced/sounds.py:35
+#: covalenced/calls.py:34 covalenced/sounds.py:35
 msgid "Appel sortant"
 msgstr ""
 
-#: covalenced/calls.py:31 indicator/Indicator.vala:236
+#: covalenced/calls.py:35 indicator/Indicator.vala:236
 msgid "Appel en cours"
 msgstr ""
 
-#: covalenced/calls.py:245 covalenced/messages.py:105
+#: covalenced/calls.py:250 covalenced/messages.py:105
 msgid "Numéro masqué"
 msgstr ""
 
-#: covalenced/calls.py:258
+#: covalenced/calls.py:263
 #, python-brace-format
 msgid "Sur {device}"
 msgstr ""
 
-#: covalenced/calls.py:344
+#: covalenced/calls.py:349
 msgid "Appel de démonstration"
 msgstr ""
 
@@ -3545,271 +3563,293 @@ msgid ""
 "GitHub"
 msgstr ""
 
-#: covalenced/updates.py:325
+#: covalenced/updates.py:325 covalenced/apps.py:141
 msgid "adresse de téléchargement inattendue"
 msgstr ""
 
-#: covalenced/updates.py:349
+#: covalenced/updates.py:349 covalenced/apps.py:165
 #, python-brace-format
 msgid "Téléchargement impossible ({reason})"
 msgstr ""
 
-#: covalenced/updates.py:354
+#: covalenced/updates.py:354 covalenced/apps.py:168
 msgid "Installation impossible (programme d'installation absent)"
 msgstr ""
 
-#: covalenced/updates.py:364 covalenced/updates.py:386
+#: covalenced/updates.py:364 covalenced/updates.py:386 covalenced/apps.py:177
+#: covalenced/apps.py:195
 #, python-brace-format
 msgid "Installation impossible ({reason})"
 msgstr ""
 
-#: covalenced/updates.py:383
+#: covalenced/updates.py:383 covalenced/apps.py:192
 msgid "Installation annulée"
 msgstr ""
 
+#: src/WhatsNew.vala:19
+msgid "Micro rétabli"
+msgstr ""
+
 #: src/WhatsNew.vala:20
+msgid ""
+"Un micro coupé pendant un appel est toujours rétabli à la fin, même si "
+"Covalence s'arrête en cours d'appel : vos correspondants vous entendent de "
+"nouveau."
+msgstr ""
+
+#: src/WhatsNew.vala:22
+msgid "Agenda et Cassette à part"
+msgstr ""
+
+#: src/WhatsNew.vala:23
+msgid ""
+"Les deux applications ont leur propre dépôt et leurs versions ; Covalence "
+"les installe et affiche leur vraie version."
+msgstr ""
+
+#: src/WhatsNew.vala:26
 msgid ""
 "Installez Agenda depuis Services Apple : vos agendas iCloud par mois, par "
 "semaine ou en fil, vérifié puis installé en un clic."
 msgstr ""
 
-#: src/WhatsNew.vala:22
+#: src/WhatsNew.vala:28
 msgid "Cassette"
 msgstr ""
 
-#: src/WhatsNew.vala:23
+#: src/WhatsNew.vala:29
 msgid ""
 "Apple Music dans une fenêtre elementary, à installer depuis Services Apple : "
 "lecture, volume, paroles et file d'attente dans la barre d'en-tête."
 msgstr ""
 
-#: src/WhatsNew.vala:25
+#: src/WhatsNew.vala:31
 msgid "Codes SMS copiés"
 msgstr ""
 
-#: src/WhatsNew.vala:26
+#: src/WhatsNew.vala:32
 msgid ""
 "Le code d'un SMS va dans le presse-papiers dès sa réception. Réglable dans "
 "Réglages › Codes SMS."
 msgstr ""
 
-#: src/WhatsNew.vala:28
+#: src/WhatsNew.vala:34
 msgid "Appels en silence"
 msgstr ""
 
-#: src/WhatsNew.vala:29
+#: src/WhatsNew.vala:35
 msgid ""
 "Ni sonnerie, ni fenêtre, ni son sur le PC : l'appel reste sur l'iPhone. "
 "Pratique quand Teams sonne déjà. Réglages › Connexion ou barre du haut."
 msgstr ""
 
-#: src/WhatsNew.vala:31
+#: src/WhatsNew.vala:37
 msgid "Icônes redessinées"
 msgstr ""
 
-#: src/WhatsNew.vala:32
+#: src/WhatsNew.vala:38
 msgid ""
 "Covalence, Messages, Téléphone, Contacts, Lecture en cours et Recopie, "
 "dessinées pour chaque taille. Les notifications du Calendrier prennent "
 "l'icône d'Agenda."
 msgstr ""
 
-#: src/WhatsNew.vala:34
+#: src/WhatsNew.vala:40
 msgid "AirPods Pro 3"
 msgstr ""
 
-#: src/WhatsNew.vala:35
+#: src/WhatsNew.vala:41
 msgid ""
 "Contrôle du bruit, audio adaptatif et détection de conversation sont "
 "reconnus. Des écouteurs plus récents que Covalence gardent toutes leurs "
 "commandes."
 msgstr ""
 
-#: src/WhatsNew.vala:37
+#: src/WhatsNew.vala:43
 msgid "Sécurité renforcée"
 msgstr ""
 
-#: src/WhatsNew.vala:38
+#: src/WhatsNew.vala:44
 msgid ""
 "Le code d'appairage se confirme aussi sur le PC. Un autre programme doit "
 "vous demander avant d'appeler, d'envoyer ou d'appairer. Mises à jour, "
 "fichiers LocalSend et recopie mieux protégés ; codes SMS liés à leur site."
 msgstr ""
 
-#: src/WhatsNew.vala:41
+#: src/WhatsNew.vala:47
 msgid "Messages fiables"
 msgstr ""
 
-#: src/WhatsNew.vala:42
+#: src/WhatsNew.vala:48
 msgid ""
 "Plus de doublons après une reconnexion, les groupes restent groupés, chaque "
 "iPhone a son propre historique et les contacts se rechargent avec "
 "« Réessayer »."
 msgstr ""
 
-#: src/WhatsNew.vala:44
+#: src/WhatsNew.vala:50
 msgid "Appairage simplifié"
 msgstr ""
 
-#: src/WhatsNew.vala:45
+#: src/WhatsNew.vala:51
 msgid ""
 "L'iPhone trouve ce PC dans Réglages › Bluetooth, sans app en plus. La "
 "reconnexion est plus stable et un bouton « Oublier » permet de repartir de "
 "zéro."
 msgstr ""
 
-#: src/WhatsNew.vala:47
+#: src/WhatsNew.vala:53
 msgid "Recopie et contrôle"
 msgstr ""
 
-#: src/WhatsNew.vala:48
+#: src/WhatsNew.vala:54
 msgid ""
 "La recopie d'écran devient une app, plus fluide. Expérimental : pilotez "
 "l'iPhone avec la souris et le clavier du PC (guide dans l'app)."
 msgstr ""
 
-#: src/WhatsNew.vala:50
+#: src/WhatsNew.vala:56
 msgid "19 sons libres"
 msgstr ""
 
-#: src/WhatsNew.vala:51
+#: src/WhatsNew.vala:57
 msgid ""
 "Onze sons de plus pour les notifications et les appels (Réglages › Sons)."
 msgstr ""
 
-#: src/WhatsNew.vala:53
+#: src/WhatsNew.vala:59
 msgid ""
 "Un bouton dans l'Aperçu utilise le partage de connexion de l'iPhone, en "
 "Bluetooth."
 msgstr ""
 
-#: src/WhatsNew.vala:55
+#: src/WhatsNew.vala:61
 msgid ""
 "Batterie, lecture en cours, appel et messages non lus à côté de l'horloge. "
 "Se déconnecter une fois pour l'afficher."
 msgstr ""
 
-#: src/WhatsNew.vala:57
+#: src/WhatsNew.vala:63
 msgid "Recherche et épingles"
 msgstr ""
 
-#: src/WhatsNew.vala:58
+#: src/WhatsNew.vala:64
 msgid ""
 "Ctrl+F cherche dans les messages. Épinglez une conversation ou marquez-la "
 "non lue d'un clic droit."
 msgstr ""
 
-#: src/WhatsNew.vala:60
+#: src/WhatsNew.vala:66
 msgid "Fichiers, recopie et photos"
 msgstr ""
 
-#: src/WhatsNew.vala:61
+#: src/WhatsNew.vala:67
 msgid ""
 "Échangez des fichiers avec l'app LocalSend, affichez l'écran de l'iPhone "
 "(expérimental) et importez les photos par câble USB."
 msgstr ""
 
-#: src/WhatsNew.vala:63
+#: src/WhatsNew.vala:69
 msgid "iCloud"
 msgstr ""
 
-#: src/WhatsNew.vala:64
+#: src/WhatsNew.vala:70
 msgid ""
 "État de synchro d'iCloud Drive dans Fichiers, raccourcis vers Localiser, "
 "Notes et Masquer mon adresse e-mail."
 msgstr ""
 
-#: src/WhatsNew.vala:67
+#: src/WhatsNew.vala:73
 msgid ""
 "Le PC se verrouille quand l'iPhone s'éloigne (désactivé par défaut, jamais "
 "de déverrouillage)."
 msgstr ""
 
-#: src/WhatsNew.vala:69
+#: src/WhatsNew.vala:75
 msgid "Réglages en onglets"
 msgstr ""
 
-#: src/WhatsNew.vala:70
+#: src/WhatsNew.vala:76
 msgid ""
 "Connexion, Messages, Sons, Affichage, Mises à jour, Expérimental, À propos ; "
 "les sons libres de Covalence s'essaient d'un clic."
 msgstr ""
 
-#: src/WhatsNew.vala:73
+#: src/WhatsNew.vala:79
 msgid ""
 "« :) » devient 🙂 pendant la saisie. Retour arrière annule ; réglable dans "
 "Réglages."
 msgstr ""
 
-#: src/WhatsNew.vala:74
+#: src/WhatsNew.vala:80
 msgid "Messages envoyés"
 msgstr ""
 
-#: src/WhatsNew.vala:75
+#: src/WhatsNew.vala:81
 msgid ""
 "Une petite coche apparaît sous un message dès que l'iPhone confirme son "
 "envoi."
 msgstr ""
 
-#: src/WhatsNew.vala:76
+#: src/WhatsNew.vala:82
 msgid "Réactions"
 msgstr ""
 
-#: src/WhatsNew.vala:77
+#: src/WhatsNew.vala:83
 msgid ""
 "Les réactions reçues s'affichent sur le bon message, sans doublon, et se "
 "cumulent. Au survol d'un message : réagir, copier ou supprimer."
 msgstr ""
 
-#: src/WhatsNew.vala:80
+#: src/WhatsNew.vala:86
 msgid ""
 "Un code reçu par SMS se copie depuis la notification. Expérimental : "
 "remplissage dans Chrome, Chromium, Edge et Firefox (Réglages › Codes SMS)."
 msgstr ""
 
-#: src/WhatsNew.vala:82
+#: src/WhatsNew.vala:88
 msgid "Messages en entier"
 msgstr ""
 
-#: src/WhatsNew.vala:83
+#: src/WhatsNew.vala:89
 msgid ""
 "« Tout lire » récupère la suite d'un message long non lu, ou toujours, au "
 "choix dans Réglages. Le message passe alors en lu sur l'iPhone."
 msgstr ""
 
-#: src/WhatsNew.vala:85
+#: src/WhatsNew.vala:91
 msgid "Synchroniser"
 msgstr ""
 
-#: src/WhatsNew.vala:86
+#: src/WhatsNew.vala:92
 msgid ""
 "Un bouton dans Messages relit les messages, les contacts et le journal "
 "d'appels."
 msgstr ""
 
-#: src/WhatsNew.vala:88
+#: src/WhatsNew.vala:94
 msgid ""
 "Choisissez le son des messages, des notifications de l'iPhone et la sonnerie "
 "des appels, dont 8 sons libres fournis avec Covalence (Réglages › Sons)."
 msgstr ""
 
-#: src/WhatsNew.vala:91
+#: src/WhatsNew.vala:97
 msgid ""
 "Covalence recherche les nouvelles versions et s'installe depuis Réglages."
 msgstr ""
 
-#: src/WhatsNew.vala:93
+#: src/WhatsNew.vala:99
 msgid ""
 "À essayer dans Réglages : historique étendu, marquer comme lu sur l'iPhone, "
 "actions des notifications, favoris des contacts."
 msgstr ""
 
-#: src/WhatsNew.vala:176
+#: src/WhatsNew.vala:182
 #, c-format
 msgid "Nouveautés de Covalence %s"
 msgstr ""
 
-#: src/WhatsNew.vala:177
+#: src/WhatsNew.vala:183
 msgid "Ce qui change dans cette version."
 msgstr ""
 
@@ -4600,4 +4640,35 @@ msgstr ""
 
 #: covalenced/cloudprovider.py:217
 msgid "Déconnecter…"
+msgstr ""
+
+#: covalenced/apps.py:61
+msgid "le fichier ne correspond pas à son empreinte SHA-256"
+msgstr ""
+
+#: covalenced/apps.py:63
+msgid "connexion impossible"
+msgstr ""
+
+#: covalenced/apps.py:132
+msgid "application inconnue"
+msgstr ""
+
+#: covalenced/apps.py:138
+msgid "pas de paquet vérifiable pour cette application"
+msgstr ""
+
+#: src/OptionalAppRow.vala:96
+#, c-format
+msgid "%s · version %s, %s"
+msgstr ""
+
+#: src/OptionalAppRow.vala:97
+#, c-format
+msgid "%s · version %s"
+msgstr ""
+
+#: src/OptionalAppRow.vala:99
+#, c-format
+msgid "%s · pas encore disponible au téléchargement"
 msgstr ""
