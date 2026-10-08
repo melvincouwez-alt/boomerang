@@ -4,8 +4,8 @@ summary: Install, add missing components, run the setup.
 ---
 ## Install Boomerang
 1. Download the `.deb` package from the project's releases page.
-2. Double-click it: it opens in Eddy (elementary OS) or in the App Center (Ubuntu).
-3. Click **Install** and enter your password. The required packages are installed at the same time.
+2. In a terminal, in the download folder, run `sudo apt install ./boomerang_*.deb` and enter your password. The required packages are installed at the same time. On Ubuntu, the App Center can also open the file with a double-click.
+3. Log out and back in to start the service.
 4. Open Boomerang from the applications menu.
 
 ## Missing components

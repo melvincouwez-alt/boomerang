@@ -13,7 +13,7 @@ Le service d'arrière-plan est arrêté. Ouvrez un Terminal et tapez `systemctl 
 5. En dernier recours, cliquez sur **Oublier** dans l'Aperçu, oubliez aussi l'ordinateur sur l'iPhone, puis recommencez l'[appairage](guide:link).
 
 ### Pas de notifications
-La liaison basse consommation n'est pas ouverte. Vérifiez **Partager les notifications système** (Réglages › Bluetooth › ⓘ), puis coupez et réactivez le Bluetooth de l'iPhone. En dernier recours, l'app gratuite nRF Connect permet d'ouvrir la liaison à la main : touchez **Connect** à côté de « Boomerang ».
+La liaison basse consommation n'est pas ouverte. Vérifiez **Partager les notifications système** (Réglages › Bluetooth › ⓘ), puis coupez et réactivez le Bluetooth de l'iPhone. En dernier recours, l'app gratuite nRF Connect permet d'ouvrir cette liaison depuis l'iPhone : touchez **Connect** à côté de « Boomerang ».
 
 ### Messages refusés par l'iPhone
 Activez **Afficher les notifications** (Réglages › Bluetooth › ⓘ), puis cliquez sur **Vérifier** dans l'assistant.

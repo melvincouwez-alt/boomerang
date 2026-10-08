@@ -13,7 +13,7 @@ The background service is stopped. Open a Terminal and type `systemctl --user re
 5. As a last resort, click **Forget** in the Overview, forget the computer on the iPhone too, then [pair](guide:link) again.
 
 ### No notifications
-The low energy link is not open. Check **Share System Notifications** (Settings › Bluetooth › ⓘ), then turn the iPhone's Bluetooth off and on. As a last resort, the free nRF Connect app can open the link by hand: tap **Connect** next to "Boomerang".
+The low energy link is not open. Check **Share System Notifications** (Settings › Bluetooth › ⓘ), then turn the iPhone's Bluetooth off and on. As a last resort, the free nRF Connect app can open this link from the iPhone: tap **Connect** next to "Boomerang".
 
 ### The iPhone refuses messages
 Turn on **Show Notifications** (Settings › Bluetooth › ⓘ), then click **Check** in the setup.

@@ -77,8 +77,9 @@ vos messages et vos comptes iCloud.*
 
 1. Téléchargez `boomerang_0.8.1-1_amd64.deb` depuis la
    [dernière version](https://github.com/melvincouwez-alt/boomerang/releases/latest).
-2. Double-cliquez dessus. Eddy (elementary OS) ou l'App Center (Ubuntu) installe Boomerang et
-   tous les paquets nécessaires. En terminal : `sudo apt install ./boomerang_*.deb`.
+2. Installez-le dans un terminal, depuis le dossier du téléchargement :
+   `sudo apt install ./boomerang_0.8.1-1_amd64.deb`. apt installe aussi les paquets nécessaires.
+   Sur Ubuntu, l'App Center peut aussi ouvrir le fichier d'un double-clic.
 3. Fermez puis rouvrez votre session (ou lancez `systemctl --user start boomerangd`), puis
    ouvrez Boomerang. L'assistant vous guide pour appairer l'iPhone et vous connecter à iCloud.
 
@@ -96,7 +97,7 @@ Désinstallation : `sudo apt remove boomerang`. Vos données restent dans
 | Système | État |
 |---|---|
 | elementary OS 8 ou plus récent | Tout fonctionne. Les appels demandent PipeWire 1.4 ou plus récent : avec un PipeWire plus ancien, Boomerang grise les appels et explique pourquoi. |
-| Ubuntu 24.04 ou plus récent | Demande Granite 7.7 ou plus récent. Les appels demandent PipeWire 1.4 ou plus récent. Ubuntu 24.04 fournit rclone 1.60, trop ancien pour iCloud : utilisez le bouton « Télécharger rclone ». |
+| Ubuntu 24.04 ou plus récent | Le paquet demande Granite 7.8 ou plus récent (la compilation depuis les sources accepte la 7.7). Les appels demandent PipeWire 1.4 ou plus récent. Ubuntu 24.04 fournit rclone 1.60, trop ancien pour iCloud : utilisez le bouton « Télécharger rclone ». |
 
 Matériel : un adaptateur Bluetooth compatible Bluetooth Low Energy (presque tous les modèles
 récents).
@@ -115,7 +116,7 @@ ligne : `python3 -m unittest tests.test_offline`. Paquet : `packaging/build-deb.
 
 ## Ce que Boomerang ne sait pas faire
 
-Des limites honnêtes, fixées surtout par ce qu'un iPhone accepte d'un ordinateur non Apple :
+Ces limites viennent surtout de ce qu'un iPhone accepte d'un ordinateur non Apple :
 
 - Pas d'envoi d'iMessage, pas de réponse dans les groupes, pas de pièces jointes : le Bluetooth
   n'envoie qu'un SMS à une seule personne.

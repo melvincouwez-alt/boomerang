@@ -2,7 +2,7 @@
 
 Quand l'iPhone reçoit un SMS avec un code de vérification, Boomerang le propose sous le champ de code du site ouvert dans le navigateur. Un clic sur la pastille « Code de Ma Banque : 482913 » remplit le champ. Le code n'entre dans la page qu'à ce clic.
 
-Exception : un SMS qui lie le code à un site, sur sa dernière ligne (`@exemple.fr #482913`, le format que reconnaissent iOS et Android). Sur ce site, le code est rempli tout seul. Sur tout autre site, il n'est jamais proposé : une page d'hameçonnage qui déclenche l'envoi du code de votre banque ne le reçoit pas.
+Exception : un SMS qui lie le code à un site, sur sa dernière ligne (`@exemple.fr #482913`, le format que reconnaissent iOS et Android). Sur ce site, le code est rempli automatiquement. Sur tout autre site, il n'est jamais proposé : une page d'hameçonnage qui déclenche l'envoi du code de votre banque ne le reçoit pas.
 
 Cette fonction est en alpha. La notification avec « Copier le code » reste la voie stable.
 
@@ -52,7 +52,7 @@ L'identifiant affiché doit être `bbnmajflfndmkepfcnmpabhmneoplfkk`. C'est lui 
 
 ## Limites connues
 
-- **Identifiant de l'extension** : l'intégration n'accepte que l'identifiant de l'extension Boomerang. Sous Chrome, cet identifiant découle de la clé publique du manifeste, qu'une autre extension installée à la main pourrait recopier ; sous Firefox, `otp@boomerang.melvincouwez.github.io` n'est pas encore réservé sur addons.mozilla.org. N'installez pas d'extension d'origine inconnue.
+- **Identifiant de l'extension** : l'intégration n'accepte que l'identifiant de l'extension Boomerang. Sous Chrome, cet identifiant découle de la clé publique du manifeste, qu'une autre extension chargée en mode développeur pourrait recopier ; sous Firefox, `otp@boomerang.melvincouwez.github.io` n'est pas encore réservé sur addons.mozilla.org. N'installez pas d'extension d'origine inconnue.
 
 - **Navigateurs Flatpak ou Snap** : ils lancent l'intégration dans leur bac à sable, sans accès au démon Boomerang. Non pris en charge pour l'instant. Utilisez la notification « Copier le code ».
 - Les champs découpés en une case par chiffre sont remplis case par case, mais certains sites les gèrent à leur façon.

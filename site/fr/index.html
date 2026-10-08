@@ -26,7 +26,7 @@
   <main>
     <div class="wrap hero">
       <img class="icon" src="../icon.svg" alt="Icône de Boomerang">
-      <div><span class="badge">Version 0.7 alpha</span></div>
+      <div><span class="badge">Version 0.8 alpha</span></div>
       <h1>Boomerang</h1>
       <p class="lead">Votre iPhone et votre compte Apple, chez eux sur elementary OS.</p>
       <div class="actions">
@@ -83,14 +83,14 @@
         <h2>Installation</h2>
         <ol class="steps">
           <li>Téléchargez <a href="https://github.com/melvincouwez-alt/boomerang/releases/tag/v0.8.1"><code>boomerang_0.8.1-1_amd64.deb</code></a>.</li>
-          <li>Double-cliquez dessus. Eddy sur elementary OS, ou l'App Center sur Ubuntu, installe Boomerang et tout ce qu'il lui faut. En terminal : <code>sudo apt install ./boomerang_*.deb</code></li>
+          <li>Installez-le dans un terminal : <code>sudo apt install ./boomerang_0.8.1-1_amd64.deb</code>. apt installe aussi les paquets nécessaires. Sur Ubuntu, l'App Center peut aussi l'ouvrir d'un double-clic.</li>
           <li>Fermez puis rouvrez votre session, puis ouvrez Boomerang. L'assistant vous guide pour appairer l'iPhone et vous connecter à iCloud.</li>
         </ol>
         <p>Un composant manque plus tard ? Boomerang l'affiche et l'installe en un clic. Un guide intégré, en français et en anglais, explique chaque étape (touche F1).</p>
         <table>
           <tr><th>Système</th><th>État</th></tr>
           <tr><td>elementary OS 8 ou plus récent</td><td>Tout fonctionne. Les appels demandent PipeWire 1.4 ou plus récent.</td></tr>
-          <tr><td>Ubuntu 24.04 ou plus récent</td><td>Demande Granite 7.7 ou plus récent. Les appels demandent PipeWire 1.4 ou plus récent.</td></tr>
+          <tr><td>Ubuntu 24.04 ou plus récent</td><td>Le paquet demande Granite 7.8 ou plus récent. Les appels demandent PipeWire 1.4 ou plus récent.</td></tr>
         </table>
       </div>
     </section>
@@ -101,7 +101,7 @@
         <details><summary>Puis-je envoyer des iMessages ?</summary><p>Non. Le Bluetooth ne permet à un ordinateur que d'envoyer un SMS à une seule personne. Les réponses de groupe et les pièces jointes restent sur l'iPhone.</p></details>
         <details><summary>Et le presse-papiers universel, Handoff ou AirDrop ?</summary><p>Impossible : il leur faut le chiffrement et la pile Wi-Fi d'Apple.</p></details>
         <details><summary>Où vont mes messages ?</summary><p>Nulle part ailleurs que sur votre ordinateur. Boomerang n'a pas de serveur et n'envoie aucune statistique. Lisez la <a href="https://github.com/melvincouwez-alt/boomerang/blob/HEAD/docs/confidentialite.md">notice de confidentialité</a>.</p></details>
-        <details><summary>Mon iPhone ne voit pas l'ordinateur dans ses réglages Bluetooth.</summary><p>C'est normal pour ce type d'accessoire. Le guide montre comment appairer avec l'app gratuite nRF Connect.</p></details>
+        <details><summary>Mon iPhone ne voit pas l'ordinateur dans ses réglages Bluetooth.</summary><p>Cliquez d'abord sur « Appairer un iPhone… » dans l'Aperçu de Boomerang : l'ordinateur devient visible pendant trois minutes sous Réglages › Bluetooth › Autres appareils. S'il n'apparaît toujours pas, coupez puis réactivez le Bluetooth de l'iPhone. Le guide intégré détaille chaque étape.</p></details>
       </div>
     </section>
 

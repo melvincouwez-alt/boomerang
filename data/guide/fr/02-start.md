@@ -4,8 +4,8 @@ summary: Installer, compléter les composants, lancer l'assistant.
 ---
 ## Installer Boomerang
 1. Téléchargez le paquet `.deb` depuis la page des versions du projet.
-2. Double-cliquez dessus : il s'ouvre dans Eddy (elementary OS) ou dans le Centre d'applications (Ubuntu).
-3. Cliquez sur **Installer** et saisissez votre mot de passe. Les paquets nécessaires s'installent en même temps.
+2. Dans un terminal, depuis le dossier du téléchargement, lancez `sudo apt install ./boomerang_*.deb` et saisissez votre mot de passe. Les paquets nécessaires s'installent en même temps. Sur Ubuntu, le Centre d'applications peut aussi ouvrir le fichier d'un double-clic.
+3. Fermez puis rouvrez votre session pour démarrer le service.
 4. Ouvrez Boomerang depuis le menu des applications.
 
 ## Composants manquants
@@ -19,7 +19,7 @@ Si une pièce manque sur votre système, Boomerang l'indique dans une carte **Co
 ## L'assistant de configuration
 Au premier lancement, un assistant plein écran vous accueille :
 1. Choisissez ce que vous voulez relier : votre iPhone, votre compte Apple, ou les deux.
-2. Suivez les étapes. Chacune se coche toute seule quand elle est faite.
+2. Suivez les étapes. Chacune se coche automatiquement une fois faite.
 3. Choisissez les apps séparées à afficher.
 4. Terminez. Vous pouvez aussi cliquer sur **Passer la configuration** et revenir plus tard.
 

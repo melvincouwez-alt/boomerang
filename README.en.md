@@ -75,8 +75,9 @@ messages and iCloud accounts.*
 
 1. Download `boomerang_0.8.1-1_amd64.deb` from the
    [latest release](https://github.com/melvincouwez-alt/boomerang/releases/latest).
-2. Double-click it. Eddy (elementary OS) or the App Center (Ubuntu) installs Boomerang and every
-   package it needs. In a terminal: `sudo apt install ./boomerang_*.deb`.
+2. Install it from a terminal, in the download folder:
+   `sudo apt install ./boomerang_0.8.1-1_amd64.deb`. apt also installs the packages it needs.
+   On Ubuntu, the App Center can also open the file with a double-click.
 3. Log out and back in (or run `systemctl --user start boomerangd`), then open Boomerang.
    The setup assistant guides you through pairing the iPhone and signing in to iCloud.
 
@@ -93,7 +94,7 @@ Uninstall with `sudo apt remove boomerang`. Your data stays in `~/.local/share/b
 | System | Status |
 |---|---|
 | elementary OS 8 or later | Everything works. Calls need PipeWire 1.4 or later: with an older PipeWire, Boomerang greys the calls out and says why. |
-| Ubuntu 24.04 or later | Needs Granite 7.7 or later. Calls need PipeWire 1.4 or later. Ubuntu 24.04 ships rclone 1.60, too old for iCloud: use the "Download rclone" button. |
+| Ubuntu 24.04 or later | The package needs Granite 7.8 or later (building from source accepts 7.7). Calls need PipeWire 1.4 or later. Ubuntu 24.04 ships rclone 1.60, too old for iCloud: use the "Download rclone" button. |
 
 Hardware: a Bluetooth adapter that supports Bluetooth Low Energy (almost all recent ones).
 
@@ -111,7 +112,7 @@ Runtime dependencies are listed in `debian/control`. Offline tests:
 
 ## What it cannot do
 
-Honest limits, mostly set by what an iPhone accepts from a non-Apple computer:
+These limits come mostly from what an iPhone accepts from a non-Apple computer:
 
 - No iMessage sending, no group replies, no attachments: Bluetooth only sends one-to-one SMS.
 - No universal clipboard, Handoff, AirDrop or Continuity Camera: they need Apple's own

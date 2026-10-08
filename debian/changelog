@@ -2,7 +2,7 @@ boomerang (0.8.1-1) unstable; urgency=medium
 
   * New app icon, drawn like elementary's own (series E): a slate iPhone
     tilted behind, the raspberry tile with the white boomerang in front;
-    each size drawn on its own pixel grid (data/icon-proposals/install_e5.py).
+    each size drawn on its own pixel grid.
   * Lighter in the background: the daemon computes its properties once per
     GetAll, indexes the messages cache, follows NetworkManager and obexd by
     their signals, runs no idevice_* or LocalSend work while unused, and

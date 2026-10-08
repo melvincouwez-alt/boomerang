@@ -15,7 +15,7 @@ summary: Lire vos SMS et y répondre depuis l'ordinateur.
 3. Une fine barre sous l'en-tête montre l'envoi. Le message part de votre iPhone, depuis votre numéro.
 
 - L'envoi fonctionne seulement dans les conversations avec **une seule personne**. Les conversations de groupe se lisent ici mais se répondent sur l'iPhone.
-- Un message qui n'a pas pu partir reste dans la conversation avec **Réessayer** et **Supprimer**. Boomerang ne renvoie jamais rien de lui-même, pour éviter les doublons.
+- Un message qui n'a pas pu partir reste dans la conversation avec **Réessayer** et **Supprimer**. Boomerang ne renvoie jamais un message sans votre clic, pour éviter les doublons.
 - **Nouveau message**, en haut de la liste : choisissez un contact ou tapez un numéro.
 - Dans une notification, **Répondre** ouvre une petite fenêtre de réponse rapide.
 
