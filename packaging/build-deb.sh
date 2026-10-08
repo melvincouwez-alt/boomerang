@@ -59,6 +59,10 @@ done
 cp -r debian "$work/pkg-debian"
 ( cd "$work" && ln -s pkg-debian debian &&
   dpkg-shlibdeps -O "-e$root/usr/bin/io.github.melvincouwez.Boomerang" 2>/dev/null ) > "$work/substvars"
+# dpkg-shlibdeps takes the version from the build machine's symbols file, where elementary's
+# daily PPA dates granite_header_label_set_secondary_text 7.8.0 (the property exists since 7.1).
+# The newest API Boomerang really uses is HeaderLabel.size (Granite 7.7.0).
+sed -i 's/libgranite7 ([^)]*)/libgranite7 (>= 7.7.0)/' "$work/substvars"
 # elementary's own packages name Granite libgranite7, Ubuntu's libgranite-7-7: accept both.
 sed -i 's/libgranite7 (\([^)]*\))/libgranite7 (\1) | libgranite-7-7 (\1)/' "$work/substvars"
 echo "misc:Depends=" >> "$work/substvars"

@@ -7,7 +7,7 @@
 **Votre iPhone et votre compte Apple, chez eux sur elementary OS.**
 
 [![Licence : GPL-3.0-or-later](https://img.shields.io/badge/licence-GPL--3.0--or--later-blue)](LICENSE)
-![Version 0.8.1 alpha](https://img.shields.io/badge/version-0.8.1%20alpha-orange)
+![Version 0.8.2 alpha](https://img.shields.io/badge/version-0.8.2%20alpha-orange)
 ![elementary OS 8+](https://img.shields.io/badge/elementary%20OS-8%2B-64baff)
 
 [Site](https://melvincouwez-alt.github.io/boomerang/fr/) ·
@@ -75,10 +75,10 @@ vos messages et vos comptes iCloud.*
 
 ### Depuis le paquet (conseillé)
 
-1. Téléchargez `boomerang_0.8.1-1_amd64.deb` depuis la
+1. Téléchargez `boomerang_0.8.2-1_amd64.deb` depuis la
    [dernière version](https://github.com/melvincouwez-alt/boomerang/releases/latest).
 2. Installez-le dans un terminal, depuis le dossier du téléchargement :
-   `sudo apt install ./boomerang_0.8.1-1_amd64.deb`. apt installe aussi les paquets nécessaires.
+   `sudo apt install ./boomerang_0.8.2-1_amd64.deb`. apt installe aussi les paquets nécessaires.
    Sur Ubuntu, l'App Center peut aussi ouvrir le fichier d'un double-clic.
 3. Fermez puis rouvrez votre session (ou lancez `systemctl --user start boomerangd`), puis
    ouvrez Boomerang. L'assistant vous guide pour appairer l'iPhone et vous connecter à iCloud.

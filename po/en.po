@@ -5699,3 +5699,6 @@ msgstr "Notifications your way"
 
 msgid "Par conversation et par appli de l'iPhone : prioritaires (même en Ne pas déranger), discrètes ou muettes, avec leur propre son, et le contenu masqué si besoin."
 msgstr "Per conversation and per iPhone app: priority (even in Do Not Disturb), quiet or muted, with their own sound, and the content hidden when needed."
+
+msgid "AirPods Pro de démonstration"
+msgstr "Demo AirPods Pro"

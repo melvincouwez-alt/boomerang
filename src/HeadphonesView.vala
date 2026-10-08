@@ -490,7 +490,7 @@ namespace Boomerang {
         private static Variant demo_pair () {
             var b = new VariantBuilder (new VariantType ("a{sv}"));
             b.add ("{sv}", "address", new Variant.string ("00:00:00:00:00:00"));
-            b.add ("{sv}", "name", new Variant.string ("AirPods Pro de démonstration"));
+            b.add ("{sv}", "name", new Variant.string (_("AirPods Pro de démonstration")));
             b.add ("{sv}", "model", new Variant.string ("AirPods Pro 2 (USB-C)"));
             b.add ("{sv}", "firmware", new Variant.string ("0.0"));
             b.add ("{sv}", "connected", new Variant.boolean (true));

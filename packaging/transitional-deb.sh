@@ -18,6 +18,6 @@ control="$work/root/DEBIAN/control"
 sed -i -e 's/^Package: boomerang$/Package: covalence/' \
        -e '/^Provides:/d' -e '/^Conflicts:/d' -e '/^Replaces:/d' "$control"
 sed -i '/^Package:/a Provides: boomerang\nConflicts: boomerang\nReplaces: boomerang' "$control"
-sed -i 's/^Description: .*/Description: Boomerang, formerly Covalence (transitional package)/' "$control"
+sed -i 's/^Description: .*/Description: Boomerang, anciennement Covalence (paquet de transition)/' "$control"
 dpkg-deb --root-owner-group -Zxz --build "$work/root" "$out" >/dev/null
 echo "$out"

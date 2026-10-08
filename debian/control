@@ -44,13 +44,14 @@ Depends: ${shlibs:Depends},
 Recommends: heif-gdk-pixbuf, openssl, pkexec, gnupg, gstreamer1.0-gtk4, gir1.2-gstreamer-1.0
 Suggests: rclone (>= 1.69), uxplay, gstreamer1.0-plugins-bad, avahi-daemon, libimobiledevice-utils, ifuse,
  libheif-examples
-Description: iPhone and iCloud companion for elementary OS
- Boomerang links an iPhone to the desktop over Bluetooth: notifications,
- media controls, messages (MAP), contacts and call history (PBAP), calls
- through PipeWire's hands-free gateway, battery, and AirPods controls.
+Description: iPhone et iCloud sur elementary OS
+ Boomerang relie un iPhone au bureau par Bluetooth : notifications,
+ lecture en cours, messages (MAP), contacts et journal d'appels (PBAP),
+ appels par la passerelle mains libres de PipeWire, batterie et réglages
+ des AirPods.
  .
- It also connects iCloud mail, calendars, reminders and contacts through
- Evolution Data Server, and mounts iCloud Drive and iCloud Photos with
- rclone (1.69 or later).
+ Il ajoute aussi le courriel, les agendas, les rappels et les contacts
+ iCloud par Evolution Data Server, et monte iCloud Drive et iCloud Photos
+ avec rclone (1.69 ou plus récent).
  .
- Boomerang is independent free software, not affiliated with Apple Inc.
+ Boomerang est un logiciel libre indépendant, non affilié à Apple Inc.
