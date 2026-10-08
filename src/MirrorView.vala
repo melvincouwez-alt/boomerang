@@ -31,6 +31,7 @@ public class Boomerang.MirrorView : Gtk.Box {
     private Gtk.DropDown profile;
     private Gtk.DropDown rotation;
     private Gtk.Switch fullscreen;
+    private Gtk.Switch record;
     private Gtk.Label decoder_label;
     private bool updating = false;
 
@@ -97,7 +98,11 @@ public class Boomerang.MirrorView : Gtk.Box {
         content.append (build_control ());
         append (scroll);
 
-        daemon.changed.connect (update);
+        daemon.changed.connect (() => {
+            if (daemon.touched ({ "Mirror", "Control" })) {
+                update ();
+            }
+        });
         update ();
     }
 
@@ -154,6 +159,16 @@ public class Boomerang.MirrorView : Gtk.Box {
         });
         list.append (option_row (_("Plein écran"), _("Échap ou F11 dans la fenêtre de recopie pour en sortir"),
                                  fullscreen));
+
+        record = new Gtk.Switch ();
+        record.notify["active"].connect (() => {
+            if (!updating) {
+                set_option ("record", record.active ? "true" : "false");
+            }
+        });
+        list.append (option_row (_("Enregistrer la recopie"),
+                                 _("Image et son en MP4 dans le dossier Vidéos, un fichier daté par recopie"),
+                                 record));
 
         decoder_label = new Gtk.Label ("") { xalign = 1 };
         decoder_label.add_css_class (Granite.CssClass.DIM);
@@ -437,6 +452,9 @@ public class Boomerang.MirrorView : Gtk.Box {
         } else {
             state_label.label = _("Arrêté");
         }
+        if (running && Props.str (mirror, "recording") != "") {
+            state_label.label += " · " + _("Enregistrement dans Vidéos");
+        }
         steps.label = _("1. Ouvrez le Centre de contrôle.\n2. Touchez « Recopie de l'écran ».\n"
                         + "3. Choisissez <b>%s</b>.\n4. Saisissez le code affiché ici.").printf (
                         Markup.escape_text (name));
@@ -444,6 +462,7 @@ public class Boomerang.MirrorView : Gtk.Box {
         var rot = Props.str (mirror, "rotation");
         rotation.selected = rot == "R" ? 1 : rot == "L" ? 2 : 0;
         fullscreen.active = Props.flag (mirror, "fullscreen");
+        record.active = Props.flag (mirror, "record");
         switch (Props.str (mirror, "decoder")) {
             case "nvidia": decoder_label.label = _("NVIDIA"); break;
             case "vaapi": decoder_label.label = _("VA-API"); break;

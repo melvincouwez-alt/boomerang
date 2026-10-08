@@ -16,6 +16,8 @@ extern const string LOCALEDIR;
 
 public class Boomerang.Indicator : Wingpanel.Indicator {
     private const string BUS_NAME = "io.github.melvincouwez.Boomerang.Daemon";
+    private const string[] SHOWN = { "Paired", "Connected", "UnreadMessages", "MissedCalls", "DeviceName",
+                                     "Battery", "NowPlaying", "Tethering", "CallsQuiet" };
     private const string OBJECT_PATH = "/io/github/melvincouwez/Boomerang/Daemon";
     private const string INTERFACE = "io.github.melvincouwez.Boomerang1";
     private const string APP_ID = "io.github.melvincouwez.Boomerang";
@@ -114,7 +116,15 @@ public class Boomerang.Indicator : Wingpanel.Indicator {
         try {
             proxy = yield new DBusProxy (connection, DBusProxyFlags.NONE, null, BUS_NAME, OBJECT_PATH,
                                          INTERFACE, null);
-            proxy.g_properties_changed.connect (() => refresh ());
+            proxy.g_properties_changed.connect ((changed, invalidated) => {
+                // The panel only shows these: a battery or a track change, not a transfer's progress.
+                foreach (var key in SHOWN) {
+                    if (changed.lookup_value (key, null) != null || key in invalidated) {
+                        refresh ();
+                        return;
+                    }
+                }
+            });
             proxy.g_signal.connect ((sender, signal_name, parameters) => {
                 if (signal_name == "ActiveCallsChanged") {
                     refresh_call.begin ();
@@ -222,7 +232,7 @@ public class Boomerang.Indicator : Wingpanel.Indicator {
             var text = "";
             for (size_t i = 0; i < calls.n_children (); i++) {
                 var call = calls.get_child_value (i);
-                var path = call.lookup_value ("path", VariantType.STRING);
+                var path = call.lookup_value ("path", VariantType.OBJECT_PATH);  // "o" in service.py
                 var state = call.lookup_value ("state", VariantType.STRING);
                 if (path == null) {
                     continue;
@@ -264,9 +274,13 @@ public class Boomerang.Indicator : Wingpanel.Indicator {
         read_prefs ();
         try {
             prefs_monitor = File.new_for_path (prefs_path ()).monitor_file (FileMonitorFlags.NONE);
+            // The app saves apps.conf for many other things (window sizes, drafts…).
             prefs_monitor.changed.connect (() => {
+                var was = wanted;
                 read_prefs ();
-                refresh ();
+                if (wanted != was) {
+                    refresh ();
+                }
             });
         } catch (Error e) {
             debug ("cannot watch apps.conf: %s", e.message);

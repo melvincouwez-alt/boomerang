@@ -18,14 +18,10 @@ namespace Boomerang {
                                         Config.APP_ID + mode.suffix () + ".desktop");
         }
 
-        private static string prefs_path () {
-            return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
-        }
-
         public static bool is_visible (Mode mode) {
             var prefs = new KeyFile ();
             try {
-                prefs.load_from_file (prefs_path (), KeyFileFlags.NONE);
+                prefs.load_from_file (Setup.prefs_path (), KeyFileFlags.NONE);
                 return prefs.get_boolean ("launchers", mode.to_string ());
             } catch (Error e) {
                 return true;
@@ -35,14 +31,14 @@ namespace Boomerang {
         public static void set_visible (Mode mode, bool visible) {
             var prefs = new KeyFile ();
             try {
-                prefs.load_from_file (prefs_path (), KeyFileFlags.NONE);
+                prefs.load_from_file (Setup.prefs_path (), KeyFileFlags.NONE);
             } catch (Error e) {
                 // first choice
             }
             prefs.set_boolean ("launchers", mode.to_string (), visible);
             try {
-                DirUtils.create_with_parents (Path.get_dirname (prefs_path ()), 0700);
-                prefs.save_to_file (prefs_path ());
+                DirUtils.create_with_parents (Path.get_dirname (Setup.prefs_path ()), 0700);
+                prefs.save_to_file (Setup.prefs_path ());
             } catch (Error e) {
                 warning ("cannot save launcher choice: %s", e.message);
             }
@@ -123,10 +119,6 @@ namespace Boomerang {
 
         public void set_done (bool done) {
             mark.visible_child_name = done ? "done" : "todo";
-        }
-
-        public void set_hint (string markup) {
-            hint.label = markup;
         }
 
         public Gtk.Button add_button (string label, bool suggested = false) {

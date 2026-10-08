@@ -222,8 +222,13 @@ class Files:
         self.changed()
         info = self.info
 
-        def progress(sent, total):
-            _dispatch(self._send_progress, peer["alias"], sent / total if total else 1.0)
+        shown = [-1]
+
+        def progress(sent, total):  # once per percent, not per 64 KiB chunk
+            percent = sent * 100 // total if total else 100
+            if percent != shown[0]:
+                shown[0] = percent
+                _dispatch(self._send_progress, peer["alias"], sent / total if total else 1.0)
 
         def job():
             error, taken = "", 0

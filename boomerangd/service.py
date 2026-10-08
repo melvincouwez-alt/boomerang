@@ -149,6 +149,18 @@ XML = f"""
       <arg name="app" type="s" direction="in"/>
       <arg name="enabled" type="b" direction="in"/>
     </method>
+    <method name="GetNotificationAppSettings">
+      <arg name="app" type="s" direction="in"/>
+      <arg name="mode" type="s" direction="out"/>
+      <arg name="sound" type="s" direction="out"/>
+      <arg name="private" type="b" direction="out"/>
+    </method>
+    <method name="SetNotificationAppSettings">
+      <arg name="app" type="s" direction="in"/>
+      <arg name="mode" type="s" direction="in"/>
+      <arg name="sound" type="s" direction="in"/>
+      <arg name="private" type="b" direction="in"/>
+    </method>
     <method name="ClearNotifications"/>
     <method name="MarkCallsSeen"/>
     <signal name="NotificationsChanged"/>
@@ -274,6 +286,28 @@ XML = f"""
     </method>
     <property name="OneTimeCodes" type="s" access="read"/>
     <property name="AutoCopyCodes" type="b" access="read"/>
+    <method name="GetThreadNotify">
+      <arg name="thread" type="s" direction="in"/>
+      <arg name="mode" type="s" direction="out"/>
+      <arg name="sound" type="s" direction="out"/>
+    </method>
+    <method name="SetThreadNotify">
+      <arg name="thread" type="s" direction="in"/>
+      <arg name="mode" type="s" direction="in"/>
+      <arg name="sound" type="s" direction="in"/>
+    </method>
+    <method name="SetLinkPreviews">
+      <arg name="enabled" type="b" direction="in"/>
+    </method>
+    <method name="GetLinkPreview">
+      <arg name="url" type="s" direction="in"/>
+      <arg name="preview" type="a{{sv}}" direction="out"/>
+    </method>
+    <property name="LinkPreviews" type="b" access="read"/>
+    <method name="SetQuickReplies">
+      <arg name="replies" type="as" direction="in"/>
+    </method>
+    <property name="QuickReplies" type="as" access="read"/>
     <method name="DeleteMessage">
       <arg name="message" type="s" direction="in"/>
     </method>
@@ -378,7 +412,7 @@ SIGNATURES = {
     "NotificationsLinked": "b", "MediaLinked": "b", "CallsLinked": "b", "CallsSupported": "b",
     "Battery": "i",
     "ICloudState": "s", "Modules": "a{sb}", "MessagesState": "s", "MessagesSend": "s", "ReactionsSend": "b",
-    "OneTimeCodes": "s", "AutoCopyCodes": "b",
+    "OneTimeCodes": "s", "AutoCopyCodes": "b", "LinkPreviews": "b", "QuickReplies": "as",
     "ContactsState": "s", "AudioOnPC": "b", "MicMuted": "b",
     "PhoneAudio": "s", "PhoneAudioOutput": "s", "ContactsSource": "s", "ContactsBook": "s",
     "UnreadMessages": "u", "MissedCalls": "u", "NowPlaying": "a{sv}", "AlphaFeatures": "a{sb}", "FetchUnread": "b", "CallsQuiet": "b", "Sounds": "a{ss}",
@@ -387,7 +421,7 @@ SIGNATURES = {
     "Files": "a{sv}", "Mirror": "a{sv}", "PhotosUsb": "a{sv}", "Control": "a{sv}",
 }
 
-PROXIMITY_TYPES = {"enabled": "b", "distance": "s", "delay": "u", "rssi": "i", "near": "b"}
+PROXIMITY_TYPES = {"enabled": "b", "distance": "s", "delay": "u", "near": "b"}
 
 
 def _variant(name, value):
@@ -434,7 +468,8 @@ ACTIVE_TYPES = {"path": "o", "state": "s", "number": "s", "name": "s", "duration
 NOTIFICATION_TYPES = {"uid": "u", "app": "s", "app_name": "s", "title": "s", "body": "s",
                       "time": "x", "category": "u", "icon": "s", "image": "s",
                       "positive": "s", "negative": "s"}
-APP_TYPES = {"id": "s", "name": "s", "enabled": "b", "count": "u", "icon": "s", "image": "s"}
+APP_TYPES = {"id": "s", "name": "s", "enabled": "b", "count": "u", "mode": "s", "icon": "s",
+             "image": "s"}
 OUTPUT_TYPES = {"name": "s", "description": "s", "default": "b"}
 HEADPHONES_TYPES = {"address": "s", "name": "s", "model": "s", "firmware": "s", "connected": "b",
                     "linked": "b", "left": "i", "right": "i", "case": "i", "left_charging": "b",
@@ -499,6 +534,7 @@ class Service:
         self.bus = bus
         self.daemon = daemon
         self.cache = {}
+        self.snapshot = None
         self.callers = Callers(bus)
         info = Gio.DBusNodeInfo.new_for_xml(XML).interfaces[0]
         self.registration = bus.register_object(PATH, info, self._method, self._get, None)
@@ -509,6 +545,7 @@ class Service:
             self.bus, BUS_NAME, Gio.BusNameOwnerFlags.DO_NOT_QUEUE, None, on_lost)
 
     def _method(self, _conn, sender, _path, _iface, method, params, invocation):
+        self.snapshot = None
         # An exception must still answer the caller (otherwise the app waits for the D-Bus
         # timeout) and must not take the daemon's main loop with it.
         self._safely(method, invocation, self._guard, sender, method, params, invocation)
@@ -722,6 +759,17 @@ class Service:
             return
         elif method == "SetNotificationApp":
             d.notifications.set_app_enabled(*params.unpack())
+        elif method == "GetNotificationAppSettings":
+            invocation.return_value(GLib.Variant(
+                "(ssb)", d.notifications.app_settings(params.unpack()[0])))
+            return
+        elif method == "SetNotificationAppSettings":
+            try:
+                d.notifications.set_app_settings(*params.unpack())
+            except ValueError:
+                invocation.return_dbus_error(f"{INTERFACE}.Error.InvalidArgs",
+                                             _("mode d'alerte ou son introuvable"))
+                return
         elif method == "ClearNotifications":
             d.notifications.clear()
         elif method == "ListHeadphones":
@@ -844,6 +892,26 @@ class Service:
         elif method == "SetAutoCopyCodes":
             d.messages.set_auto_copy_codes(params.unpack()[0])
             d.link_changed()
+        elif method == "GetThreadNotify":
+            invocation.return_value(GLib.Variant(
+                "(ss)", d.messages.thread_notify(params.unpack()[0])))
+            return
+        elif method == "SetThreadNotify":
+            try:
+                d.messages.set_thread_notify(*params.unpack())
+            except ValueError:
+                invocation.return_dbus_error(f"{INTERFACE}.Error.InvalidArgs",
+                                             _("mode d'alerte ou son introuvable"))
+                return
+        elif method == "SetLinkPreviews":
+            d.set_link_previews(params.unpack()[0])
+        elif method == "GetLinkPreview":
+            # Fetched in a worker thread: the answer comes later, the main loop goes on.
+            d.link_previews.get(params.unpack()[0], lambda preview: invocation.return_value(
+                GLib.Variant("(a{sv})", ({k: GLib.Variant("s", v) for k, v in preview.items()},))))
+            return
+        elif method == "SetQuickReplies":
+            d.set_quick_replies(params.unpack()[0])
         elif method == "SetLocalSend":
             d.files.set_enabled(params.unpack()[0])
         elif method == "ListFilePeers":
@@ -1022,11 +1090,23 @@ class Service:
         self.bus.emit_signal(None, PATH, INTERFACE, "ContactsChanged", None)
 
     def _get(self, _conn, _sender, _path, _iface, name):
-        return _variant(name, self.daemon.properties()[name])
+        # GetAll (every new client proxy) asks for each property in turn: compute them
+        # once, not once per property (NetworkManager is asked for the tethering state).
+        # ponytail: the snapshot lives until the next idle or method call; an event in the
+        # same main loop pass may still be missed by a Get, never by PropertiesChanged.
+        if self.snapshot is None:
+            self.snapshot = self.daemon.properties()
+            GLib.idle_add(self._drop_snapshot, priority=GLib.PRIORITY_HIGH)
+        return _variant(name, self.snapshot[name])
+
+    def _drop_snapshot(self):
+        self.snapshot = None
+        return False
 
     def refresh(self):
         """Emit PropertiesChanged for whatever changed since the last call."""
         current = self.daemon.properties()
+        self.snapshot = None
         changed = {k: _variant(k, v) for k, v in current.items() if self.cache.get(k) != v}
         self.cache = current
         if changed:

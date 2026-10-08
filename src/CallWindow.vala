@@ -220,7 +220,11 @@ namespace Boomerang {
 
             daemon = new Daemon ();
             daemon.active_calls_changed.connect (() => reload.begin ());
-            daemon.changed.connect (update_toggles);
+            daemon.changed.connect (() => {
+                if (daemon.touched ({ "MicMuted", "AudioOnPC" })) {
+                    update_toggles ();
+                }
+            });
             daemon.connect_bus.begin ((obj, res) => {
                 daemon.connect_bus.end (res);
                 reload.begin ();
@@ -367,6 +371,7 @@ namespace Boomerang {
         private Gtk.Button hangup;
         private string? path = null;
         private int duration = -1;
+        private uint tick = 0;  // the call clock, only while a call is active
         private bool updating = false;
         private bool loaded = false;
 
@@ -441,6 +446,9 @@ namespace Boomerang {
 
             daemon.active_calls_changed.connect (() => reload.begin ());
             daemon.changed.connect (() => {
+                if (!daemon.touched ({ "MicMuted", "AudioOnPC" })) {
+                    return;
+                }
                 // First contact with the daemon: a call may already be going on.
                 if (!loaded && daemon.running) {
                     loaded = true;
@@ -452,13 +460,6 @@ namespace Boomerang {
                 updating = false;
             });
             map.connect (() => reload.begin ());
-            Timeout.add_seconds (1, () => {
-                if (duration >= 0) {
-                    duration++;
-                    status_label.label = _("En cours · %02d:%02d").printf (duration / 60, duration % 60);
-                }
-                return Source.CONTINUE;
-            });
         }
 
         private void act (string action) {
@@ -498,6 +499,17 @@ namespace Boomerang {
                 var dur = chosen.lookup_value ("duration", VariantType.INT32);
                 duration = dur != null ? int.max (dur.get_int32 (), 0) : 0;
                 status_label.label = _("En cours · %02d:%02d").printf (duration / 60, duration % 60);
+                if (tick == 0) {
+                    tick = Timeout.add_seconds (1, () => {
+                        if (duration < 0) {
+                            tick = 0;
+                            return Source.REMOVE;
+                        }
+                        duration++;
+                        status_label.label = _("En cours · %02d:%02d").printf (duration / 60, duration % 60);
+                        return Source.CONTINUE;
+                    });
+                }
             } else {
                 duration = -1;
                 status_label.label = ringing ? _("Appel entrant")

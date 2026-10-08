@@ -16,6 +16,40 @@ namespace Boomerang.WhatsNew {
 
     private static Item[] items () {
         return {
+            { "emblem-synchronizing-symbolic", _("Plus léger, nouvelle icône"),
+              _("Boomerang et son démon travaillent moins en arrière-plan : moins de commandes, "
+                + "moins de rafraîchissements, conversations plus rapides. Nouvelle icône dessinée "
+                + "comme celles d'elementary.") },
+            { "mail-unread-symbolic", _("Messages au bon endroit"),
+              _("Une conversation s'ouvre sur le dernier message. Un repère « Non lus » montre où "
+                + "reprendre, et un bouton ramène en bas en comptant les nouveaux messages.") },
+            { "preferences-color-symbolic", _("Conversations à votre goût"),
+              _("Surnom, emoji, couleur des bulles, fond, taille du texte : bouton palette en haut "
+                + "d'une conversation, ou clic droit › Personnaliser.") },
+            { "preferences-system-notifications-symbolic", _("Notifications à la carte"),
+              _("Par conversation et par appli de l'iPhone : prioritaires (même en Ne pas déranger), "
+                + "discrètes ou muettes, avec leur propre son, et le contenu masqué si besoin.") },
+            { "edit-find-symbolic", _("Chercher dans une conversation"),
+              _("Ctrl+F cherche dans la conversation ouverte, Ctrl+Maj+F dans toutes. Alt+↑/↓ "
+                + "change de conversation, Ctrl+N écrit un nouveau message.") },
+            { "insert-link-symbolic", _("Liens et réponses rapides"),
+              _("Aperçu des liens au choix, réponses rapides à votre façon, aussi dans les "
+                + "notifications : Réglages › Messages. Clic droit › Exporter, en PDF ou en texte.") },
+            { "preferences-desktop-theme-symbolic", _("Fenêtres aux couleurs de Boomerang"),
+              _("Barres d'en-tête framboise comme Cassette, colonne de gauche repliable en icônes "
+                + "avec pastilles (Réglages › Affichage ou en glissant son bord), images de fond proposées et apparence par défaut dans "
+                + "Réglages › Messages.") },
+            { "window-new-symbolic", _("Messages façon elementary"),
+              _("L'app Messages séparée a des barres d'en-tête elementary.") },
+            { "system-users-symbolic", _("Contributeurs"),
+              _("Une nouvelle page, sous Réglages, présente chaque projet sur lequel Boomerang "
+                + "s'appuie : ses auteurs, ce qu'il apporte, sa licence et son lien.") },
+            { "audio-headphones-symbolic", _("Répondre d'un geste de tête"),
+              _("Expérimental : avec les AirPods, hochez la tête pour répondre à un appel, "
+                + "secouez-la pour le refuser. À activer dans Réglages › Expérimental.") },
+            { "video-display-symbolic", _("Recopie enregistrée"),
+              _("La recopie garde l'écran allumé et peut s'enregistrer en MP4 dans Vidéos. "
+                + "Expérimental : une balise Bluetooth aide l'iPhone à trouver le PC.") },
             { "emblem-synchronizing-symbolic", _("Covalence devient Boomerang"),
               _("Nouveau nom, nouvelle icône : comme un boomerang, tout part de l'iPhone et y "
                 + "revient. Vos réglages, messages et comptes iCloud sont repris tels quels.") },
@@ -104,14 +138,10 @@ namespace Boomerang.WhatsNew {
         };
     }
 
-    private static string prefs_path () {
-        return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
-    }
-
     private static string last_shown () {
         var prefs = new KeyFile ();
         try {
-            prefs.load_from_file (prefs_path (), KeyFileFlags.NONE);
+            prefs.load_from_file (Setup.prefs_path (), KeyFileFlags.NONE);
             return prefs.get_string ("general", "whats-new");
         } catch (Error e) {
             return "";
@@ -121,14 +151,14 @@ namespace Boomerang.WhatsNew {
     private static void remember () {
         var prefs = new KeyFile ();
         try {
-            prefs.load_from_file (prefs_path (), KeyFileFlags.KEEP_COMMENTS);
+            prefs.load_from_file (Setup.prefs_path (), KeyFileFlags.KEEP_COMMENTS);
         } catch (Error e) {
             // first choice
         }
         prefs.set_string ("general", "whats-new", Config.VERSION);
         try {
-            DirUtils.create_with_parents (Path.get_dirname (prefs_path ()), 0700);
-            prefs.save_to_file (prefs_path ());
+            DirUtils.create_with_parents (Path.get_dirname (Setup.prefs_path ()), 0700);
+            prefs.save_to_file (Setup.prefs_path ());
         } catch (Error e) {
             warning ("cannot save the version shown: %s", e.message);
         }

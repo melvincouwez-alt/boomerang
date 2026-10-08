@@ -32,13 +32,13 @@ NOW = int(time.time())
 MIN, HOUR, DAY = 60, 3600, 86400
 
 PROPS = {
-    "Version": "0.7.0", "BluetoothAvailable": True, "Advertising": True, "Pairing": False, "LinkProblem": "", "AdapterName": "Boomerang-PC",
+    "Version": "0.8.1", "BluetoothAvailable": True, "Advertising": True, "Pairing": False, "LinkProblem": "", "AdapterName": "Boomerang-PC",
     "DeviceName": "iPhone de Camille", "DeviceAddress": "00:11:22:33:44:55", "Paired": True,
     "Connected": True, "NotificationsLinked": True, "MediaLinked": True, "CallsLinked": True,
     "CallsSupported": True, "Battery": 78, "ICloudState": "connected", "MessagesState": "ready",
     "MessagesSend": "yes", "ReactionsSend": True, "ContactsState": "ready", "AudioOnPC": True, "MicMuted": False,
     "PhoneAudio": "idle", "PhoneAudioOutput": "", "ContactsSource": "bluetooth",
-    "ContactsBook": "", "UnreadMessages": 2, "MissedCalls": 1,
+    "ContactsBook": "", "UnreadMessages": 2, "MissedCalls": 1, "LinkPreviews": True,
     "Modules": {m: True for m in ("notifications", "media", "calls", "battery", "messages",
                                   "icloud")},
 }
@@ -54,8 +54,17 @@ PEOPLE = [
     ("Hugo Richard", "+33600000007"), ("Léa Dubois", "+33600000008"),
 ]
 
+# Per-conversation alerts: thread -> (mode, sound).
+APP_NOTIFY = {"com.apple.mobilemail": ("priority", "", True), "com.apple.reminders": ("quiet", "", False)}
+THREAD_NOTIFY = {"t1": ("priority", "boomerang:carillon"), "t3": ("mute", "")}
+
 if EN:
     PROPS["DeviceName"] = "Camille's iPhone"
+    PROPS["QuickReplies"] = ["On my way", "I'll call you back", "OK 👍", "Thanks!",
+                             "Busy, I'll answer soon"]
+    LINK_PREVIEW = {"title": "Autumn hikes: ten trails near the city",
+                    "description": "Forests, ridges and lakes within an hour by train.",
+                    "site": "example.org", "image": ""}
     THREADS = {
         "t1": ("Mum", "+33600000003", [
             (False, "Hi! Are you coming for lunch on Sunday?", 3 * HOUR),
@@ -87,6 +96,11 @@ if EN:
          "io.elementary.tasks"),
     ]
 else:
+    PROPS["QuickReplies"] = ["J'arrive", "Je te rappelle", "OK 👍", "Merci !",
+                             "Je suis occupé, je te réponds vite"]
+    LINK_PREVIEW = {"title": "Randonnées d'automne : dix sentiers près de la ville",
+                    "description": "Forêts, crêtes et lacs à moins d'une heure de train.",
+                    "site": "example.org", "image": ""}
     THREADS = {
         "t1": ("Maman", "+33600000003", [
             (False, "Coucou ! Tu passes dimanche midi ?", 3 * HOUR),
@@ -215,7 +229,8 @@ def notifications():
 
 
 def notification_apps():
-    return [{"id": app, "name": name, "enabled": True, "count": 1, "icon": icon, "image": ""}
+    return [{"id": app, "name": name, "enabled": True, "count": 1, "icon": icon, "image": "",
+             "mode": APP_NOTIFY.get(app, ("", "", False))[0]}
             for _, app, name, _, _, _, icon in NOTIFICATIONS]
 
 
@@ -250,10 +265,27 @@ REPLIES = {
     "GetContact": lambda _: v("(a{sv})", ({},)),
     "SaveContact": lambda _: v("(s)", ("",)),
     "MediaCommand": lambda _: v("(b)", (True,)),
+    "GetNotificationAppSettings": lambda p: v("(ssb)", APP_NOTIFY.get(p.unpack()[0], ("", "", False))),
+    "GetThreadNotify": lambda p: v("(ss)", THREAD_NOTIFY.get(p.unpack()[0], ("", ""))),
+    "GetLinkPreview": lambda p: v("(a{sv})", ({k: v("s", x) for k, x in LINK_PREVIEW.items()}
+                                              if PROPS["LinkPreviews"] and
+                                              p.unpack()[0].startswith(("http://", "https://"))
+                                              else {},)),
 }
 
 
 def on_method(_conn, _sender, _path, _iface, method, params, invocation):
+    # Settings the demo keeps in memory, so the app sees its own changes.
+    if method == "SetThreadNotify":
+        thread, mode, sound = params.unpack()
+        THREAD_NOTIFY[thread] = (mode, sound)
+    elif method == "SetNotificationAppSettings":
+        app, mode, sound, private = params.unpack()
+        APP_NOTIFY[app] = (mode, sound, private)
+    elif method == "SetLinkPreviews":
+        PROPS["LinkPreviews"] = params.unpack()[0]
+    elif method == "SetQuickReplies":
+        PROPS["QuickReplies"] = [t.strip() for t in params.unpack()[0] if t.strip()][:8]
     reply = REPLIES.get(method)
     invocation.return_value(reply(params) if reply else None)
 

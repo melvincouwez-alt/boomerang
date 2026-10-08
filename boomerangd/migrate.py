@@ -73,7 +73,12 @@ class Rename:
         self.state = env("XDG_STATE_HOME") or os.path.join(self.home, ".local", "state")
         self.cache = env("XDG_CACHE_HOME") or os.path.join(self.home, ".cache")
         self.local = os.path.join(self.home, ".local")
+        # Programs of the former name still installed (a system install only for the real home).
+        self.programs = [os.path.join(self.local, "bin", f"{old}d")] + (
+            [f"/usr/bin/{old}d", f"/usr/lib/systemd/user/{old}d.service"] if home is None else [])
         self.done = []
+        self.settled = self.failed = False  # see run_all
+        self.marker = os.path.join(self.state, NEW, f"migrated-{old}")
 
     def _p(self, *parts):
         return os.path.join(*parts)
@@ -139,6 +144,8 @@ class Rename:
     # --- keyring ----------------------------------------------------------------------
 
     def keyring(self):
+        if self.settled:
+            return
         old_key = ["application", self.old_id, "kind", "rclone-config"]
         old = self.run(["secret-tool", "lookup", *old_key])
         if old is None or old.returncode != 0 or not old.stdout:
@@ -160,7 +167,7 @@ class Rename:
         # A package update swaps the programs under a running daemon: the old one (enabled
         # for every user by its package, not per user) still holds the Bluetooth link.
         daemon = f"{self.old}d.service"
-        state = self.run(["systemctl", "--user", "is-active", daemon])
+        state = None if self.settled else self.run(["systemctl", "--user", "is-active", daemon])
         if state is not None and state.stdout.strip() in ("active", "activating", "reloading"):
             self.run(["systemctl", "--user", "stop", daemon])
             self.done.append(f"{daemon} arrêté")
@@ -247,6 +254,8 @@ class Rename:
     def desktop_ids(self):
         old_id = re.escape(self.old_id)
         self._rewrite(self._p(self.config, "mimeapps.list"), [(old_id + r"(?=[.;\s])", NEW_ID)])
+        if self.settled:
+            return
         # the dock's pinned launchers
         out = self.run(["gsettings", "get", "io.elementary.dock", "launchers"])
         if out is not None and out.returncode == 0 and self.old_id in out.stdout:
@@ -289,11 +298,17 @@ class Rename:
                 self.log("migration : hôte des codes pour le navigateur à réinstaller")
 
     def run_all(self):
+        # A start that found nothing to move leaves a mark: later starts skip the steps that
+        # need commands (keyring, systemctl, gsettings, about 19 per former name) as long as
+        # no program of the former name is installed. Files are still looked at each time.
+        self.settled = os.path.exists(self.marker) and not any(map(os.path.exists, self.programs))
+        self.failed = False
         for step in (self.folders, self.keyring, self.units, self.launchers, self.bookmarks,
                      self.desktop_ids, self.browser_hosts):
             try:
                 step()
             except OSError as e:
+                self.failed = True
                 self.log(f"migration : étape {step.__name__} incomplète ({e.strerror})")
         if self.done:
             self.log(f"migration depuis {self.old.capitalize()} : {len(self.done)} élément(s) repris")
@@ -301,7 +316,18 @@ class Rename:
 
 
 def migrate(log=print, home=None, run=_run):
-    done = []
+    done, marks = [], []
     for old in FORMER:
-        done += Rename(old, home=home, run=run, log=log).run_all()
+        rename = Rename(old, home=home, run=run, log=log)
+        moved = rename.run_all()
+        done += moved
+        if not moved and not rename.failed and not rename.settled:
+            marks.append(rename.marker)
+    # Marked once every former name ran: a marker folder must not stand in the way of a move.
+    for marker in marks:
+        try:
+            os.makedirs(os.path.dirname(marker), exist_ok=True)
+            open(marker, "w").close()
+        except OSError:
+            pass
     return done

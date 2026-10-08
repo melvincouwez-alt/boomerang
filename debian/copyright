@@ -12,8 +12,8 @@ Files: boomerangd/headphones.py
 Copyright: 2026 melvincouwez-alt
            2025 LibrePods contributors
 Comment: The AirPods protocol (AAP over L2CAP, handshake, battery, ear detection,
- listening modes, conversation awareness) follows the work and documentation
- of LibrePods (https://github.com/librepods-org/librepods), GPL-3.0-or-later.
+ listening modes, conversation awareness, head tracking and the nod/shake
+ detector of the Android app) follows the work and documentation of LibrePods (https://github.com/librepods-org/librepods), GPL-3.0-or-later.
  Many thanks to Kavish Devar and the LibrePods contributors.
 License: GPL-3.0-or-later
 

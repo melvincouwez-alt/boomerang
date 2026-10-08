@@ -19,7 +19,7 @@ from gi.repository import Gio, GLib
 
 from .i18n import _
 from .updates import (RELEASES, _arch, _get_json, deb_asset, download_verified,
-                      installer_path, version_key)
+                      pkexec_install, version_key)
 from .util import log
 
 # package -> desktop id of the app it installs
@@ -163,39 +163,17 @@ class OptionalApps:
         state = self.states[package]
         if error:
             return self._failed(package, _("Téléchargement impossible ({reason})").format(reason=error), on_done)
-        installer = installer_path()
-        if not installer:
-            return self._failed(package, _("Installation impossible (programme d'installation absent)"),
-                                on_done)
         state.update(state="installing", progress=0.9)
         self._changed()
-        try:
-            process = Gio.Subprocess.new(["pkexec", installer, target, sha, package],
-                                         Gio.SubprocessFlags.STDOUT_SILENCE
-                                         | Gio.SubprocessFlags.STDERR_PIPE)
-        except GLib.Error as failure:
-            return self._failed(package, _("Installation impossible ({reason})").format(
-                reason=failure.message), on_done)
 
-        def finished(proc, result):
-            try:
-                err = proc.communicate_utf8_finish(result)[-1]
-            except GLib.Error as failure:
-                return self._failed(package, failure.message, on_done)
-            status = proc.get_exit_status()
-            if status == 0:
-                state.update(state="idle", progress=1.0, error="")
-                log(f"apps : {package} installée")
-                self._changed()
-                on_done(None)
-            elif status in (126, 127):
-                self._failed(package, _("Installation annulée"), on_done)
-            else:
-                last = (err or "").strip().splitlines()[-1:] or [""]
-                self._failed(package, _("Installation impossible ({reason})").format(
-                    reason=last[0][:160] or status), on_done)
+        def installed():
+            state.update(state="idle", progress=1.0, error="")
+            log(f"apps : {package} installée")
+            self._changed()
+            on_done(None)
 
-        process.communicate_utf8_async(None, None, finished)
+        pkexec_install([target, sha, package], installed,
+                       lambda message: self._failed(package, message, on_done))
 
     def _failed(self, package, message, on_done):
         self.states[package].update(state="error", error=message, progress=0.0)

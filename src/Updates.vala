@@ -113,12 +113,14 @@ public class Boomerang.UpdatesCard : Gtk.Box {
         append (feature_card);
         append (list);
 
-        daemon.changed.connect (update);
-        // "vérifié il y a N min" keeps up with the clock.
-        Timeout.add_seconds (60, () => {
-            update ();
-            return Source.CONTINUE;
+        daemon.changed.connect (() => {
+            if (daemon.touched ({ "Update" })) {
+                update ();
+            }
         });
+        // "vérifié il y a N min" keeps up with the clock while it is on screen.
+        Setup.poll_while_mapped (this, 60, update);
+        map.connect (update);
         update ();
     }
 
@@ -128,28 +130,8 @@ public class Boomerang.UpdatesCard : Gtk.Box {
         if (v == null) {
             return 0;
         }
-        var state = lookup_string (v, "state");
-        return lookup_string (v, "latest") != "" && state != "ready" ? 1 : 0;
-    }
-
-    private static string lookup_string (Variant dict, string key) {
-        var v = dict.lookup_value (key, VariantType.STRING);
-        return v != null ? v.get_string () : "";
-    }
-
-    private static int64 lookup_int64 (Variant dict, string key) {
-        var v = dict.lookup_value (key, VariantType.INT64);
-        return v != null ? v.get_int64 () : 0;
-    }
-
-    private static bool lookup_bool (Variant dict, string key, bool fallback) {
-        var v = dict.lookup_value (key, VariantType.BOOLEAN);
-        return v != null ? v.get_boolean () : fallback;
-    }
-
-    private static double lookup_double (Variant dict, string key) {
-        var v = dict.lookup_value (key, VariantType.DOUBLE);
-        return v != null ? v.get_double () : 0;
+        var state = Props.str (v, "state");
+        return Props.str (v, "latest") != "" && state != "ready" ? 1 : 0;
     }
 
     private void update () {
@@ -162,15 +144,15 @@ public class Boomerang.UpdatesCard : Gtk.Box {
             auto_switch.sensitive = false;
             return;
         }
-        var state = lookup_string (v, "state");
-        var current = lookup_string (v, "current");
-        var latest = lookup_string (v, "latest");
-        var checked = lookup_int64 (v, "checked");
-        var error = lookup_string (v, "error");
-        url = lookup_string (v, "url");
+        var state = Props.str (v, "state");
+        var current = Props.str (v, "current");
+        var latest = Props.str (v, "latest");
+        var checked = Props.int64 (v, "checked");
+        var error = Props.str (v, "error");
+        url = Props.str (v, "url");
 
         updating = true;
-        auto_switch.active = lookup_bool (v, "auto", true);
+        auto_switch.active = Props.flag (v, "auto", true);
         updating = false;
         auto_switch.sensitive = true;
 
@@ -208,20 +190,20 @@ public class Boomerang.UpdatesCard : Gtk.Box {
             return;
         }
         version_label.label = "Boomerang %s".printf (latest);
-        var size = lookup_int64 (v, "size");
+        var size = Props.int64 (v, "size");
         var prerelease = latest.contains ("-") || current.contains ("-");
         size_label.label = size > 0 ? format_size (size) : "";
         if (prerelease && latest.contains ("-")) {
             size_label.label += (size > 0 ? " · " : "") + _("préversion");
         }
-        notes_label.label = short_notes (lookup_string (v, "notes"));
+        notes_label.label = short_notes (Props.str (v, "notes"));
         notes_label.visible = notes_label.label != "";
         more.uri = url;
         more.visible = url != "";
 
-        var can_install = lookup_bool (v, "can_install", false);
+        var can_install = Props.flag (v, "can_install", false);
         progress.visible = state == "downloading" || state == "installing";
-        progress.fraction = lookup_double (v, "progress");
+        progress.fraction = Props.number (v, "progress");
         feature_status.visible = true;
         feature_status.remove_css_class (Granite.CssClass.ERROR);
         feature_status.add_css_class (Granite.CssClass.DIM);
@@ -244,9 +226,9 @@ public class Boomerang.UpdatesCard : Gtk.Box {
 
     private void on_update_clicked () {
         var v = daemon.get_value ("Update");
-        if (v != null && lookup_string (v, "state") == "ready") {
+        if (v != null && Props.str (v, "state") == "ready") {
             restart ();
-        } else if (v != null && lookup_bool (v, "can_install", false)) {
+        } else if (v != null && Props.flag (v, "can_install", false)) {
             install.begin ();
         } else if (url != "") {
             new Gtk.UriLauncher (url).launch.begin (get_root () as Gtk.Window, null);

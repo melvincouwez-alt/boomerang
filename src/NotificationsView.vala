@@ -107,7 +107,11 @@ public class Boomerang.NotificationsView : Gtk.Box {
         append (separator);
         append (right);
 
-        daemon.notifications_changed.connect (() => reload.begin ());
+        daemon.notifications_changed.connect (() => {
+            if (get_mapped ()) {  // hidden: map reloads it
+                reload.begin ();
+            }
+        });
         map.connect (() => reload.begin ());
     }
 
@@ -195,12 +199,35 @@ public class Boomerang.NotificationsView : Gtk.Box {
             box.append (badge);
         }
         if (id != null) {
+            // How this app alerts: a mark in the row, the details behind the button.
+            var mode = d != null ? dict_string (d, "mode") : "";
+            if (mode != "") {
+                var mark = new Gtk.Image.from_icon_name (mode == "priority" ? "starred-symbolic"
+                                                                             : "notifications-disabled-symbolic") {
+                    tooltip_text = mode == "priority" ? _("Prioritaires") : _("Discrètes, sans son")
+                };
+                mark.add_css_class (Granite.CssClass.DIM);
+                box.append (mark);
+            }
+            var app_id = id;
+            var more = new Gtk.MenuButton () {
+                icon_name = "view-more-symbolic",
+                valign = Gtk.Align.CENTER,
+                tooltip_text = _("Réglages des notifications de %s").printf (name),
+                sensitive = enabled
+            };
+            more.add_css_class ("flat");
+            more.set_create_popup_func ((button) => {
+                button.popover = new Gtk.Popover () { child = new AppNotifyEditor (daemon, app_id, name) };
+            });
+            box.append (more);
             var sw = new Gtk.Switch () {
                 active = enabled,
                 valign = Gtk.Align.CENTER,
                 tooltip_text = _("Afficher les notifications de %s sur ce PC").printf (name)
             };
             sw.notify["active"].connect (() => {
+                more.sensitive = sw.active;
                 daemon.call.begin ("SetNotificationApp", new Variant ("(sb)", id, sw.active));
             });
             box.append (sw);
@@ -274,5 +301,143 @@ public class Boomerang.NotificationsView : Gtk.Box {
         var row = new Gtk.ListBoxRow () { child = text, activatable = false };
         row.set_data<string> ("app", dict_string (d, "app"));
         return row;
+    }
+}
+
+/*
+ * One iPhone app's notifications on this PC: normal, priority (banner and sound
+ * under Do Not Disturb) or quiet (no sound), its own sound, and its text hidden
+ * from the banner. boomerangd keeps the choice.
+ */
+public class Boomerang.AppNotifyEditor : Gtk.Box {
+    private Daemon daemon;
+    private string app;
+    private string mode = "";
+    private string sound = "";
+    private bool hidden = false;
+    private string[] sound_values = {};
+    private string[] sound_labels = {};
+
+    public AppNotifyEditor (Daemon daemon, string app, string name) {
+        Object (orientation: Gtk.Orientation.VERTICAL, spacing: 6);
+        this.daemon = daemon;
+        this.app = app;
+        margin_top = margin_bottom = margin_start = margin_end = 9;
+        width_request = 320;
+        var title = new Gtk.Label (name) { xalign = 0 };
+        title.add_css_class (Granite.HeaderLabel.Size.H4.to_string ());
+        append (title);
+        build ();
+        load.begin ();
+    }
+
+    private async void load () {
+        try {
+            var reply = yield daemon.call_checked ("GetNotificationAppSettings", new Variant ("(s)", app));
+            reply.get ("(ssb)", out mode, out sound, out hidden);
+        } catch (Error e) {
+            warning ("GetNotificationAppSettings failed: %s", e.message);
+        }
+        build ();
+        try {
+            var reply = yield daemon.call_checked ("ListSounds");
+            var array = reply.get_child_value (0);
+            for (size_t i = 0; i < array.n_children (); i++) {
+                string value, label;
+                array.get_child (i, "(ss)", out value, out label);
+                sound_values += value;
+                sound_labels += label;
+            }
+        } catch (Error e) {
+            warning ("ListSounds failed: %s", e.message);
+        }
+        build ();
+    }
+
+    private void build () {
+        Gtk.Widget? child = get_first_child ().get_next_sibling ();
+        while (child != null) {
+            var next = child.get_next_sibling ();
+            remove (child);
+            child = next;
+        }
+        string[] modes = { "", "priority", "quiet" };
+        string[] labels = { _("Normales"), _("Prioritaires"), _("Discrètes") };
+        var choice = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) { homogeneous = true, margin_top = 4 };
+        choice.add_css_class ("linked");
+        for (int i = 0; i < modes.length; i++) {
+            var value = modes[i];
+            var button = new Gtk.ToggleButton.with_label (labels[i]) { active = value == mode };
+            button.clicked.connect (() => {
+                mode = value;
+                save ();
+                build ();
+            });
+            choice.append (button);
+        }
+        append (choice);
+        var help = new Gtk.Label (
+            mode == "priority" ? _("Bannière et son même en mode Ne pas déranger.")
+            : mode == "quiet" ? _("Bannière sans son.")
+            : _("Comme les autres applications.")
+        ) { xalign = 0, wrap = true, max_width_chars = 40 };
+        help.add_css_class (Granite.CssClass.DIM);
+        help.add_css_class (Granite.CssClass.SMALL);
+        append (help);
+
+        if (mode != "quiet") {
+            var sound_title = new Gtk.Label (_("Son")) { xalign = 0, margin_top = 6 };
+            sound_title.add_css_class (Granite.HeaderLabel.Size.H4.to_string ());
+            append (sound_title);
+            string[] values = { "", "none" };
+            var model = new Gtk.StringList ({ _("Son des notifications (Réglages)"), _("Aucun") });
+            for (int i = 0; i < sound_values.length; i++) {
+                values += sound_values[i];
+                model.append (sound_labels[i]);
+            }
+            uint selected = 0;
+            for (uint i = 0; i < values.length; i++) {
+                if (values[i] == sound) {
+                    selected = i;
+                }
+            }
+            var drop = new Gtk.DropDown (model, null) { selected = selected, hexpand = true, enable_search = true };
+            drop.notify["selected"].connect (() => {
+                sound = values[drop.selected];
+                save ();
+            });
+            var play = new Gtk.Button.from_icon_name ("media-playback-start-symbolic") { tooltip_text = _("Écouter") };
+            play.clicked.connect (() => {
+                if (sound != "none") {
+                    daemon.call.begin ("PlaySound", new Variant ("(ss)", "notifications", sound != "" ? sound : "default"));
+                }
+            });
+            var line = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 6);
+            line.append (drop);
+            line.append (play);
+            append (line);
+        }
+
+        var privacy = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 12) { margin_top = 8 };
+        var texts = new Gtk.Box (Gtk.Orientation.VERTICAL, 2) { hexpand = true };
+        texts.append (new Gtk.Label (_("Masquer le contenu")) { xalign = 0 });
+        var detail = new Gtk.Label (_("La bannière dit seulement quelle application. Le texte reste lisible ici.")) {
+            xalign = 0, wrap = true, max_width_chars = 36
+        };
+        detail.add_css_class (Granite.CssClass.DIM);
+        detail.add_css_class (Granite.CssClass.SMALL);
+        texts.append (detail);
+        var hide = new Gtk.Switch () { active = hidden, valign = Gtk.Align.CENTER };
+        hide.notify["active"].connect (() => {
+            hidden = hide.active;
+            save ();
+        });
+        privacy.append (texts);
+        privacy.append (hide);
+        append (privacy);
+    }
+
+    private void save () {
+        daemon.call.begin ("SetNotificationAppSettings", new Variant ("(sssb)", app, mode, sound, hidden));
     }
 }

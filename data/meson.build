@@ -50,3 +50,8 @@ if desktop_validate.found()
          args: [meson.current_build_dir() / app_id + suffix + '.desktop'])
   endforeach
 endif
+# Conversation backgrounds offered in Personnaliser (tools/make_backgrounds.py) and the
+# palette icon of the conversation header.
+install_subdir('backgrounds', install_dir: pkgdatadir)
+install_data('icons' / 'boomerang-palette-symbolic.svg',
+             install_dir: datadir / 'icons' / 'hicolor' / 'scalable' / 'actions')

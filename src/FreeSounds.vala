@@ -69,6 +69,9 @@ public class Boomerang.FreeSoundsCard : Gtk.Box {
         append (credits);
 
         daemon.changed.connect (() => {
+            if (!daemon.touched ({ "Sounds" })) {
+                return;
+            }
             foreach (var row in rows) {
                 row.update ();
             }

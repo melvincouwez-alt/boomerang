@@ -1,0 +1,219 @@
+<div align="center">
+
+<img src="data/icons/io.github.melvincouwez.Boomerang.svg" width="128" alt="Boomerang icon">
+
+# Boomerang
+
+**Your iPhone and your Apple account, at home on elementary OS.**
+
+[![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
+![Version 0.8.1 alpha](https://img.shields.io/badge/version-0.8.1%20alpha-orange)
+![elementary OS 8+](https://img.shields.io/badge/elementary%20OS-8%2B-64baff)
+
+[Website](https://melvincouwez-alt.github.io/boomerang/) ·
+[Download](https://github.com/melvincouwez-alt/boomerang/releases/latest) ·
+[Français](README.md)
+
+<img src="docs/screenshots/device.png" width="760" alt="Boomerang: the iPhone overview">
+
+</div>
+
+Boomerang brings the iPhone and iCloud to elementary OS: notifications, messages, calls,
+contacts, AirPods, iCloud mail, calendars, reminders, Drive and Photos. Everything runs on your
+computer. The iPhone is reached over Bluetooth, iCloud over the Internet, and nothing goes
+through a server of ours.
+
+*Boomerang was called Covalence until version 0.6. Moving to Boomerang keeps your settings,
+messages and iCloud accounts.*
+
+> **Alpha.** Version 0.8 is a public preview. It works every day on its author's computer,
+> but expect rough edges. The interface is in French, with English in beta.
+
+## Two connections
+
+### iPhone connection (Bluetooth)
+
+| | |
+|---|---|
+| **Notifications** | Every iPhone notification on the desktop, with its actions and the icon of the app that sent it. Choose which apps show up. |
+| **Now Playing** | What the iPhone plays, with its cover, progress and volume, in its own page and in a mini player above Settings. Play starts the iPhone's music again even when it is stopped. |
+| **Battery** | Level in the panel, alerts at 20 % and 10 %. |
+| **Messages** | Read your SMS conversations, reply to one person, draft, search. Delete a message or a conversation from Boomerang (it stays on the iPhone). |
+| **Phone** | Answer, decline and place calls with the computer's microphone and speakers, dial pad, call history. Needs PipeWire 1.4 or later. |
+| **Contacts** | The iPhone's contacts over Bluetooth (read only), or your iCloud contacts, which you can edit. |
+| **AirPods** | Battery of each bud and the case, noise control, conversation awareness, ear detection, rename. Experimental: nod to answer a call, shake your head to decline. Based on the protocol documented by LibrePods. |
+| **iPhone sound** | Send the iPhone's audio to the computer from the AirPlay button, or refuse it. |
+
+<p align="center">
+<img src="docs/screenshots/messages.png" width="49%" alt="Messages">
+<img src="docs/screenshots/nowplaying.png" width="49%" alt="Now Playing">
+</p>
+
+### Apple Services connection (Internet)
+
+| | |
+|---|---|
+| **iCloud Mail, Calendars, Reminders, Contacts** | Added to elementary's Mail, Tasks and calendar apps through Evolution Data Server, with an app-specific password. |
+| **iCloud Drive** | A folder in Files, through [rclone](https://rclone.org). |
+| **iCloud Photos** | Your albums in Files, read only, through rclone. |
+
+<p align="center">
+<img src="docs/screenshots/services.png" width="49%" alt="Apple Services">
+<img src="docs/screenshots/headphones.png" width="49%" alt="AirPods">
+</p>
+
+> **About iCloud Drive and Photos.** rclone signs in the way icloud.com does, with your Apple
+> Account password and two-factor authentication. Apple does not offer this access officially:
+> the iCloud terms limit automated access and allow Apple to suspend an account. It also needs
+> Advanced Data Protection turned off, which reduces the end-to-end encryption of your iCloud
+> data. The sign-in token expires about once a month. Use this feature at your own risk;
+> Boomerang asks you to accept these risks before signing in.
+
+## Install
+
+### From the package (recommended)
+
+1. Download `boomerang_0.8.1-1_amd64.deb` from the
+   [latest release](https://github.com/melvincouwez-alt/boomerang/releases/latest).
+2. Double-click it. Eddy (elementary OS) or the App Center (Ubuntu) installs Boomerang and every
+   package it needs. In a terminal: `sudo apt install ./boomerang_*.deb`.
+3. Log out and back in (or run `systemctl --user start boomerangd`), then open Boomerang.
+   The setup assistant guides you through pairing the iPhone and signing in to iCloud.
+
+If something is missing later, Boomerang lists it under "Missing components" with an
+"Install" button (PackageKit asks for your password). For iCloud Drive and Photos, a
+"Download rclone" button fetches the official rclone build and checks its SHA-256 checksum
+(`boomerangd --fetch-rclone` does the same in a terminal).
+
+Uninstall with `sudo apt remove boomerang`. Your data stays in `~/.local/share/boomerang` and
+`~/.config/boomerang` until you delete them (see [privacy](docs/privacy.md)).
+
+### Compatibility
+
+| System | Status |
+|---|---|
+| elementary OS 8 or later | Everything works. Calls need PipeWire 1.4 or later: with an older PipeWire, Boomerang greys the calls out and says why. |
+| Ubuntu 24.04 or later | Needs Granite 7.7 or later. Calls need PipeWire 1.4 or later. Ubuntu 24.04 ships rclone 1.60, too old for iCloud: use the "Download rclone" button. |
+
+Hardware: a Bluetooth adapter that supports Bluetooth Low Energy (almost all recent ones).
+
+### From source
+
+```sh
+meson setup build --prefix=$HOME/.local
+ninja -C build && meson install -C build
+systemctl --user daemon-reload && systemctl --user enable --now boomerangd
+```
+
+Build dependencies: `valac`, `meson`, `libgranite-7-dev` (7.7 or later), `libgtk-4-dev`.
+Runtime dependencies are listed in `debian/control`. Offline tests:
+`python3 -m unittest tests.test_offline`. Package: `packaging/build-deb.sh`.
+
+## What it cannot do
+
+Honest limits, mostly set by what an iPhone accepts from a non-Apple computer:
+
+- No iMessage sending, no group replies, no attachments: Bluetooth only sends one-to-one SMS.
+- No universal clipboard, Handoff, AirDrop or Continuity Camera: they need Apple's own
+  encryption and Wi-Fi stack.
+- Deleting a message only removes it from Boomerang. iOS ignores deletions over Bluetooth.
+- The iPhone does not always reconnect by itself to a Bluetooth LE accessory. The
+  [guide](data/guide/en/12-troubleshooting.md) explains what to do.
+- Unlocking the computer with the iPhone is left out on purpose: Bluetooth signal strength
+  can be faked.
+
+## New in 0.8
+
+Since 0.7.0:
+
+- Messages: a conversation opens on its newest message. Each one can have its own look
+  (nickname, emoji, bubble colour, background, text size) and notifications (priority, muted,
+  own sound). Search in the conversation (Ctrl+F), a button back to new messages, an "Unread"
+  line, custom quick replies, link previews (off by default), export to PDF or text.
+- Notifications: per iPhone app (normal, priority or quiet), own sound, text hidden from the
+  banner if you wish.
+- Screen mirroring in a Boomerang window sized to the picture, full screen with F11, optional
+  MP4 recording and an experimental Bluetooth beacon so the iPhone finds the computer.
+- AirPods, experimental: nod to answer a call, shake your head to decline it.
+- Contributors page under Settings: every project Boomerang relies on, with authors, licenses
+  and links.
+- One header bar in Boomerang's colours, left column that folds to icons (F9).
+- Lighter daemon and app, new icon in the elementary style.
+
+## Help
+
+Boomerang has a built-in guide, in French and English (F1, or Guide in the sidebar). It walks
+through pairing, the iPhone settings to turn on, iCloud, AirPods and troubleshooting.
+Questions and bug reports: [Issues](https://github.com/melvincouwez-alt/boomerang/issues).
+
+## Who makes it
+
+I am not a developer. I am an elementary OS fan with a few ideas and an iPhone in my pocket,
+and I build Boomerang by "vibe coding" with Claude, Anthropic's AI assistant: I describe what I
+want, test it on my own computer every day, and we fix things together. The code is open so
+that people who know better can read it, point out mistakes and help. Contributions, issues
+and kind advice are very welcome.
+
+melvincouwez-alt
+
+## How it works
+
+- **boomerangd**, the daemon (Python, PyGObject): owns the Bluetooth link and the secrets.
+  It talks to the iPhone through BlueZ (ANCS and AMS over Bluetooth LE, MAP and PBAP through
+  obexd, HFP through PipeWire's `org.pipewire.Telephony`), to iCloud through Evolution Data
+  Server and libsecret, and runs rclone for Drive and Photos.
+- **The app** (Vala, GTK 4, Granite): one window, plus separate Messages, Phone, Contacts and
+  AirPods apps for the dock. It talks to the daemon over D-Bus
+  (`io.github.melvincouwez.Boomerang.Daemon`).
+- Logs never contain notification or message text, names or numbers.
+
+## Thanks
+
+Boomerang stands on the work of many free software projects. The app's **Contributors** page, under Settings, lists them all with their authors, licenses and links:
+
+| Project | Used for | License |
+|---|---|---|
+| [rclone](https://github.com/rclone/rclone) (Nick Craig-Wood and contributors) | iCloud Drive and Photos | MIT |
+| [LibrePods](https://github.com/librepods-org/librepods) (Kavish Devar and contributors) | AirPods protocol and head gestures, ported to Python in `boomerangd/headphones.py` | GPL-3.0-or-later |
+| [BlueZ](https://github.com/bluez/bluez) and obexd | Bluetooth, messages and contacts | GPL-2.0-or-later (libraries LGPL-2.1-or-later) |
+| [PipeWire](https://gitlab.freedesktop.org/pipewire/pipewire) and [WirePlumber](https://gitlab.freedesktop.org/pipewire/wireplumber) | Calls and iPhone audio | MIT |
+| [Evolution Data Server](https://gitlab.gnome.org/GNOME/evolution-data-server) | iCloud accounts | LGPL |
+| [libsecret](https://gitlab.gnome.org/GNOME/libsecret) | Passwords in the keyring | LGPL-2.1-or-later |
+| [GTK](https://gitlab.gnome.org/GNOME/gtk), [Granite](https://github.com/elementary/granite), [Vala](https://gitlab.gnome.org/GNOME/vala), [PyGObject](https://gitlab.gnome.org/GNOME/pygobject) | The app and the daemon | LGPL (Granite: LGPL-3.0-or-later) |
+| [LocalSend](https://github.com/localsend/protocol) | Files with the iPhone, protocol v2 | public protocol |
+| [UxPlay](https://github.com/FDH2/UxPlay) | Screen mirroring, its recording and Bluetooth beacon (started by Boomerang, optional) | GPL-3.0 |
+| [libimobiledevice](https://github.com/libimobiledevice/libimobiledevice) and [ifuse](https://github.com/libimobiledevice/ifuse) | Photo import over USB (optional) | LGPL-2.1-or-later |
+| [libheif](https://github.com/strukturag/libheif) | HEIC photos converted to JPEG (optional) | LGPL-3.0 |
+| [elementary icons](https://github.com/elementary/icons) | Objects the Boomerang icons are built from | GPL-3.0 |
+| [Inter](https://github.com/rsms/inter) (Rasmus Andersson) | Text of the Calendar icon, as outlines | SIL OFL 1.1 |
+| Android Open Source Project and [Kenney](https://kenney.nl/assets/interface-sounds) | Notification sounds (details in [docs/credits-sons.md](docs/credits-sons.md)) | Apache-2.0 / CC0 |
+
+Boomerang installs two companion apps from the Apple services tab, each published in its own
+repository with its own releases: **Agenda**
+([source and downloads](https://github.com/melvincouwez-alt/agenda), GPL-3.0-or-later) and **Cassette**, an
+Apple Music client forked from [Sidra](https://github.com/wimpysworld/sidra) by Martin Wimpress
+and built on [CastLabs Electron](https://github.com/castlabs/electron-releases)
+([source and downloads](https://github.com/melvincouwez-alt/cassette), Blue Oak Model License 1.0.0).
+
+Special thanks to the LibrePods team for their remarkable reverse-engineering work, and to
+[nRF Connect](https://www.nordicsemi.com/Products/Development-tools/nRF-Connect-for-mobile)
+(Nordic Semiconductor), a free iPhone app that helped with the first pairings (no longer needed).
+
+## Legal
+
+Boomerang is free software under the [GNU GPL version 3 or later](LICENSE). It comes with
+absolutely no warranty.
+
+Boomerang is an independent project. It is not affiliated with, endorsed, sponsored or approved
+by Apple Inc. or elementary, Inc. Apple, iPhone, iCloud, iMessage, AirPods, AirPlay and Apple
+Music are trademarks of Apple Inc., registered in the U.S. and other countries and regions.
+They are used here only to say what Boomerang works with.
+
+Boomerang uses published protocols (Bluetooth HFP, MAP, PBAP; ANCS and AMS, specified by Apple;
+CalDAV, CardDAV, IMAP). Two features rely on undocumented interfaces: AirPods (the AAP protocol
+as described by LibrePods) and iCloud Drive and Photos (through rclone). They may stop working
+without notice. Boomerang has not decompiled any Apple software.
+
+- Privacy: [English](docs/privacy.md) · [Français](docs/confidentialite.md). No telemetry, no
+  account, no server.
+- Legal notice (French): [docs/mentions-legales.md](docs/mentions-legales.md).

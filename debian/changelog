@@ -1,3 +1,70 @@
+boomerang (0.8.1-1) unstable; urgency=medium
+
+  * New app icon, drawn like elementary's own (series E): a slate iPhone
+    tilted behind, the raspberry tile with the white boomerang in front;
+    each size drawn on its own pixel grid (data/icon-proposals/install_e5.py).
+  * Lighter in the background: the daemon computes its properties once per
+    GetAll, indexes the messages cache, follows NetworkManager and obexd by
+    their signals, runs no idevice_* or LocalSend work while unused, and
+    sends ThreadsChanged only when a listing changed something.
+  * Lighter app: a property change runs only the views that show it,
+    hidden pages no longer reload, new bubbles are added instead of
+    redrawing the conversation, contact photos and artwork are decoded once,
+    clocks and polls run only on screen.
+  * Panel indicator shows the call in progress again.
+
+ -- melvincouwez-alt <301110918+melvincouwez-alt@users.noreply.github.com>  Thu, 08 Oct 2026 12:00:00 +0200
+
+boomerang (0.8.0-1) unstable; urgency=medium
+
+  * Messages: a conversation opens on its newest message (the scroll
+    position was set during an allocation and lost, and GTK's own moves
+    while bubbles were laid out were taken for the user scrolling up); the
+    list loads once the daemon answers when the window shows first.
+  * Per-conversation look (src/ThreadStyle.vala, conversations.conf):
+    nickname and emoji, bubble colours, background (tint, gradient or
+    picture), text size, bubble shape.
+  * Per-conversation notifications kept by boomerangd: priority (banner
+    and sound under Do Not Disturb), muted, own sound.
+  * Search within the open conversation (Ctrl+F; Ctrl+Shift+F for all),
+    a button back to the newest message with a count of new ones, an
+    "Unread" line, Alt+Up/Down and Ctrl+N.
+  * Optional link previews (off by default; boomerangd/linkpreview.py,
+    public addresses only), custom quick replies in Settings and in
+    notifications, export of a conversation to PDF or text.
+  * The standalone Messages app gets elementary header bars, one per pane.
+  * Header bars in Boomerang's colour (raspberry-violet, like Cassette and
+    the web apps); a conversation with its own colour tints its header.
+  * Backgrounds offered in Personnaliser (data/backgrounds, drawn by
+    tools/make_backgrounds.py, plus the system wallpapers) and a default
+    look for every conversation in Settings › Messages.
+  * The main window has a single header bar with Boomerang's name in the
+    middle; the left column folds to icons with dock-style badges, from
+    Settings › Display, F9, or by dragging its edge, and keeps its width.
+  * Messages: one quick retry when the iPhone refuses the first listing.
+  * Notifications: per iPhone app, normal, priority (banner and sound under
+    Do Not Disturb) or quiet, its own sound, and its text hidden from the
+    banner (GetNotificationAppSettings / SetNotificationAppSettings).
+  * Screen mirroring shows in Boomerang's own window (boomerangd/
+    mirror_viewer.py: header bar, sized to the picture, full screen with
+    F11, its own dock entry); UxPlay hands it the decoded frames through
+    shared memory. Needs gstreamer1.0-gtk4 (Recommends), else UxPlay's
+    window as before.
+  * New Boomerang icon.
+  * Contributors page, under Settings in the sidebar: every project,
+    library, protocol and sound Boomerang uses or builds on, grouped by
+    use, with its authors, what it brings, its license and a link.
+  * Experimental head gestures (AlphaFeatures head_gestures): while a call
+    rings and AirPods are worn, a nod answers and a shake declines. Head
+    tracking packets and the nod/shake detector come from LibrePods
+    (AACPManager.kt, GestureDetector.kt), rewritten in Python.
+  * Screen mirroring: the screensaver is held off while UxPlay runs
+    (-scrsv 1); optional MP4 recording in the Videos folder (-mp4); an
+    experimental Bluetooth LE beacon (AlphaFeatures mirror_ble, UxPlay -ble
+    with uxplay-beacon) lets the iPhone find the PC without mDNS.
+
+ -- melvincouwez-alt <301110918+melvincouwez-alt@users.noreply.github.com>  Mon, 05 Oct 2026 15:00:00 +0200
+
 boomerang (0.7.0-1) unstable; urgency=medium
 
   * Covalence is renamed Boomerang: app id io.github.melvincouwez.Boomerang,

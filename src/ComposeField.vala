@@ -35,8 +35,7 @@ public class Boomerang.ComposeField : Gtk.Box {
     public static bool auto_emoji_enabled () {
         var prefs = new KeyFile ();
         try {
-            prefs.load_from_file (Path.build_filename (Environment.get_user_config_dir (), "boomerang",
-                                                       "apps.conf"), KeyFileFlags.NONE);
+            prefs.load_from_file (Setup.prefs_path (), KeyFileFlags.NONE);
             return prefs.get_boolean ("messages", "auto-emoji");
         } catch (Error e) {
             return true;
@@ -44,7 +43,7 @@ public class Boomerang.ComposeField : Gtk.Box {
     }
 
     public static void set_auto_emoji (bool enabled) {
-        var path = Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
+        var path = Setup.prefs_path ();
         var prefs = new KeyFile ();
         try {
             prefs.load_from_file (path, KeyFileFlags.KEEP_COMMENTS);

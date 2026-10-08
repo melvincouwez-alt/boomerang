@@ -102,17 +102,13 @@ namespace Boomerang {
         }
 
         construct {
-            var header = new Gtk.HeaderBar ();
-            header.add_css_class ("flat");
-            header.title_widget = new Gtk.Label (title);
-            ((Gtk.Label) header.title_widget).add_css_class ("title");
-            header.pack_end (Guide.help_button (mode.guide_topic (), _("Guide (F1)")));
-            titlebar = header;
-
             daemon = new Daemon ();
             Gtk.Widget content;
             if (mode == Mode.MESSAGES) {
-                messages = new MessagesView (daemon);
+                // Messages carries its own header bars, one per pane, like elementary's Mail.
+                titlebar = new Gtk.Grid () { visible = false };
+                messages = new MessagesView (daemon, true);
+                messages.add_header_end (Guide.help_button (mode.guide_topic (), _("Guide (F1)")));
                 content = messages;
                 notify["is-active"].connect (() => {
                     if (is_active) {
@@ -122,6 +118,7 @@ namespace Boomerang {
                     }
                 });
             } else if (mode == Mode.PHONE) {
+                titlebar = plain_header ();
                 var phone = new PhoneView (daemon);
                 phone.history.message_requested.connect ((address) => launch (Mode.MESSAGES, { "--to", address }));
                 content = phone;
@@ -132,10 +129,13 @@ namespace Boomerang {
                     }
                 });
             } else if (mode == Mode.HEADPHONES) {
+                titlebar = plain_header ();
                 content = new HeadphonesView (daemon);
             } else if (mode == Mode.MIRROR) {
+                titlebar = plain_header ();
                 content = new MirrorView (daemon);
             } else {
+                titlebar = plain_header ();
                 var contacts = new ContactsView (daemon);
                 contacts.message_requested.connect ((address) => launch (Mode.MESSAGES, { "--to", address }));
                 content = contacts;
@@ -147,6 +147,16 @@ namespace Boomerang {
             box.append (content);
             child = box;
             daemon.connect_bus.begin ();
+        }
+
+        private Gtk.HeaderBar plain_header () {
+            var header = new Gtk.HeaderBar ();
+            header.add_css_class ("flat");
+            header.add_css_class ("brand");
+            header.title_widget = new Gtk.Label (title);
+            ((Gtk.Label) header.title_widget).add_css_class ("title");
+            header.pack_end (Guide.help_button (mode.guide_topic (), _("Guide (F1)")));
+            return header;
         }
 
         public void open_thread (string thread) {

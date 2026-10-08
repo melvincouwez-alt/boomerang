@@ -23,8 +23,8 @@ des marques d'Apple Inc., déposées aux États-Unis et dans d'autres pays et r�
 elementary est une marque d'elementary, Inc.
 
 Ces noms sont employés uniquement pour indiquer avec quels produits et services Boomerang est
-compatible (usage descriptif). Boomerang n'utilise aucun logo d'Apple ; son nom et son icône (qui reprend l'écran et le téléphone du thème d'icônes d'elementary, sous GPL-3.0) sont
-propres au projet. Conformément aux règles de marque d'elementary, le nom « elementary »
+compatible (usage descriptif). Boomerang n'utilise aucun logo, icône, son ni police d'Apple ; son nom et ses icônes sont propres au
+projet (certaines reprennent des objets du thème d'icônes d'elementary, sous GPL-3.0). Conformément aux règles de marque d'elementary, le nom « elementary »
 n'apparaît pas dans le nom de l'application.
 
 ## Fonctionnement et données
@@ -68,7 +68,7 @@ reprend aucun logo, dessin ni code d'Apple.
 L'étude d'un protocole pour permettre l'interopérabilité d'un logiciel créé indépendamment est
 permise dans l'Union européenne (directive 2009/24/CE, articles 5 et 6 ; en France, article
 L.122-6-1 III et IV du Code de la propriété intellectuelle). Boomerang n'a décompilé aucun logiciel
-Apple : elle s'appuie sur la description publiée par LibrePods.
+Apple : il s'appuie sur la description publiée par LibrePods.
 
 Boomerang n'utilise que la liaison Bluetooth ordinaire des écouteurs : il ne se fait pas passer pour
 un appareil Apple. Les fonctions qui l'exigeraient (multipoint, réduction des sons forts) ne sont
@@ -98,6 +98,12 @@ Merci à leurs auteurs.
 | elementary icons (elementary, Inc.) | Écran et téléphone de l'icône de Boomerang | GPL-3.0 | <https://github.com/elementary/icons> |
 | Vala | Langage de l'application | LGPL-2.1-or-later | <https://gitlab.gnome.org/GNOME/vala> |
 | PyGObject | Service en Python | LGPL-2.1-or-later | <https://gitlab.gnome.org/GNOME/pygobject> |
+| UxPlay | Recopie de l'écran, lancé par Boomerang s'il est installé | GPL-3.0 | <https://github.com/FDH2/UxPlay> |
+| libimobiledevice, ifuse | Import des photos par câble USB (facultatif) | LGPL-2.1-or-later | <https://github.com/libimobiledevice/libimobiledevice> |
+| libheif | Conversion des photos HEIC (facultatif) | LGPL-3.0 | <https://github.com/strukturag/libheif> |
+| LocalSend (protocole v2) | Échange de fichiers avec l'iPhone | protocole publié | <https://github.com/localsend/protocol> |
+| Inter (Rasmus Andersson) | Texte de l'icône Calendrier, converti en contours | SIL OFL 1.1 | <https://github.com/rsms/inter> |
+| Sons de l'Android Open Source Project et de Kenney | Sons de notification et sonneries, détail dans [credits-sons.md](credits-sons.md) | Apache-2.0, CC0 1.0 | <https://android.googlesource.com/platform/frameworks/base/+/main/data/sounds> |
 
 Outil conseillé, sans lien avec Boomerang : l'application gratuite **nRF Connect for Mobile** de
 Nordic Semiconductor peut servir en dernier recours à ouvrir la liaison Bluetooth depuis l'iPhone.

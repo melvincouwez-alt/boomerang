@@ -19,6 +19,133 @@ public class Boomerang.Application : Gtk.Application {
             background-color: @selected_bg_color;
             color: @selected_fg_color;
         }
+        .scroll-down {
+            border-radius: 9999px;
+            min-width: 34px;
+            min-height: 34px;
+            padding: 0 9px;
+            background-color: @base_color;
+            box-shadow: 0 0 0 1px alpha(@fg_color, 0.12), 0 3px 10px alpha(black, 0.18);
+        }
+        .down-count {
+            font-weight: bold;
+            font-feature-settings: "tnum";
+        }
+        .find-match .bubble {
+            box-shadow: 0 0 0 2px alpha(@accent_color, 0.55);
+        }
+        .unread-marker label {
+            color: @accent_color;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .unread-marker separator {
+            background-color: alpha(@accent_color, 0.4);
+        }
+        button.link-card {
+            padding: 0;
+            margin-top: 3px;
+            border-radius: 14px;
+            background-color: mix(@base_color, @fg_color, 0.05);
+            border: 1px solid alpha(@fg_color, 0.1);
+            box-shadow: none;
+        }
+        button.link-card:hover {
+            background-color: mix(@base_color, @fg_color, 0.1);
+        }
+        .link-picture {
+            border-radius: 13px 13px 0 0;
+        }
+        .link-title {
+            font-weight: bold;
+        }
+        /* Header bars in Boomerang's colour, from the icon's screen, like Cassette and
+           the web apps: raspberry-violet gradient, white title and buttons. Popovers
+           opened from the bar keep the theme's colours. */
+        headerbar.brand {
+            min-height: 36px;
+            padding-top: 0;
+            padding-bottom: 0;
+            background: linear-gradient(#b4519f, #96368a);
+            box-shadow: inset 0 1px alpha(white, 0.22), inset 0 -1px #6f2266;
+            border: none;
+        }
+        headerbar.brand > windowhandle > box {
+            color: white;
+        }
+        headerbar.brand > windowhandle > box label {
+            text-shadow: 0 1px alpha(black, 0.25);
+        }
+        headerbar.brand > windowhandle > box {
+            min-height: 36px;
+        }
+        headerbar.brand > windowhandle > box button,
+        headerbar.brand windowcontrols button {
+            min-height: 26px;
+            min-width: 26px;
+            padding: 0 4px;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        headerbar.brand > windowhandle > box button,
+        headerbar.brand > windowhandle > box menubutton > button,
+        headerbar.brand windowcontrols button {
+            color: white;
+            background: none;
+            border: none;
+            box-shadow: none;
+        }
+        headerbar.brand > windowhandle > box button:hover,
+        headerbar.brand > windowhandle > box menubutton > button:hover,
+        headerbar.brand windowcontrols button:hover {
+            background-color: alpha(white, 0.16);
+        }
+        headerbar.brand > windowhandle > box button:active,
+        headerbar.brand > windowhandle > box button:checked,
+        headerbar.brand > windowhandle > box menubutton > button:checked {
+            background-color: alpha(black, 0.14);
+        }
+        headerbar.brand > windowhandle > box button:disabled {
+            color: alpha(white, 0.4);
+        }
+        headerbar.brand .dim-label,
+        headerbar.brand .dim {
+            color: alpha(white, 0.85);
+            opacity: 1;
+        }
+        @media (prefers-color-scheme: dark) {
+            headerbar.brand {
+                background: linear-gradient(#8f3a80, #74296a);
+                box-shadow: inset 0 1px alpha(white, 0.12), inset 0 -1px alpha(black, 0.6);
+            }
+        }
+        button.style-thumb {
+            padding: 0;
+            border-radius: 7px;
+            border: none;
+            box-shadow: 0 0 0 1px alpha(@fg_color, 0.15);
+        }
+        button.style-thumb.selected {
+            box-shadow: 0 0 0 2px @accent_color;
+        }
+        .thumb-picture {
+            border-radius: 7px;
+        }
+        button.style-swatch {
+            min-width: 26px;
+            min-height: 26px;
+            padding: 0;
+            border-radius: 9999px;
+            background: none;
+            border: none;
+            box-shadow: none;
+        }
+        button.style-swatch:hover {
+            background-color: alpha(@fg_color, 0.08);
+        }
+        button.style-swatch.selected {
+            box-shadow: inset 0 0 0 2px @accent_color;
+        }
         .reaction-badge {
             font-size: 0.85em;
             padding: 1px 7px;

@@ -9,8 +9,31 @@
 
 namespace Boomerang {
     /* First-run state and small helpers around iCloud Drive (rclone mount). */
+    public delegate void Refresh ();
+
     public class Setup : Object {
-        private static string prefs_path () {
+        /* Run refresh every few seconds while the widget is on screen, for a state no
+           signal tells (a mount, the clock): nothing wakes the app while it is hidden. */
+        public static void poll_while_mapped (Gtk.Widget widget, uint seconds, owned Refresh refresh) {
+            uint source = 0;
+            widget.map.connect (() => {
+                if (source == 0) {
+                    source = Timeout.add_seconds (seconds, () => {
+                        refresh ();
+                        return Source.CONTINUE;
+                    });
+                }
+            });
+            widget.unmap.connect (() => {
+                if (source != 0) {
+                    Source.remove (source);
+                    source = 0;
+                }
+            });
+        }
+
+        /* The app's own settings file (window, launchers, choices): every view uses this one. */
+        public static string prefs_path () {
             return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
         }
 
@@ -155,7 +178,11 @@ namespace Boomerang {
             append (settings);
             append (notifications);
             append (calls);
-            daemon.changed.connect (update);
+            daemon.changed.connect (() => {
+                if (daemon.touched ({ "Paired", "MessagesState", "ContactsState", "NotificationsLinked", "CallsLinked" })) {
+                    update ();
+                }
+            });
             update ();
         }
 
@@ -216,14 +243,14 @@ namespace Boomerang {
             append (password);
             append (signin);
             append (drive);
-            daemon.changed.connect (update);
-            // The mount is not a daemon property: look again now and then while visible.
-            Timeout.add_seconds (5, () => {
-                if (get_mapped ()) {
+            daemon.changed.connect (() => {
+                // update () reads the mounts and drive.env: not for a hidden page
+                if (get_mapped () && daemon.touched ({ "ICloudState" })) {
                     update ();
                 }
-                return Source.CONTINUE;
             });
+            // The mount is not a daemon property: look again now and then while visible.
+            Setup.poll_while_mapped (this, 5, update);
             map.connect (update);
             update ();
         }

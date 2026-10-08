@@ -8,6 +8,7 @@
 public class Boomerang.SoundsCard : Gtk.Box {
     private Daemon daemon;
     private SoundRow[] rows = {};
+    private bool loaded = false;  // the theme and bundled sounds came from the daemon
 
     public SoundsCard (Daemon daemon) {
         Object (orientation: Gtk.Orientation.VERTICAL, spacing: 6);
@@ -34,8 +35,17 @@ public class Boomerang.SoundsCard : Gtk.Box {
         hint.add_css_class (Granite.CssClass.SMALL);
         append (hint);
 
-        load.begin ();
+        // The window is built before the daemon connection is up: the list comes once it is.
+        if (daemon.running) {
+            load.begin ();
+        }
         daemon.changed.connect (() => {
+            if (!loaded && daemon.touched ({}) && daemon.running) {
+                load.begin ();
+            }
+            if (!daemon.touched ({ "Sounds" })) {
+                return;
+            }
             foreach (var row in rows) {
                 row.update ();
             }
@@ -47,6 +57,7 @@ public class Boomerang.SoundsCard : Gtk.Box {
         string[] labels = {};
         try {
             var reply = yield daemon.call_checked ("ListSounds");
+            loaded = true;
             var array = reply.get_child_value (0);
             for (size_t i = 0; i < array.n_children (); i++) {
                 string value, label;

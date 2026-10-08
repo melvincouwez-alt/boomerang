@@ -83,8 +83,8 @@ class Proximity:
         self.on_changed()
 
     def state(self):
+        # No RSSI here: a value that moves at every sample would refresh every client.
         return {"enabled": self.enabled, "distance": self.distance, "delay": self.delay,
-                "rssi": int(round(self.rssi)) if self.rssi is not None else 0,
                 "near": self.connected and not self.far}
 
     # --- events -------------------------------------------------------------------------------------
@@ -116,8 +116,8 @@ class Proximity:
             self.far_since = None
             if self.connected:
                 self.armed = True
-        self.far = far
-        self._schedule()
+        changed, self.far = far != self.far, far
+        self._schedule(notify=changed)  # BlueZ sends a sample per advertisement while discovering
 
     def _is_far(self):
         if self.rssi is None:
@@ -141,11 +141,12 @@ class Proximity:
         self.locker()
         return True
 
-    def _schedule(self):
+    def _schedule(self, notify=True):
         waiting = self.enabled and self.armed and (self.lost_since or self.far_since)
         if waiting and not self.timer:
             self.timer = GLib.timeout_add_seconds(TICK, self._tick)
-        self.on_changed()
+        if notify:
+            self.on_changed()
 
     def _tick(self):
         self.check()

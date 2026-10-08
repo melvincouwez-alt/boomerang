@@ -40,7 +40,7 @@ class ProximityTest(unittest.TestCase):
         self.calling = False
         self.p = proximity.Proximity(self.config, in_call=lambda: self.calling,
                                      locker=self._lock, clock=self.clock)
-        self.p._schedule = lambda: None  # no GLib timer in the tests
+        self.p._schedule = lambda notify=True: None  # no GLib timer in the tests
 
     def tearDown(self):
         self.tmp.cleanup()
@@ -178,6 +178,26 @@ class HotspotTest(unittest.TestCase):
         h = hotspot.Hotspot(None, lambda: (address, list(uuids)), client=nm)
         h._watch = lambda tries=15: None  # no GLib timer in the tests
         return h
+
+    def test_state_kept_until_network_manager_signals(self):
+        class Watched(FakeNM):
+            def watch(self, on_change):
+                self.on_change = on_change
+
+        nm = Watched([("/nm/Settings/3", panu(PHONE))])
+        h = self.make(nm)
+        self.assertEqual(h.state()["state"], "off")
+        nm.active["/nm/Settings/3"] = hotspot.ACTIVATED
+        self.assertEqual(h.state()["state"], "off")  # no signal yet: NetworkManager not asked
+        nm.on_change(False)  # StateChanged
+        self.assertEqual(h.state()["state"], "on")
+
+    def test_network_manager_down_or_failing(self):
+        nm = FakeNM()
+        nm.connections = lambda: (_ for _ in ()).throw(GLib.Error("boom"))
+        self.assertEqual(self.make(nm).state()["state"], "failed")
+        nm.available = lambda: False
+        self.assertEqual(self.make(nm).state()["state"], "unavailable")
 
     def test_unavailable_without_nap(self):
         self.assertEqual(self.make(FakeNM(), uuids=[]).state()["state"], "unavailable")

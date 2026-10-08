@@ -5,6 +5,7 @@
 import os
 import struct
 import unittest
+from unittest import mock
 
 import tempfile
 
@@ -336,7 +337,7 @@ class MessagesHooks:
         self.received = []
 
     def messages_changed(self, threads=False):
-        pass
+        self.threads_changed = getattr(self, "threads_changed", 0) + bool(threads)
 
     def message_received(self, thread, key):
         self.received.append((thread, key))
@@ -414,12 +415,15 @@ class MessagesTest(unittest.TestCase):
         self.assertEqual(group["unread"], 1)
         self.assertEqual(self.m.messages(group["id"])[0]["sender"], "Bob")
         self.assertEqual(self.notifier.shown, [])  # first sync: no notification burst
+        signals = self.hooks.threads_changed
+        self.m._merge({"inbox": first, "sent": sent}, initial=False)
+        self.assertEqual(self.hooks.threads_changed, signals)  # same listing: app not told
         self.m._merge({"inbox": dict([listing(
             "4", SenderAddress="+33600000001", Sender="Alice", RecipientAddress=me,
             Timestamp="20260926T110000", Subject="quatre", Size=6, Read=False)])}, initial=False)
         self.assertEqual(len(self.hooks.received), 1)
         self.assertEqual(self.notifier.shown[-1]["summary"], "Alice")
-        self.assertEqual([k for k, _ in self.notifier.shown[-1]["actions"]], ["default", "reply"])
+        self.assertEqual([k for k, _ in self.notifier.shown[-1]["actions"]], ["default", "reply", "quick:0", "quick:1"])  # default quick replies
         self.assertEqual(self.m.threads()[0]["unread"], 1)
         self.m.mark_seen(self.m.threads()[0]["id"])
         self.assertEqual(self.m.threads()[0]["unread"], 0)
@@ -554,6 +558,8 @@ class MessagesTest(unittest.TestCase):
         self.m.store.commit()
         self.m.set_draft(tid, "à tout")
         self.assertEqual(self.m.threads()[0]["draft"], "à tout")
+        self.assertFalse(self.m.store.set_draft(tid, "à tout"))  # unchanged: no write, no signal
+        self.assertFalse(self.m.store.mark_seen(tid + "x"))
         self.assertEqual(self.m.search("PARC"), [tid])
         self.assertEqual(self.m.search("100%"), [])
         self.assertEqual(self.m.unread_total(), 1)
@@ -573,6 +579,10 @@ class MessagesTest(unittest.TestCase):
         self.assertEqual([(c["kind"], c["address"], c["name"]) for c in calls],
                          [("missed", "+33600000001", "Alice"), ("dialed", "", "")])
         self.m.store.replace_calls(calls)
+        self.m.store.set_meta("calls_seen", 1)
+        self.assertEqual(self.m.missed_unseen(), 1)
+        self.m.store.set_meta("calls_seen", 2 ** 40)
+        self.assertEqual(self.m.missed_unseen(), 0)
         history = self.m.call_history()
         self.assertEqual(history[0]["name"], "Alice")
         self.assertEqual(history[1]["name"], "Numéro masqué")
@@ -582,6 +592,60 @@ class MessagesTest(unittest.TestCase):
         tid = self.m.store.ensure_thread(["+33600000001", "+33600000002"])
         self.m.send(tid, "x", errors.append)
         self.assertTrue(errors and errors[0])
+
+
+class TransferWaitTest(unittest.TestCase):
+    """_wait_transfer wakes on obexd's PropertiesChanged instead of polling."""
+
+    XML = """<node><interface name="org.bluez.obex.Transfer1">
+      <property name="Status" type="s" access="read"/></interface></node>"""
+
+    def test_signal_ends_the_wait_before_the_guard(self):
+        import threading
+        import time
+        from gi.repository import Gio, GLib
+        dbus = Gio.TestDBus.new(Gio.TestDBusFlags.NONE)
+        dbus.up()
+        self.addCleanup(dbus.down)
+        flags = Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT | \
+            Gio.DBusConnectionFlags.MESSAGE_BUS_CONNECTION
+        server = Gio.DBusConnection.new_for_address_sync(dbus.get_bus_address(), flags, None, None)
+        client = Gio.DBusConnection.new_for_address_sync(dbus.get_bus_address(), flags, None, None)
+        self.addCleanup(client.close_sync, None)
+        self.addCleanup(server.close_sync, None)
+        path = "/org/bluez/obex/client/session0/transfer0"
+        status = {"value": "active"}
+        info = Gio.DBusNodeInfo.new_for_xml(self.XML).interfaces[0]
+        server.register_object(path, info, None,
+                               lambda *a: GLib.Variant("s", status["value"]), None)
+        loop = GLib.MainLoop()
+        Gio.bus_own_name_on_connection(server, messages.OBEX, Gio.BusNameOwnerFlags.NONE,
+                                       lambda *a: loop.quit(), None)
+        loop.run()
+        m = messages.Messages(client, FakeNotifier(), MessagesHooks())
+        done = {}
+
+        def wait():
+            start = time.monotonic()
+            m._wait_transfer(path, timeout=10)
+            done["took"] = time.monotonic() - start
+            GLib.idle_add(loop.quit)
+
+        def finish():
+            status["value"] = "complete"
+            server.emit_signal(None, path, "org.freedesktop.DBus.Properties", "PropertiesChanged",
+                               GLib.Variant("(sa{sv}as)", (messages.TRANSFER, {
+                                   "Status": GLib.Variant("s", "complete")}, [])))
+            return False
+
+        guard = mock.patch.object(messages, "TRANSFER_GUARD", 3.0)
+        guard.start()
+        self.addCleanup(guard.stop)
+        threading.Thread(target=wait, daemon=True).start()
+        GLib.timeout_add(150, finish)
+        GLib.timeout_add_seconds(5, loop.quit)
+        loop.run()
+        self.assertLess(done["took"], 1.0)  # woken by the signal, not by the 3 s guard
 
 
 class HeadphonesTest(unittest.TestCase):
@@ -856,6 +920,11 @@ class MigrationTest(unittest.TestCase):
         # Second start: nothing left to do.
         calls.clear()
         self.assertEqual(migrate(home=home, run=run, log=lambda m: None), [])
+        # Later starts: no command at all, files are still looked at.
+        calls.clear()
+        write(j(conf, "gtk-3.0", "bookmarks"), f"file://{j(share, 'tandem')}/messages Old\n")
+        self.assertTrue(migrate(home=home, run=run, log=lambda m: None))
+        self.assertEqual(calls, [])
 
     def test_move_from_covalence_package(self):
         """Covalence 0.6 installed from its .deb: config, cache, sounds, units links, dock."""

@@ -57,6 +57,19 @@ class ImportTest(unittest.TestCase):
         target = photos_usb.target_for(self.dest, "DCIM/100APPLE/IMG_0002.HEIC", 20, True)
         self.assertEqual(os.path.basename(target), "IMG_0002.jpg")
 
+    def test_apple_device_seen_in_sysfs(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as root:
+            os.makedirs(os.path.join(root, "1-2"))
+            with open(os.path.join(root, "1-2", "idVendor"), "w") as f:
+                f.write("046d\n")
+            self.assertFalse(photos_usb.apple_on_usb(root))
+            os.makedirs(os.path.join(root, "3-1"))
+            with open(os.path.join(root, "3-1", "idVendor"), "w") as f:
+                f.write("05ac\n")
+            self.assertTrue(photos_usb.apple_on_usb(root))
+        self.assertTrue(photos_usb.apple_on_usb("/nonexistent"))  # cannot tell: ask the tools
+
 
 if __name__ == "__main__":
     unittest.main()

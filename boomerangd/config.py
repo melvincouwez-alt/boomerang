@@ -10,7 +10,8 @@ from .util import log
 
 MODULES = ("notifications", "media", "calls", "battery", "messages", "icloud")
 # Experimental features, off by default: each one relies on iPhone behaviour not yet measured.
-ALPHA = ("map_history", "mark_read", "ancs_actions", "pbap_favorites", "iphone_control")
+ALPHA = ("map_history", "mark_read", "ancs_actions", "pbap_favorites", "iphone_control",
+         "head_gestures", "mirror_ble")
 
 
 class Config:
@@ -61,6 +62,24 @@ class Config:
 
     def set_string(self, group, key, value):
         self.keyfile.set_string(group, key, value)
+        self.save()
+
+    def string_list(self, group, key, default=None):
+        """The list kept under group/key, or default (None) when the key is absent."""
+        try:
+            return list(self.keyfile.get_string_list(group, key))
+        except GLib.Error:
+            return default
+
+    def set_string_list(self, group, key, values):
+        self.keyfile.set_string_list(group, key, list(values))
+        self.save()
+
+    def remove_key(self, group, key):
+        try:
+            self.keyfile.remove_key(group, key)
+        except GLib.Error:
+            return  # already absent
         self.save()
 
     def _string(self, group, key, default=""):

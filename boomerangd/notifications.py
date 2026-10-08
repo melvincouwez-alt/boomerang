@@ -35,6 +35,38 @@ class Notifications:
             self.config.save()
             self.on_changed()
 
+    # Per app, beyond on/off: how it alerts, with which sound, and whether its text shows.
+    MODES = ("", "priority", "quiet")  # normal, banner and sound under Do Not Disturb, no sound
+
+    def app_settings(self, app_id):
+        """(mode, sound, private) for an iPhone app: mode "" | "priority" | "quiet", sound
+        "" (the Notifications sound of Réglages), "none" or a sound value, private: the
+        banner says which app, not what the notification says."""
+        mode = self.config._string("notification-app-mode", app_id) if app_id else ""
+        sound = self.config._string("notification-app-sound", app_id) if app_id else ""
+        private = bool(app_id) and self.config.boolean("notification-app-private", app_id, False)
+        return (mode if mode in self.MODES else ""), sound, private
+
+    def set_app_settings(self, app_id, mode, sound, private):
+        from .sounds import resolve
+        if not app_id or mode not in self.MODES:
+            raise ValueError(mode)
+        sound = "" if sound in ("", "default") else sound
+        if sound and sound != "none" and not resolve(sound):
+            raise ValueError(sound)
+        keyfile = self.config.keyfile
+        for group, value in (("notification-app-mode", mode), ("notification-app-sound", sound)):
+            if value:
+                keyfile.set_string(group, app_id, value)
+            else:
+                self.config.remove_key(group, app_id)
+        if private:
+            keyfile.set_boolean("notification-app-private", app_id, True)
+        else:
+            self.config.remove_key("notification-app-private", app_id)
+        self.config.save()
+        self.on_changed()
+
     def app_named(self, app_id, name):
         if app_id and name and self.config._string("notification-app-names", app_id) != name:
             self.config.keyfile.set_string("notification-app-names", app_id, name)
@@ -58,7 +90,8 @@ class Notifications:
         for item in self.items.values():
             known[item["app"]] = known.get(item["app"], 0) + 1
         return sorted(({"id": app, "name": self.app_name(app), "enabled": self.app_enabled(app),
-                        "count": count, **self.icon_fields(app)} for app, count in known.items() if app),
+                        "count": count, "mode": self.app_settings(app)[0],
+                        **self.icon_fields(app)} for app, count in known.items() if app),
                       key=lambda a: a["name"].casefold())
 
     # --- list ------------------------------------------------------------------------

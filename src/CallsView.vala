@@ -84,8 +84,16 @@ public class Boomerang.CallsView : Gtk.Box {
         overlay.add_overlay (toast);
         append (overlay);
 
-        daemon.calls_changed.connect (() => reload.begin ());
-        daemon.changed.connect (update_buttons);
+        daemon.calls_changed.connect (() => {
+            if (get_mapped ()) {  // hidden: map reloads it
+                reload.begin ();
+            }
+        });
+        daemon.changed.connect (() => {
+            if (daemon.touched ({ "CallsSupported" })) {
+                update_buttons ();
+            }
+        });
         map.connect (() => reload.begin ());
     }
 
@@ -198,8 +206,14 @@ public class Boomerang.CallButton : Gtk.Button {
                 update ();
             });
         });
-        daemon.changed.connect (update);
+        daemon.changed.connect (on_daemon_changed);  // a method: no reference kept on the row
         update ();
+    }
+
+    private void on_daemon_changed () {
+        if (daemon.touched ({ "CallsLinked", "CallsSupported" })) {
+            update ();
+        }
     }
 
     private void update () {

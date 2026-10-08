@@ -14,7 +14,44 @@ public class Boomerang.Avatar : Gtk.Widget {
 
     private Gtk.Label initials;
     private Gtk.Picture picture;
-    private string current_path = "";
+
+    // Decoded photos shared by every avatar: thread rows are reused for other conversations and
+    // bubbles are rebuilt, and each used to decode the file again. Keyed by path, date and size:
+    // a phone book refresh may write a new photo under the same name.
+    // ponytail: first in, first out over 48 photos (300 px: about 17 MB at most), not LRU.
+    private const uint CACHE_MAX = 48;
+    private static HashTable<string, Gdk.Texture>? textures = null;
+    private static Queue<string>? cached = null;
+
+    private static Gdk.Texture? texture_for (string path) {
+        FileInfo info;
+        try {
+            info = File.new_for_path (path).query_info (
+                FileAttribute.TIME_MODIFIED + "," + FileAttribute.STANDARD_SIZE, FileQueryInfoFlags.NONE);
+        } catch (Error e) {
+            return null;  // no photo (any more)
+        }
+        var key = "%s|%s|%s".printf (path, info.get_attribute_uint64 (FileAttribute.TIME_MODIFIED).to_string (),
+                                     info.get_size ().to_string ());
+        if (textures == null) {
+            textures = new HashTable<string, Gdk.Texture> (str_hash, str_equal);
+            cached = new Queue<string> ();
+        }
+        var texture = textures[key];
+        if (texture == null) {
+            try {
+                texture = Gdk.Texture.from_filename (path);
+            } catch (Error e) {
+                return null;
+            }
+            textures[key] = texture;
+            cached.push_tail (key);
+            if (cached.length > CACHE_MAX) {
+                textures.remove (cached.pop_head ());
+            }
+        }
+        return texture;
+    }
 
     public Avatar (int size) {
         Object (size: size, valign: Gtk.Align.CENTER, halign: Gtk.Align.CENTER);
@@ -74,10 +111,10 @@ public class Boomerang.Avatar : Gtk.Widget {
         }
         add_css_class ("color%u".printf (name.hash () % COLORS + 1));
 
-        if (photo_path != "" && FileUtils.test (photo_path, FileTest.EXISTS)) {
-            if (photo_path != current_path) {
-                picture.set_filename (photo_path);
-                current_path = photo_path;
+        var texture = photo_path != "" ? texture_for (photo_path) : null;
+        if (texture != null) {
+            if (picture.paintable != texture) {
+                picture.paintable = texture;
             }
             picture.visible = true;
             initials.visible = false;
@@ -85,7 +122,7 @@ public class Boomerang.Avatar : Gtk.Widget {
             return;
         }
         remove_css_class ("image");
-        current_path = "";
+        picture.paintable = null;
         picture.visible = false;
         initials.visible = true;
         initials.label = group ? group_initials (name) : person_initials (name);

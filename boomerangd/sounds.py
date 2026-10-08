@@ -217,16 +217,18 @@ class Sounds:
         process.wait_async(None, done)
         return True
 
-    def play(self, kind):
+    def play(self, kind, value=None, force=False):
         """An alert for a message or an iPhone notification. True if a sound was played
-        (the notification then asks the server for silence)."""
-        if kind == "calls" or self.ringing or do_not_disturb():
+        (the notification then asks the server for silence). value replaces the sound of
+        Réglages (a conversation's own sound); force plays it under Do Not Disturb too (a
+        priority conversation). A burst still gives one sound."""
+        if kind == "calls" or self.ringing or (do_not_disturb() and not force):
             return False
         now = time.monotonic()
         if now - self.last_alert < 2:
             return False
         self.last_alert = now
-        return self._spawn(self._file(kind))
+        return self._spawn(self._file(kind, value))
 
     def preview(self, kind, value):
         """The ▶ button in Réglages: plays even under Do Not Disturb, once."""

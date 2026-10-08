@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 melvincouwez-alt
 /*
- * Shared bits of the Fichiers, Recopie d'écran and Photos pages: reading their
- * dictionary properties, and a card offering to install the tools they need
+ * Shared bits of the pages: reading the daemon's dictionary properties (a{sv}),
+ * and, for Fichiers, Recopie d'écran and Photos, a card offering to install the tools they need
  * (PackageKit, like Components.vala).
  */
 
@@ -12,9 +12,9 @@ namespace Boomerang.Props {
         return v != null ? v.get_string () : "";
     }
 
-    public bool flag (Variant? dict, string key) {
+    public bool flag (Variant? dict, string key, bool fallback = false) {
         var v = dict != null ? dict.lookup_value (key, VariantType.BOOLEAN) : null;
-        return v != null && v.get_boolean ();
+        return v != null ? v.get_boolean () : fallback;
     }
 
     public uint count (Variant? dict, string key) {
@@ -22,9 +22,14 @@ namespace Boomerang.Props {
         return v != null ? v.get_uint32 () : 0;
     }
 
-    public int integer (Variant? dict, string key) {
+    public int integer (Variant? dict, string key, int fallback = 0) {
         var v = dict != null ? dict.lookup_value (key, VariantType.INT32) : null;
-        return v != null ? v.get_int32 () : 0;
+        return v != null ? v.get_int32 () : fallback;
+    }
+
+    public int64 int64 (Variant? dict, string key) {
+        var v = dict != null ? dict.lookup_value (key, VariantType.INT64) : null;
+        return v != null ? v.get_int64 () : 0;
     }
 
     public double number (Variant? dict, string key) {

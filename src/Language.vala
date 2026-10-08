@@ -10,15 +10,11 @@
  */
 
 namespace Boomerang.Language {
-    private string prefs_path () {
-        return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
-    }
-
     /* "fr", "en" or "system". */
     public string chosen () {
         var prefs = new KeyFile ();
         try {
-            prefs.load_from_file (prefs_path (), KeyFileFlags.NONE);
+            prefs.load_from_file (Setup.prefs_path (), KeyFileFlags.NONE);
             var value = prefs.get_string ("general", "language").strip ();
             if (value == "fr" || value == "en") {
                 return value;
@@ -52,14 +48,14 @@ namespace Boomerang.Language {
     public void save (string value) {
         var prefs = new KeyFile ();
         try {
-            prefs.load_from_file (prefs_path (), KeyFileFlags.KEEP_COMMENTS);
+            prefs.load_from_file (Setup.prefs_path (), KeyFileFlags.KEEP_COMMENTS);
         } catch (Error e) {
             // first choice
         }
         prefs.set_string ("general", "language", value);
         try {
-            DirUtils.create_with_parents (Path.get_dirname (prefs_path ()), 0700);
-            prefs.save_to_file (prefs_path ());
+            DirUtils.create_with_parents (Path.get_dirname (Setup.prefs_path ()), 0700);
+            prefs.save_to_file (Setup.prefs_path ());
         } catch (Error e) {
             warning ("cannot save the language: %s", e.message);
         }

@@ -42,8 +42,9 @@ ICON = "folder-remote"
 # CloudProvidersAccountStatus
 INVALID, IDLE, SYNCING, ERROR = 0, 1, 2, 3
 
-POLL_ACTIVE = 5     # seconds, while the mount runs
-POLL_IDLE = 30      # seconds, otherwise
+POLL_ACTIVE = 5     # seconds, while files go up, fail or the mount connects
+POLL_SETTLED = 15   # seconds, mount up to date
+POLL_IDLE = 30      # seconds, no mount
 
 XML = """
 <node>
@@ -307,5 +308,10 @@ class DriveProvider:
             status, details = state
             self._set_account({"Name": "iCloud Drive", "Path": folder, "Icon": ICON,
                                "Status": status, "StatusDetails": details})
-        self._schedule(POLL_ACTIVE if active == "active" else POLL_IDLE)
+        # ponytail: an up-to-date mount is asked every 15 s, not 5 (each poll wakes systemd
+        # and rclone): a new upload may show up to 15 s late in Files, then at 5 s steps.
+        if active != "active":
+            self._schedule(POLL_IDLE)
+        else:
+            self._schedule(POLL_SETTLED if state and state[0] == IDLE else POLL_ACTIVE)
         return False

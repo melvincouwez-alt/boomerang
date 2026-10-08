@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: boomerang\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-04 20:52+0200\n"
+"POT-Creation-Date: 2026-10-04 21:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,8 +89,8 @@ msgid ""
 "rclone, Nick Craig-Wood et contributeurs https://github.com/rclone/rclone"
 msgstr ""
 
-#: src/About.vala:52 src/MainWindow.vala:262 src/SoundsCard.vala:200
-#: src/WhatsNew.vala:96
+#: src/About.vala:52 src/ContributorsView.vala:90 src/ContributorsView.vala:94
+#: src/MainWindow.vala:264 src/SoundsCard.vala:200 src/WhatsNew.vala:105
 msgid "Sons"
 msgstr ""
 
@@ -181,7 +181,8 @@ msgid ""
 "libheif"
 msgstr ""
 
-#: src/About.vala:80
+#: src/About.vala:80 src/ContributorsView.vala:143
+#: src/ContributorsView.vala:147
 msgid "Applications compagnes"
 msgstr ""
 
@@ -197,7 +198,7 @@ msgid ""
 "(BlueOak-1.0.0) https://github.com/melvincouwez-alt/cassette"
 msgstr ""
 
-#: src/AppChoice.vala:24 src/ServicesView.vala:104 src/WhatsNew.vala:28
+#: src/AppChoice.vala:24 src/ServicesView.vala:104 src/WhatsNew.vala:37
 msgid "Agenda"
 msgstr ""
 
@@ -210,7 +211,7 @@ msgid "Calendrier (elementary)"
 msgstr ""
 
 #: src/AppChoice.vala:30 src/AppWindow.vala:37 src/ContactsView.vala:393
-#: src/MainWindow.vala:88 src/MainWindow.vala:100 src/MainWindow.vala:212
+#: src/MainWindow.vala:88 src/MainWindow.vala:101 src/MainWindow.vala:214
 #: src/Onboarding.vala:301
 msgid "Contacts"
 msgstr ""
@@ -223,7 +224,7 @@ msgstr ""
 msgid "Contacts (elementary)"
 msgstr ""
 
-#: src/AppChoice.vala:174 src/MainWindow.vala:224 src/MainWindow.vala:226
+#: src/AppChoice.vala:174 src/MainWindow.vala:226 src/MainWindow.vala:228
 #: src/PhoneGuide.vala:259 src/ServicesView.vala:55 src/ServicesView.vala:77
 #: src/ServicesView.vala:252 src/ServicesView.vala:353
 #: boomerangd/messages.py:1190 boomerangd/messages.py:1367
@@ -254,8 +255,8 @@ msgid ""
 "Pas encore installée : elle deviendra l'app par défaut une fois installée"
 msgstr ""
 
-#: src/AppWindow.vala:36 src/MainWindow.vala:84 src/MainWindow.vala:98
-#: src/MainWindow.vala:210 src/MainWindow.vala:258 src/MessagesView.vala:614
+#: src/AppWindow.vala:36 src/MainWindow.vala:84 src/MainWindow.vala:99
+#: src/MainWindow.vala:212 src/MainWindow.vala:260 src/MessagesView.vala:614
 #: src/SoundsCard.vala:18 src/Onboarding.vala:297 src/FreeSounds.vala:119
 #: src/FreeSounds.vala:172 indicator/Indicator.vala:322
 #: indicator/Indicator.vala:417
@@ -263,17 +264,17 @@ msgid "Messages"
 msgstr ""
 
 #: src/AppWindow.vala:38 src/ContactEditor.vala:82 src/MainWindow.vala:86
-#: src/MainWindow.vala:99 src/MainWindow.vala:211 src/Onboarding.vala:299
+#: src/MainWindow.vala:100 src/MainWindow.vala:213 src/Onboarding.vala:299
 #: src/FreeSounds.vala:32
 msgid "Téléphone"
 msgstr ""
 
-#: src/AppWindow.vala:39 src/MainWindow.vala:94 src/MainWindow.vala:106
-#: src/MainWindow.vala:213 src/Onboarding.vala:303
+#: src/AppWindow.vala:39 src/MainWindow.vala:94 src/MainWindow.vala:107
+#: src/MainWindow.vala:215 src/Onboarding.vala:303
 msgid "Écouteurs"
 msgstr ""
 
-#: src/AppWindow.vala:40 src/MainWindow.vala:214
+#: src/AppWindow.vala:40 src/MainWindow.vala:216
 msgid "Recopie"
 msgstr ""
 
@@ -344,17 +345,17 @@ msgid "Audio PC"
 msgstr ""
 
 #: src/CallWindow.vala:190 src/CallWindow.vala:200 src/CallWindow.vala:414
-#: src/CallWindow.vala:496 boomerangd/calls.py:272 indicator/Indicator.vala:399
+#: src/CallWindow.vala:496 boomerangd/calls.py:278 indicator/Indicator.vala:399
 msgid "Raccrocher"
 msgstr ""
 
 #: src/CallWindow.vala:192 src/CallWindow.vala:197 src/CallWindow.vala:496
-#: boomerangd/calls.py:265 boomerangd/service.py:567 boomerangd/files.py:166
+#: boomerangd/calls.py:271 boomerangd/service.py:567 boomerangd/files.py:166
 msgid "Refuser"
 msgstr ""
 
 #: src/CallWindow.vala:194 src/CallWindow.vala:198 src/CallWindow.vala:411
-#: boomerangd/calls.py:265
+#: boomerangd/calls.py:271
 msgctxt "call"
 msgid "Répondre"
 msgstr ""
@@ -385,7 +386,7 @@ msgstr ""
 msgid "Appel en cours de numérotation…"
 msgstr ""
 
-#: src/CallWindow.vala:338 src/CallWindow.vala:504 src/MainWindow.vala:864
+#: src/CallWindow.vala:338 src/CallWindow.vala:504 src/MainWindow.vala:872
 msgid "En attente"
 msgstr ""
 
@@ -768,6 +769,334 @@ msgstr ""
 msgid "téléphone"
 msgstr ""
 
+#: src/ContributorsView.vala:13 src/ContributorsView.vala:17
+#: src/ContributorsView.vala:21 src/ContributorsView.vala:25
+#: src/ContributorsView.vala:29 src/ContributorsView.vala:33
+#: src/ContributorsView.vala:37
+msgid "iPhone et Bluetooth"
+msgstr ""
+
+#: src/ContributorsView.vala:13
+msgid "Projet BlueZ"
+msgstr ""
+
+#: src/ContributorsView.vala:14
+msgid ""
+"La pile Bluetooth de Linux. La liaison avec l'iPhone, les notifications, les "
+"messages et les contacts passent par elle."
+msgstr ""
+
+#: src/ContributorsView.vala:15
+msgid "GPL-2.0-or-later, bibliothèques LGPL-2.1-or-later"
+msgstr ""
+
+#: src/ContributorsView.vala:17
+msgid "Kavish Devar et contributeurs"
+msgstr ""
+
+#: src/ContributorsView.vala:18
+msgid ""
+"Ont décrit le protocole des AirPods (batterie, réduction du bruit, port, "
+"gestes de tête). Boomerang en a réécrit une partie en Python."
+msgstr ""
+
+#: src/ContributorsView.vala:21
+msgid "Équipe LocalSend"
+msgstr ""
+
+#: src/ContributorsView.vala:22
+msgid ""
+"Le protocole v2 que Boomerang reprend pour échanger des fichiers avec "
+"l'iPhone."
+msgstr ""
+
+#: src/ContributorsView.vala:23
+msgid "Protocole public ; application Apache-2.0"
+msgstr ""
+
+#: src/ContributorsView.vala:25
+msgid "F. Duncanh, Florian Draschbacher et contributeurs"
+msgstr ""
+
+#: src/ContributorsView.vala:26
+msgid "Le récepteur AirPlay de la recopie d'écran, et sa balise Bluetooth."
+msgstr ""
+
+#: src/ContributorsView.vala:29
+msgid "Projet Avahi"
+msgstr ""
+
+#: src/ContributorsView.vala:30
+msgid ""
+"Annonce l'ordinateur sur le réseau local, pour que l'iPhone le trouve "
+"pendant la recopie."
+msgstr ""
+
+#: src/ContributorsView.vala:33
+msgid "Projet libimobiledevice"
+msgstr ""
+
+#: src/ContributorsView.vala:34
+msgid "L'import des photos de l'iPhone par câble USB."
+msgstr ""
+
+#: src/ContributorsView.vala:38
+msgid ""
+"Une app iPhone gratuite qui a aidé aux premiers appairages, quand Boomerang "
+"n'en était qu'au début."
+msgstr ""
+
+#: src/ContributorsView.vala:39
+msgid "Application gratuite, non libre"
+msgstr ""
+
+#: src/ContributorsView.vala:42 src/ContributorsView.vala:46
+#: src/ContributorsView.vala:50 src/ContributorsView.vala:54
+#: src/ContributorsView.vala:58 src/WhatsNew.vala:81
+msgid "iCloud"
+msgstr ""
+
+#: src/ContributorsView.vala:42
+msgid "Nick Craig-Wood et contributeurs"
+msgstr ""
+
+#: src/ContributorsView.vala:43
+msgid "iCloud Drive et vos photos iCloud dans Fichiers."
+msgstr ""
+
+#: src/ContributorsView.vala:46 src/ContributorsView.vala:50
+#: src/ContributorsView.vala:54 src/ContributorsView.vala:115
+#: src/ContributorsView.vala:119 src/ContributorsView.vala:139
+msgid "Projet GNOME"
+msgstr ""
+
+#: src/ContributorsView.vala:47
+msgid ""
+"Le courriel, les agendas, les rappels et les contacts iCloud dans les apps "
+"d'elementary."
+msgstr ""
+
+#: src/ContributorsView.vala:51
+msgid ""
+"Garde les mots de passe dans le trousseau du système, jamais dans un fichier."
+msgstr ""
+
+#: src/ContributorsView.vala:55
+msgid ""
+"La façon standard de montrer l'état de synchronisation d'iCloud Drive dans "
+"Fichiers."
+msgstr ""
+
+#: src/ContributorsView.vala:58
+msgid "Projet libfuse"
+msgstr ""
+
+#: src/ContributorsView.vala:59
+msgid "Monte iCloud Drive et Photos comme des dossiers."
+msgstr ""
+
+#: src/ContributorsView.vala:60
+msgid "LGPL-2.1, outils GPL-2.0"
+msgstr ""
+
+#: src/ContributorsView.vala:62 src/ContributorsView.vala:66
+msgid "Son et appels"
+msgstr ""
+
+#: src/ContributorsView.vala:62 src/ContributorsView.vala:66
+msgid "Projet PipeWire"
+msgstr ""
+
+#: src/ContributorsView.vala:63
+msgid "Le son des appels et de l'iPhone sur l'ordinateur."
+msgstr ""
+
+#: src/ContributorsView.vala:64
+msgid "MIT, certaines parties LGPL-2.1-or-later"
+msgstr ""
+
+#: src/ContributorsView.vala:67
+msgid "Relie l'iPhone, le micro et les haut-parleurs au bon moment."
+msgstr ""
+
+#: src/ContributorsView.vala:70 src/ContributorsView.vala:74
+#: src/ContributorsView.vala:78 src/ContributorsView.vala:82
+#: src/ContributorsView.vala:86
+msgid "Interface"
+msgstr ""
+
+#: src/ContributorsView.vala:70
+msgid "Projet GTK"
+msgstr ""
+
+#: src/ContributorsView.vala:71
+msgid "La boîte à outils de toutes les fenêtres de Boomerang."
+msgstr ""
+
+#: src/ContributorsView.vala:75
+msgid ""
+"Les éléments d'interface d'elementary OS, pour que Boomerang s'y sente chez "
+"lui."
+msgstr ""
+
+#: src/ContributorsView.vala:78
+msgid "Icônes elementary"
+msgstr ""
+
+#: src/ContributorsView.vala:79
+msgid "Les objets dont sont faites les icônes de Boomerang."
+msgstr ""
+
+#: src/ContributorsView.vala:83
+msgid "La police du texte de l'icône Calendrier, en tracés."
+msgstr ""
+
+#: src/ContributorsView.vala:86
+msgid "Dirk Farin, struktur AG et contributeurs"
+msgstr ""
+
+#: src/ContributorsView.vala:87
+msgid "Convertit les photos HEIC de l'iPhone en JPEG."
+msgstr ""
+
+#: src/ContributorsView.vala:88
+msgid "LGPL-3.0-or-later, outil heif-convert MIT"
+msgstr ""
+
+#: src/ContributorsView.vala:91
+msgid "Quatorze sons de messages et sonneries (Rosée, Envol, Aurore…)."
+msgstr ""
+
+#: src/ContributorsView.vala:95
+msgid "Cinq sons de notification (Carillon, Cristal, Pop, Bulle, Givre)."
+msgstr ""
+
+#: src/ContributorsView.vala:98 src/ContributorsView.vala:102
+#: src/ContributorsView.vala:107
+msgid "Protocoles publiés"
+msgstr ""
+
+#: src/ContributorsView.vala:98
+msgid "Bluetooth HFP, MAP, PBAP, HID"
+msgstr ""
+
+#: src/ContributorsView.vala:99
+msgid ""
+"Les profils standard qui font de l'ordinateur un accessoire de l'iPhone : "
+"appels, messages, contacts, contrôle."
+msgstr ""
+
+#: src/ContributorsView.vala:100 src/ContributorsView.vala:104
+msgid "Spécifications publiques"
+msgstr ""
+
+#: src/ContributorsView.vala:103
+msgid ""
+"Les services Bluetooth documentés par Apple pour les notifications et la "
+"musique de l'iPhone."
+msgstr ""
+
+#: src/ContributorsView.vala:108
+msgid ""
+"Les normes ouvertes par lesquelles passent les agendas, les contacts et le "
+"courriel iCloud."
+msgstr ""
+
+#: src/ContributorsView.vala:109
+msgid "Normes ouvertes (RFC)"
+msgstr ""
+
+#: src/ContributorsView.vala:111 src/ContributorsView.vala:115
+#: src/ContributorsView.vala:119 src/ContributorsView.vala:123
+#: src/ContributorsView.vala:127 src/ContributorsView.vala:131
+#: src/ContributorsView.vala:135 src/ContributorsView.vala:139
+msgid "Outils"
+msgstr ""
+
+#: src/ContributorsView.vala:112
+msgid "Le langage du démon de Boomerang."
+msgstr ""
+
+#: src/ContributorsView.vala:116
+msgid "Relie le démon en Python à GLib et D-Bus."
+msgstr ""
+
+#: src/ContributorsView.vala:120
+msgid "Le langage de l'app et de l'indicateur."
+msgstr ""
+
+#: src/ContributorsView.vala:123
+msgid "Projet Meson"
+msgstr ""
+
+#: src/ContributorsView.vala:124
+msgid "Construit Boomerang à partir de ses sources."
+msgstr ""
+
+#: src/ContributorsView.vala:127
+msgid "Projet SQLite"
+msgstr ""
+
+#: src/ContributorsView.vala:128
+msgid "Le cache des messages, sur votre ordinateur."
+msgstr ""
+
+#: src/ContributorsView.vala:129
+msgid "Domaine public"
+msgstr ""
+
+#: src/ContributorsView.vala:131
+msgid "Projet OpenSSL"
+msgstr ""
+
+#: src/ContributorsView.vala:132
+msgid "Le certificat qui chiffre les échanges de fichiers avec l'iPhone."
+msgstr ""
+
+#: src/ContributorsView.vala:135
+msgid "Projet GnuPG"
+msgstr ""
+
+#: src/ContributorsView.vala:136
+msgid "Vérifie la signature de rclone avant de l'installer."
+msgstr ""
+
+#: src/ContributorsView.vala:140
+msgid "Reprend vos réglages lors des changements de nom de l'app."
+msgstr ""
+
+#: src/ContributorsView.vala:144
+msgid "Le client Apple Music dont Cassette est issue."
+msgstr ""
+
+#: src/ContributorsView.vala:148
+msgid "Le moteur de Cassette, avec la lecture des contenus protégés."
+msgstr ""
+
+#: src/ContributorsView.vala:157 src/MainWindow.vala:97 src/MainWindow.vala:112
+#: src/WhatsNew.vala:19
+msgid "Contributeurs"
+msgstr ""
+
+#: src/ContributorsView.vala:160
+msgid ""
+"Boomerang n'existerait pas sans eux. Chaque projet ci-dessous a été écrit, "
+"documenté et partagé par d'autres, souvent bénévolement. Boomerang s'appuie "
+"sur leur travail ; merci à toutes celles et ceux qui le rendent possible."
+msgstr ""
+
+#: src/ContributorsView.vala:197
+msgid ""
+"Boomerang n'est affilié à aucun de ces projets. Les licences indiquées sont "
+"celles que chaque projet publie. Un oubli ou une erreur ? Signalez-le sur la "
+"page du code source."
+msgstr ""
+
+#: src/ContributorsView.vala:233
+#, c-format
+msgid "Ouvrir la page de %s"
+msgstr ""
+
 #: src/DriveOptions.vala:32
 msgid "1 Go"
 msgstr ""
@@ -1069,8 +1398,8 @@ msgid ""
 "documenté par le projet LibrePods, merci à ses contributeurs."
 msgstr ""
 
-#: src/HeadphonesView.vala:261 src/MainWindow.vala:96 src/MainWindow.vala:110
-#: src/MainWindow.vala:205 boomerangd/updates.py:291
+#: src/HeadphonesView.vala:261 src/MainWindow.vala:96 src/MainWindow.vala:111
+#: src/MainWindow.vala:207 boomerangd/updates.py:291
 msgid "Réglages"
 msgstr ""
 
@@ -1131,7 +1460,7 @@ msgstr ""
 msgid "en charge"
 msgstr ""
 
-#: src/Language.vala:147 src/MainWindow.vala:264
+#: src/Language.vala:147 src/MainWindow.vala:266
 msgid "Langue"
 msgstr ""
 
@@ -1145,499 +1474,519 @@ msgid ""
 "a son propre bouton FR / EN."
 msgstr ""
 
-#: src/MainWindow.vala:40 src/MainWindow.vala:152 src/MainWindow.vala:581
+#: src/MainWindow.vala:40 src/MainWindow.vala:154 src/MainWindow.vala:589
 msgid "Boomerang"
 msgstr ""
 
-#: src/MainWindow.vala:89 src/MainWindow.vala:101 src/MainWindow.vala:631
+#: src/MainWindow.vala:89 src/MainWindow.vala:102 src/MainWindow.vala:639
 msgid "Notifications"
 msgstr ""
 
-#: src/MainWindow.vala:90 src/MainWindow.vala:102 src/NowPlayingView.vala:230
+#: src/MainWindow.vala:90 src/MainWindow.vala:103 src/NowPlayingView.vala:230
 #: src/NowPlayingView.vala:398
 msgid "Lecture en cours"
 msgstr ""
 
-#: src/MainWindow.vala:91 src/MainWindow.vala:103 src/ServicesView.vala:222
+#: src/MainWindow.vala:91 src/MainWindow.vala:104 src/ServicesView.vala:222
 #: src/FilesView.vala:33
 msgid "Fichiers"
 msgstr ""
 
-#: src/MainWindow.vala:92 src/MainWindow.vala:104 src/ServicesView.vala:223
+#: src/MainWindow.vala:92 src/MainWindow.vala:105 src/ServicesView.vala:223
 #: src/PhotosView.vala:35 src/WebShortcuts.vala:32
 msgid "Photos"
 msgstr ""
 
-#: src/MainWindow.vala:93 src/MainWindow.vala:105 src/MirrorView.vala:58
+#: src/MainWindow.vala:93 src/MainWindow.vala:106 src/MirrorView.vala:59
 msgid "Recopie d'écran"
 msgstr ""
 
-#: src/MainWindow.vala:95 src/MainWindow.vala:107 src/Onboarding.vala:45
+#: src/MainWindow.vala:95 src/MainWindow.vala:108 src/Onboarding.vala:45
 #: src/Onboarding.vala:241 src/ServicesView.vala:35
 msgid "Services Apple"
 msgstr ""
 
-#: src/MainWindow.vala:97
+#: src/MainWindow.vala:98
 msgid "Aperçu"
 msgstr ""
 
-#: src/MainWindow.vala:106
+#: src/MainWindow.vala:107
 msgid "Accessoires"
 msgstr ""
 
-#: src/MainWindow.vala:107
+#: src/MainWindow.vala:108
 msgid "Compte Apple"
 msgstr ""
 
-#: src/MainWindow.vala:108 src/MainWindow.vala:225
+#: src/MainWindow.vala:109 src/MainWindow.vala:227
 msgid "Guide"
 msgstr ""
 
-#: src/MainWindow.vala:141
+#: src/MainWindow.vala:143
 msgid "Le service Boomerang ne répond pas"
 msgstr ""
 
-#: src/MainWindow.vala:142
+#: src/MainWindow.vala:144
 msgid ""
 "Démarrez-le avec « systemctl --user start boomerangd », ou consultez son "
 "journal avec « journalctl --user -u boomerangd »."
 msgstr ""
 
-#: src/MainWindow.vala:146 src/MessagesView.vala:397 src/MessagesView.vala:1587
+#: src/MainWindow.vala:148 src/MessagesView.vala:397 src/MessagesView.vala:1587
 msgid "Réessayer"
 msgstr ""
 
-#: src/MainWindow.vala:147
+#: src/MainWindow.vala:149
 msgid "Relancer la connexion au service"
 msgstr ""
 
-#: src/MainWindow.vala:210
+#: src/MainWindow.vala:212
 msgid "Vos conversations dans leur propre fenêtre"
 msgstr ""
 
-#: src/MainWindow.vala:211
+#: src/MainWindow.vala:213
 msgid "Clavier, journal et appel en cours"
 msgstr ""
 
-#: src/MainWindow.vala:212
+#: src/MainWindow.vala:214
 msgid "Le répertoire de l'iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:213
+#: src/MainWindow.vala:215
 msgid "Batterie et réglages de vos AirPods"
 msgstr ""
 
-#: src/MainWindow.vala:214
+#: src/MainWindow.vala:216
 msgid "L'écran de l'iPhone et son contrôle depuis le PC"
 msgstr ""
 
-#: src/MainWindow.vala:216
+#: src/MainWindow.vala:218
 msgid ""
 "Chaque app a sa propre fenêtre et son icône. L'interrupteur l'affiche ou non "
 "dans le menu Applications."
 msgstr ""
 
-#: src/MainWindow.vala:223
+#: src/MainWindow.vala:225
 msgid "Configuration initiale"
 msgstr ""
 
-#: src/MainWindow.vala:224
+#: src/MainWindow.vala:226
 msgid "Relancer l'assistant pas à pas"
 msgstr ""
 
-#: src/MainWindow.vala:225
+#: src/MainWindow.vala:227
 msgid "Pas à pas, vie privée et dépannage (F1)"
 msgstr ""
 
-#: src/MainWindow.vala:227
+#: src/MainWindow.vala:229
 msgid "Nouveautés"
 msgstr ""
 
-#: src/MainWindow.vala:228
+#: src/MainWindow.vala:230
 #, c-format
 msgid "Ce qui change dans la version %s"
 msgstr ""
 
-#: src/MainWindow.vala:229 src/MainWindow.vala:232 boomerangd/calls.py:272
+#: src/MainWindow.vala:231 src/MainWindow.vala:234 boomerangd/calls.py:278
 msgid "Afficher"
 msgstr ""
 
-#: src/MainWindow.vala:230
+#: src/MainWindow.vala:232
 msgid "À propos de Boomerang"
 msgstr ""
 
-#: src/MainWindow.vala:231
+#: src/MainWindow.vala:233
 #, c-format
 msgid "Version %s, licence, remerciements"
 msgstr ""
 
-#: src/MainWindow.vala:239
+#: src/MainWindow.vala:241
 msgid ""
 "Ces fonctionnalités reposent sur des comportements de l'iPhone pas encore "
 "vérifiés. Elles peuvent ne rien faire. Désactivées par défaut."
 msgstr ""
 
-#: src/MainWindow.vala:251 src/MainWindow.vala:633 src/SoundsCard.vala:22
+#: src/MainWindow.vala:253 src/MainWindow.vala:641 src/SoundsCard.vala:22
 #: src/FreeSounds.vala:121 src/FreeSounds.vala:174
 msgid "Appels"
 msgstr ""
 
-#: src/MainWindow.vala:252 src/WhatsNew.vala:61 src/HotspotProximity.vala:33
+#: src/MainWindow.vala:254 src/WhatsNew.vala:70 src/HotspotProximity.vala:33
 msgid "Internet via l'iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:253 src/WhatsNew.vala:75
+#: src/MainWindow.vala:255 src/WhatsNew.vala:84
 msgid "Verrouillage de proximité"
 msgstr ""
 
-#: src/MainWindow.vala:254 boomerangd/sounds.py:43
+#: src/MainWindow.vala:256 boomerangd/sounds.py:43
 msgid "Connexion"
 msgstr ""
 
-#: src/MainWindow.vala:256 src/NowPlayingView.vala:56
+#: src/MainWindow.vala:258 src/NowPlayingView.vala:56
 #: src/NowPlayingView.vala:111 src/NowPlayingView.vala:266
 #: src/NowPlayingView.vala:433 indicator/Indicator.vala:318
 #: indicator/Indicator.vala:383
 msgid "Lecture"
 msgstr ""
 
-#: src/MainWindow.vala:257 src/WhatsNew.vala:88
+#: src/MainWindow.vala:259 src/WhatsNew.vala:97
 msgid "Codes SMS"
 msgstr ""
 
-#: src/MainWindow.vala:260
+#: src/MainWindow.vala:262
 msgid "Choix des sons"
 msgstr ""
 
-#: src/MainWindow.vala:261
+#: src/MainWindow.vala:263
 msgid "Sons de Boomerang"
 msgstr ""
 
-#: src/MainWindow.vala:265 src/WhatsNew.vala:63
+#: src/MainWindow.vala:267 src/WhatsNew.vala:72
 msgid "Barre du haut"
 msgstr ""
 
-#: src/MainWindow.vala:266 src/Onboarding.vala:306
+#: src/MainWindow.vala:268 src/Onboarding.vala:306
 msgid "Apps séparées"
 msgstr ""
 
-#: src/MainWindow.vala:267 src/MirrorView.vala:83
+#: src/MainWindow.vala:269 src/MirrorView.vala:84
 msgid "Affichage"
 msgstr ""
 
-#: src/MainWindow.vala:271 src/WhatsNew.vala:99
+#: src/MainWindow.vala:273 src/WhatsNew.vala:108
 msgid "Mises à jour"
 msgstr ""
 
-#: src/MainWindow.vala:273 src/WhatsNew.vala:101
+#: src/MainWindow.vala:275 src/WhatsNew.vala:110
 msgid "Fonctionnalités expérimentales"
 msgstr ""
 
-#: src/MainWindow.vala:274 src/MirrorView.vala:60
+#: src/MainWindow.vala:276 src/MirrorView.vala:61
 msgid "Expérimental"
 msgstr ""
 
-#: src/MainWindow.vala:276
+#: src/MainWindow.vala:278
 msgid "Assistance"
 msgstr ""
 
-#: src/MainWindow.vala:277
+#: src/MainWindow.vala:279
 msgid "À propos"
 msgstr ""
 
-#: src/MainWindow.vala:361
+#: src/MainWindow.vala:363
 msgid "Appels de l'iPhone en silence"
 msgstr ""
 
-#: src/MainWindow.vala:363
+#: src/MainWindow.vala:365
 msgid ""
 "Ni sonnerie, ni notification, ni fenêtre, et le son de l'appel reste sur "
 "l'iPhone. Utile quand Teams sonne déjà sur l'ordinateur : l'appel reste "
 "visible dans Téléphone."
 msgstr ""
 
-#: src/MainWindow.vala:401
+#: src/MainWindow.vala:403
 msgid "Toujours lire les messages en entier"
 msgstr ""
 
-#: src/MainWindow.vala:403
+#: src/MainWindow.vala:405
 msgid ""
 "Récupère tout de suite le texte complet des messages de plus de 120 "
 "caractères. Ils passent alors en lu sur l'iPhone."
 msgstr ""
 
-#: src/MainWindow.vala:423
+#: src/MainWindow.vala:425
 msgid "Toujours lire les messages en entier ?"
 msgstr ""
 
-#: src/MainWindow.vala:424
+#: src/MainWindow.vala:426
 msgid ""
 "Pour avoir le texte complet d'un message non lu, Boomerang doit le "
 "télécharger : il passera en lu sur l'iPhone dès son arrivée, même si vous ne "
 "l'avez pas ouvert."
 msgstr ""
 
-#: src/MainWindow.vala:431
+#: src/MainWindow.vala:433
 msgid "Activer"
 msgstr ""
 
-#: src/MainWindow.vala:471 src/WhatsNew.vala:81
+#: src/MainWindow.vala:473 src/WhatsNew.vala:90
 msgid "Émojis automatiques"
 msgstr ""
 
-#: src/MainWindow.vala:473
+#: src/MainWindow.vala:475
 msgid ""
 "« :) » devient 🙂, « :D » devient 😃, « <3 » devient ❤️… Retour arrière "
 "annule."
 msgstr ""
 
-#: src/MainWindow.vala:505
+#: src/MainWindow.vala:507
 msgid "Historique étendu des messages"
 msgstr ""
 
-#: src/MainWindow.vala:506
+#: src/MainWindow.vala:508
 msgid ""
 "Demande à l'iPhone les messages au-delà de la liste habituelle (pages "
 "suivantes, un an en arrière)"
 msgstr ""
 
-#: src/MainWindow.vala:508
+#: src/MainWindow.vala:510
 msgid "Marquer comme lu sur l'iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:509
+#: src/MainWindow.vala:511
 msgid "Ouvrir une conversation dans Boomerang la marque lue sur l'iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:510
+#: src/MainWindow.vala:512
 msgid "Actions des notifications"
 msgstr ""
 
-#: src/MainWindow.vala:511
+#: src/MainWindow.vala:513
 msgid "Boutons de l'iPhone (Marquer comme lu, Supprimer…) dans Notifications"
 msgstr ""
 
-#: src/MainWindow.vala:512
+#: src/MainWindow.vala:514
 msgid "Favoris de l'iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:513
+#: src/MainWindow.vala:515
 msgid "Étoile sur les contacts favoris, lus à la prochaine synchronisation"
 msgstr ""
 
-#: src/MainWindow.vala:514 src/MirrorView.vala:96
+#: src/MainWindow.vala:516 src/MirrorView.vala:97
 msgid "Contrôler l'iPhone depuis le PC"
 msgstr ""
 
-#: src/MainWindow.vala:515
+#: src/MainWindow.vala:517
 msgid "Le PC comme souris et clavier Bluetooth de l'iPhone (app Recopie)"
 msgstr ""
 
-#: src/MainWindow.vala:581
+#: src/MainWindow.vala:518 src/WhatsNew.vala:22
+msgid "Répondre d'un geste de tête"
+msgstr ""
+
+#: src/MainWindow.vala:519
+msgid ""
+"AirPods portés : hocher la tête répond à un appel entrant, la secouer le "
+"refuse (d'après LibrePods)"
+msgstr ""
+
+#: src/MainWindow.vala:521
+msgid "Balise Bluetooth pour la recopie"
+msgstr ""
+
+#: src/MainWindow.vala:522
+msgid ""
+"L'iPhone trouve le PC par Bluetooth quand le réseau bloque la découverte "
+"(app Recopie, pendant la recopie seulement)"
+msgstr ""
+
+#: src/MainWindow.vala:589
 msgid "Configurer Boomerang"
 msgstr ""
 
-#: src/MainWindow.vala:608 src/MainWindow.vala:811
+#: src/MainWindow.vala:616 src/MainWindow.vala:819
 msgid "Appairer un iPhone…"
 msgstr ""
 
-#: src/MainWindow.vala:610
+#: src/MainWindow.vala:618
 msgid "Reconnecter"
 msgstr ""
 
-#: src/MainWindow.vala:612 src/MainWindow.vala:687
+#: src/MainWindow.vala:620 src/MainWindow.vala:695
 msgid "Oublier"
 msgstr ""
 
-#: src/MainWindow.vala:618
+#: src/MainWindow.vala:626
 msgid "Comment relier l'iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:632
+#: src/MainWindow.vala:640
 msgid "Musique de l'iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:634
+#: src/MainWindow.vala:642
 msgid "Messages et contacts"
 msgstr ""
 
-#: src/MainWindow.vala:635
+#: src/MainWindow.vala:643
 msgid "Batterie"
 msgstr ""
 
-#: src/MainWindow.vala:646 src/ServicesView.vala:113
+#: src/MainWindow.vala:654 src/ServicesView.vala:113
 msgid "Guide de connexion"
 msgstr ""
 
-#: src/MainWindow.vala:649
+#: src/MainWindow.vala:657
 msgid ""
 "Tout passe directement entre ce PC et l'iPhone, en Bluetooth. Les journaux "
 "de Boomerang ne contiennent jamais le texte des notifications ni des "
 "messages."
 msgstr ""
 
-#: src/MainWindow.vala:664
+#: src/MainWindow.vala:672
 msgid "Fonctions"
 msgstr ""
 
-#: src/MainWindow.vala:666
+#: src/MainWindow.vala:674
 msgid "Internet"
 msgstr ""
 
-#: src/MainWindow.vala:680
+#: src/MainWindow.vala:688
 msgid "Oublier cet iPhone ?"
 msgstr ""
 
-#: src/MainWindow.vala:681
+#: src/MainWindow.vala:689
 msgid ""
 "Ce PC efface l'appairage. Pour un nouveau départ propre, oubliez aussi ce PC "
 "sur l'iPhone (Réglages › Bluetooth › ⓘ › Oublier cet appareil), puis "
 "appairez à nouveau."
 msgstr ""
 
-#: src/MainWindow.vala:710
+#: src/MainWindow.vala:718
 msgid "Son de l'iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:711 src/MainWindow.vala:729
+#: src/MainWindow.vala:719 src/MainWindow.vala:737
 msgid "Sortie par défaut"
 msgstr ""
 
-#: src/MainWindow.vala:713
+#: src/MainWindow.vala:721
 msgid "Sortie du PC pour le son de l'iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:757
+#: src/MainWindow.vala:765
 msgid "Refusé : vidéos et musique restent sur l'iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:759
+#: src/MainWindow.vala:767
 msgid "En lecture sur ce PC"
 msgstr ""
 
-#: src/MainWindow.vala:761
+#: src/MainWindow.vala:769
 msgid ""
 "Choisissez ce PC dans le bouton AirPlay de l'iPhone pour y envoyer le son"
 msgstr ""
 
-#: src/MainWindow.vala:763 src/MainWindow.vala:822 src/MainWindow.vala:840
-#: src/MainWindow.vala:864
+#: src/MainWindow.vala:771 src/MainWindow.vala:830 src/MainWindow.vala:848
+#: src/MainWindow.vala:872
 msgid "iPhone absent"
 msgstr ""
 
-#: src/MainWindow.vala:796
+#: src/MainWindow.vala:804
 msgid "Aucun iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:798
+#: src/MainWindow.vala:806
 msgid "Bluetooth indisponible"
 msgstr ""
 
-#: src/MainWindow.vala:800
+#: src/MainWindow.vala:808
 msgid ""
 "L'iPhone ne reconnaît plus ce PC : son appairage a été supprimé sur "
 "l'iPhone. Appairez à nouveau."
 msgstr ""
 
-#: src/MainWindow.vala:803
+#: src/MainWindow.vala:811
 msgid "Appairez votre iPhone pour recevoir ses notifications et ses appels."
 msgstr ""
 
-#: src/MainWindow.vala:805
+#: src/MainWindow.vala:813
 #, c-format
 msgid "Connecté · batterie %d %%"
 msgstr ""
 
-#: src/MainWindow.vala:805
+#: src/MainWindow.vala:813
 msgid "Connecté"
 msgstr ""
 
-#: src/MainWindow.vala:807
+#: src/MainWindow.vala:815
 msgid "Hors de portée ou Bluetooth coupé sur l'iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:810
+#: src/MainWindow.vala:818
 msgid "Appairer à nouveau…"
 msgstr ""
 
-#: src/MainWindow.vala:811 src/PhoneGuide.vala:165
+#: src/MainWindow.vala:819 src/PhoneGuide.vala:165
 msgid "Appairer un autre iPhone…"
 msgstr ""
 
-#: src/MainWindow.vala:821
+#: src/MainWindow.vala:829
 msgid ""
 "En attente : l'iPhone doit se connecter à « Boomerang » en Bluetooth basse "
 "consommation"
 msgstr ""
 
-#: src/MainWindow.vala:825
+#: src/MainWindow.vala:833
 msgid "Désactivées"
 msgstr ""
 
-#: src/MainWindow.vala:826
+#: src/MainWindow.vala:834
 msgid "Reçues de l'iPhone, avec leurs actions"
 msgstr ""
 
-#: src/MainWindow.vala:827 src/MainWindow.vala:832
+#: src/MainWindow.vala:835 src/MainWindow.vala:840
 msgid "iPhone non appairé"
 msgstr ""
 
-#: src/MainWindow.vala:830
+#: src/MainWindow.vala:838
 msgid "Désactivée"
 msgstr ""
 
-#: src/MainWindow.vala:831
+#: src/MainWindow.vala:839
 msgid "Pilotable depuis Lecture en cours et l'indicateur de son"
 msgstr ""
 
-#: src/MainWindow.vala:837 src/MainWindow.vala:867
+#: src/MainWindow.vala:845 src/MainWindow.vala:875
 msgid "Désactivés"
 msgstr ""
 
-#: src/MainWindow.vala:838
+#: src/MainWindow.vala:846
 msgid "Prêt : les appels entrants s'affichent ici"
 msgstr ""
 
-#: src/MainWindow.vala:839
+#: src/MainWindow.vala:847
 msgid "Profil mains libres non connecté"
 msgstr ""
 
-#: src/MainWindow.vala:847
+#: src/MainWindow.vala:855
 msgid "Lecture depuis l'iPhone ; réponse sur l'iPhone seulement"
 msgstr ""
 
-#: src/MainWindow.vala:848
+#: src/MainWindow.vala:856
 msgid "Messages de l'iPhone lus en Bluetooth"
 msgstr ""
 
-#: src/MainWindow.vala:851
+#: src/MainWindow.vala:859
 msgid ""
 "Refusé : activez « Afficher les notifications » pour ce PC dans les réglages "
 "Bluetooth de l'iPhone"
 msgstr ""
 
-#: src/MainWindow.vala:855
+#: src/MainWindow.vala:863
 msgid "Paquet bluez-obexd manquant"
 msgstr ""
 
-#: src/MainWindow.vala:858
+#: src/MainWindow.vala:866
 msgid "Connexion…"
 msgstr ""
 
-#: src/MainWindow.vala:861
+#: src/MainWindow.vala:869
 msgid "Messages momentanément illisibles"
 msgstr ""
 
-#: src/MainWindow.vala:870
+#: src/MainWindow.vala:878
 msgid "Alertes désactivées"
 msgstr ""
 
-#: src/MainWindow.vala:871
+#: src/MainWindow.vala:879
 #, c-format
 msgid "%d %% · alerte à 20 %% et 10 %%"
 msgstr ""
 
-#: src/MainWindow.vala:872
+#: src/MainWindow.vala:880
 msgid "Niveau inconnu"
 msgstr ""
 
@@ -2064,7 +2413,7 @@ msgstr ""
 msgid "Sur l'iPhone · %s"
 msgstr ""
 
-#: src/NowPlayingView.vala:246 src/MirrorView.vala:85
+#: src/NowPlayingView.vala:246 src/MirrorView.vala:86
 msgid "Sur l'iPhone"
 msgstr ""
 
@@ -2178,7 +2527,7 @@ msgstr ""
 msgid "Choisir un son"
 msgstr ""
 
-#: src/SoundsCard.vala:252 src/FreeSounds.vala:201 src/MirrorView.vala:423
+#: src/SoundsCard.vala:252 src/FreeSounds.vala:201 src/MirrorView.vala:434
 #: src/PhotosView.vala:99
 msgid "Arrêter"
 msgstr ""
@@ -2213,7 +2562,7 @@ msgstr ""
 msgid "Ouvrir Boomerang"
 msgstr ""
 
-#: src/Onboarding.vala:143 src/WhatsNew.vala:192
+#: src/Onboarding.vala:143 src/WhatsNew.vala:201
 msgid "Continuer"
 msgstr ""
 
@@ -2811,16 +3160,16 @@ msgstr ""
 msgid "Appel en cours"
 msgstr ""
 
-#: boomerangd/calls.py:250 boomerangd/messages.py:105
+#: boomerangd/calls.py:252 boomerangd/messages.py:105
 msgid "Numéro masqué"
 msgstr ""
 
-#: boomerangd/calls.py:263
+#: boomerangd/calls.py:265
 #, python-brace-format
 msgid "Sur {device}"
 msgstr ""
 
-#: boomerangd/calls.py:349
+#: boomerangd/calls.py:355
 msgid "Appel de démonstration"
 msgstr ""
 
@@ -2873,12 +3222,12 @@ msgstr ""
 msgid "Gestion des périphériques audio (WirePlumber)"
 msgstr ""
 
-#: boomerangd/daemon.py:410
+#: boomerangd/daemon.py:425
 #, python-brace-format
 msgid "Batterie de {device} faible"
 msgstr ""
 
-#: boomerangd/daemon.py:411
+#: boomerangd/daemon.py:426
 #, python-brace-format
 msgid "Il reste {level} %."
 msgstr ""
@@ -3042,15 +3391,15 @@ msgstr[1] ""
 msgid "{service} retiré de la configuration de Boomerang."
 msgstr ""
 
-#: boomerangd/headphones.py:62
+#: boomerangd/headphones.py:75
 msgid "AirPods (1re génération)"
 msgstr ""
 
-#: boomerangd/headphones.py:63
+#: boomerangd/headphones.py:76
 msgid "AirPods (2e génération)"
 msgstr ""
 
-#: boomerangd/headphones.py:64
+#: boomerangd/headphones.py:77
 msgid "AirPods (3e génération)"
 msgstr ""
 
@@ -3586,280 +3935,298 @@ msgstr ""
 msgid "Installation annulée"
 msgstr ""
 
-#: src/WhatsNew.vala:19
+#: src/WhatsNew.vala:20
+msgid ""
+"Une nouvelle page, sous Réglages, présente chaque projet sur lequel "
+"Boomerang s'appuie : ses auteurs, ce qu'il apporte, sa licence et son lien."
+msgstr ""
+
+#: src/WhatsNew.vala:23
+msgid ""
+"Expérimental : avec les AirPods, hochez la tête pour répondre à un appel, "
+"secouez-la pour le refuser. À activer dans Réglages › Expérimental."
+msgstr ""
+
+#: src/WhatsNew.vala:25
+msgid "Recopie enregistrée"
+msgstr ""
+
+#: src/WhatsNew.vala:26
+msgid ""
+"La recopie garde l'écran allumé et peut s'enregistrer en MP4 dans Vidéos. "
+"Expérimental : une balise Bluetooth aide l'iPhone à trouver le PC."
+msgstr ""
+
+#: src/WhatsNew.vala:28
 msgid "Covalence devient Boomerang"
 msgstr ""
 
-#: src/WhatsNew.vala:20
+#: src/WhatsNew.vala:29
 msgid ""
 "Nouveau nom, nouvelle icône : comme un boomerang, tout part de l'iPhone et y "
 "revient. Vos réglages, messages et comptes iCloud sont repris tels quels."
 msgstr ""
 
-#: src/WhatsNew.vala:22
+#: src/WhatsNew.vala:31
 msgid "Micro rétabli"
 msgstr ""
 
-#: src/WhatsNew.vala:23
+#: src/WhatsNew.vala:32
 msgid ""
 "Un micro coupé pendant un appel est toujours rétabli à la fin, même si "
 "Boomerang s'arrête en cours d'appel : vos correspondants vous entendent de "
 "nouveau."
 msgstr ""
 
-#: src/WhatsNew.vala:25
+#: src/WhatsNew.vala:34
 msgid "Agenda et Cassette à part"
 msgstr ""
 
-#: src/WhatsNew.vala:26
+#: src/WhatsNew.vala:35
 msgid ""
 "Les deux applications ont leur propre dépôt et leurs versions ; Boomerang "
 "les installe et affiche leur vraie version."
 msgstr ""
 
-#: src/WhatsNew.vala:29
+#: src/WhatsNew.vala:38
 msgid ""
 "Installez Agenda depuis Services Apple : vos agendas iCloud par mois, par "
 "semaine ou en fil, vérifié puis installé en un clic."
 msgstr ""
 
-#: src/WhatsNew.vala:31
+#: src/WhatsNew.vala:40
 msgid "Cassette"
 msgstr ""
 
-#: src/WhatsNew.vala:32
+#: src/WhatsNew.vala:41
 msgid ""
 "Apple Music dans une fenêtre elementary, à installer depuis Services Apple : "
 "lecture, volume, paroles et file d'attente dans la barre d'en-tête."
 msgstr ""
 
-#: src/WhatsNew.vala:34
+#: src/WhatsNew.vala:43
 msgid "Codes SMS copiés"
 msgstr ""
 
-#: src/WhatsNew.vala:35
+#: src/WhatsNew.vala:44
 msgid ""
 "Le code d'un SMS va dans le presse-papiers dès sa réception. Réglable dans "
 "Réglages › Codes SMS."
 msgstr ""
 
-#: src/WhatsNew.vala:37
+#: src/WhatsNew.vala:46
 msgid "Appels en silence"
 msgstr ""
 
-#: src/WhatsNew.vala:38
+#: src/WhatsNew.vala:47
 msgid ""
 "Ni sonnerie, ni fenêtre, ni son sur le PC : l'appel reste sur l'iPhone. "
 "Pratique quand Teams sonne déjà. Réglages › Connexion ou barre du haut."
 msgstr ""
 
-#: src/WhatsNew.vala:40
+#: src/WhatsNew.vala:49
 msgid "Icônes redessinées"
 msgstr ""
 
-#: src/WhatsNew.vala:41
+#: src/WhatsNew.vala:50
 msgid ""
 "Boomerang, Messages, Téléphone, Contacts, Lecture en cours et Recopie, "
 "dessinées pour chaque taille. Les notifications du Calendrier prennent "
 "l'icône d'Agenda."
 msgstr ""
 
-#: src/WhatsNew.vala:43
+#: src/WhatsNew.vala:52
 msgid "AirPods Pro 3"
 msgstr ""
 
-#: src/WhatsNew.vala:44
+#: src/WhatsNew.vala:53
 msgid ""
 "Contrôle du bruit, audio adaptatif et détection de conversation sont "
 "reconnus. Des écouteurs plus récents que Boomerang gardent toutes leurs "
 "commandes."
 msgstr ""
 
-#: src/WhatsNew.vala:46
+#: src/WhatsNew.vala:55
 msgid "Sécurité renforcée"
 msgstr ""
 
-#: src/WhatsNew.vala:47
+#: src/WhatsNew.vala:56
 msgid ""
 "Le code d'appairage se confirme aussi sur le PC. Un autre programme doit "
 "vous demander avant d'appeler, d'envoyer ou d'appairer. Mises à jour, "
 "fichiers LocalSend et recopie mieux protégés ; codes SMS liés à leur site."
 msgstr ""
 
-#: src/WhatsNew.vala:50
+#: src/WhatsNew.vala:59
 msgid "Messages fiables"
 msgstr ""
 
-#: src/WhatsNew.vala:51
+#: src/WhatsNew.vala:60
 msgid ""
 "Plus de doublons après une reconnexion, les groupes restent groupés, chaque "
 "iPhone a son propre historique et les contacts se rechargent avec "
 "« Réessayer »."
 msgstr ""
 
-#: src/WhatsNew.vala:53
+#: src/WhatsNew.vala:62
 msgid "Appairage simplifié"
 msgstr ""
 
-#: src/WhatsNew.vala:54
+#: src/WhatsNew.vala:63
 msgid ""
 "L'iPhone trouve ce PC dans Réglages › Bluetooth, sans app en plus. La "
 "reconnexion est plus stable et un bouton « Oublier » permet de repartir de "
 "zéro."
 msgstr ""
 
-#: src/WhatsNew.vala:56
+#: src/WhatsNew.vala:65
 msgid "Recopie et contrôle"
 msgstr ""
 
-#: src/WhatsNew.vala:57
+#: src/WhatsNew.vala:66
 msgid ""
 "La recopie d'écran devient une app, plus fluide. Expérimental : pilotez "
 "l'iPhone avec la souris et le clavier du PC (guide dans l'app)."
 msgstr ""
 
-#: src/WhatsNew.vala:59
+#: src/WhatsNew.vala:68
 msgid "19 sons libres"
 msgstr ""
 
-#: src/WhatsNew.vala:60
+#: src/WhatsNew.vala:69
 msgid ""
 "Onze sons de plus pour les notifications et les appels (Réglages › Sons)."
 msgstr ""
 
-#: src/WhatsNew.vala:62
+#: src/WhatsNew.vala:71
 msgid ""
 "Un bouton dans l'Aperçu utilise le partage de connexion de l'iPhone, en "
 "Bluetooth."
 msgstr ""
 
-#: src/WhatsNew.vala:64
+#: src/WhatsNew.vala:73
 msgid ""
 "Batterie, lecture en cours, appel et messages non lus à côté de l'horloge. "
 "Se déconnecter une fois pour l'afficher."
 msgstr ""
 
-#: src/WhatsNew.vala:66
+#: src/WhatsNew.vala:75
 msgid "Recherche et épingles"
 msgstr ""
 
-#: src/WhatsNew.vala:67
+#: src/WhatsNew.vala:76
 msgid ""
 "Ctrl+F cherche dans les messages. Épinglez une conversation ou marquez-la "
 "non lue d'un clic droit."
 msgstr ""
 
-#: src/WhatsNew.vala:69
+#: src/WhatsNew.vala:78
 msgid "Fichiers, recopie et photos"
 msgstr ""
 
-#: src/WhatsNew.vala:70
+#: src/WhatsNew.vala:79
 msgid ""
 "Échangez des fichiers avec l'app LocalSend, affichez l'écran de l'iPhone "
 "(expérimental) et importez les photos par câble USB."
 msgstr ""
 
-#: src/WhatsNew.vala:72
-msgid "iCloud"
-msgstr ""
-
-#: src/WhatsNew.vala:73
+#: src/WhatsNew.vala:82
 msgid ""
 "État de synchro d'iCloud Drive dans Fichiers, raccourcis vers Localiser, "
 "Notes et Masquer mon adresse e-mail."
 msgstr ""
 
-#: src/WhatsNew.vala:76
+#: src/WhatsNew.vala:85
 msgid ""
 "Le PC se verrouille quand l'iPhone s'éloigne (désactivé par défaut, jamais "
 "de déverrouillage)."
 msgstr ""
 
-#: src/WhatsNew.vala:78
+#: src/WhatsNew.vala:87
 msgid "Réglages en onglets"
 msgstr ""
 
-#: src/WhatsNew.vala:79
+#: src/WhatsNew.vala:88
 msgid ""
 "Connexion, Messages, Sons, Affichage, Mises à jour, Expérimental, À propos ; "
 "les sons libres de Boomerang s'essaient d'un clic."
 msgstr ""
 
-#: src/WhatsNew.vala:82
+#: src/WhatsNew.vala:91
 msgid ""
 "« :) » devient 🙂 pendant la saisie. Retour arrière annule ; réglable dans "
 "Réglages."
 msgstr ""
 
-#: src/WhatsNew.vala:83
+#: src/WhatsNew.vala:92
 msgid "Messages envoyés"
 msgstr ""
 
-#: src/WhatsNew.vala:84
+#: src/WhatsNew.vala:93
 msgid ""
 "Une petite coche apparaît sous un message dès que l'iPhone confirme son "
 "envoi."
 msgstr ""
 
-#: src/WhatsNew.vala:85
+#: src/WhatsNew.vala:94
 msgid "Réactions"
 msgstr ""
 
-#: src/WhatsNew.vala:86
+#: src/WhatsNew.vala:95
 msgid ""
 "Les réactions reçues s'affichent sur le bon message, sans doublon, et se "
 "cumulent. Au survol d'un message : réagir, copier ou supprimer."
 msgstr ""
 
-#: src/WhatsNew.vala:89
+#: src/WhatsNew.vala:98
 msgid ""
 "Un code reçu par SMS se copie depuis la notification. Expérimental : "
 "remplissage dans Chrome, Chromium, Edge et Firefox (Réglages › Codes SMS)."
 msgstr ""
 
-#: src/WhatsNew.vala:91
+#: src/WhatsNew.vala:100
 msgid "Messages en entier"
 msgstr ""
 
-#: src/WhatsNew.vala:92
+#: src/WhatsNew.vala:101
 msgid ""
 "« Tout lire » récupère la suite d'un message long non lu, ou toujours, au "
 "choix dans Réglages. Le message passe alors en lu sur l'iPhone."
 msgstr ""
 
-#: src/WhatsNew.vala:94
+#: src/WhatsNew.vala:103
 msgid "Synchroniser"
 msgstr ""
 
-#: src/WhatsNew.vala:95
+#: src/WhatsNew.vala:104
 msgid ""
 "Un bouton dans Messages relit les messages, les contacts et le journal "
 "d'appels."
 msgstr ""
 
-#: src/WhatsNew.vala:97
+#: src/WhatsNew.vala:106
 msgid ""
 "Choisissez le son des messages, des notifications de l'iPhone et la sonnerie "
 "des appels, dont 8 sons libres fournis avec Boomerang (Réglages › Sons)."
 msgstr ""
 
-#: src/WhatsNew.vala:100
+#: src/WhatsNew.vala:109
 msgid ""
 "Boomerang recherche les nouvelles versions et s'installe depuis Réglages."
 msgstr ""
 
-#: src/WhatsNew.vala:102
+#: src/WhatsNew.vala:111
 msgid ""
 "À essayer dans Réglages : historique étendu, marquer comme lu sur l'iPhone, "
 "actions des notifications, favoris des contacts."
 msgstr ""
 
-#: src/WhatsNew.vala:185
+#: src/WhatsNew.vala:194
 #, c-format
 msgid "Nouveautés de Boomerang %s"
 msgstr ""
 
-#: src/WhatsNew.vala:186
+#: src/WhatsNew.vala:195
 msgid "Ce qui change dans cette version."
 msgstr ""
 
@@ -4261,194 +4628,206 @@ msgstr ""
 msgid "Fichiers à envoyer"
 msgstr ""
 
-#: src/MirrorView.vala:59
+#: src/MirrorView.vala:60
 msgid ""
 "L'écran de l'iPhone dans une fenêtre de ce PC, par AirPlay, sur le même Wi-"
 "Fi."
 msgstr ""
 
-#: src/MirrorView.vala:63
+#: src/MirrorView.vala:64
 msgid "Guide de la recopie et du contrôle"
 msgstr ""
 
-#: src/MirrorView.vala:73 src/MirrorView.vala:423
+#: src/MirrorView.vala:74 src/MirrorView.vala:434
 msgid "Recevoir l'écran de l'iPhone"
 msgstr ""
 
-#: src/MirrorView.vala:88
+#: src/MirrorView.vala:89
 msgid ""
 "Boomerang utilise UxPlay, un récepteur AirPlay libre. Il n'écoute le réseau "
 "que pendant la recopie. Fermez la fenêtre de recopie ou touchez « Arrêter » "
 "pour finir."
 msgstr ""
 
-#: src/MirrorView.vala:130
+#: src/MirrorView.vala:131
 msgid "Fluide"
 msgstr ""
 
-#: src/MirrorView.vala:130
+#: src/MirrorView.vala:131
 msgid "Qualité"
 msgstr ""
 
-#: src/MirrorView.vala:136
+#: src/MirrorView.vala:137
 msgid "Profil"
 msgstr ""
 
-#: src/MirrorView.vala:137
+#: src/MirrorView.vala:138
 msgid ""
 "Fluide : le moins de retard, pour piloter l'iPhone. Qualité : le son reste "
 "calé sur l'image, pour une vidéo."
 msgstr ""
 
-#: src/MirrorView.vala:140
+#: src/MirrorView.vala:141
 msgid "Aucune"
 msgstr ""
 
-#: src/MirrorView.vala:140
+#: src/MirrorView.vala:141
 msgid "Vers la droite"
 msgstr ""
 
-#: src/MirrorView.vala:140
+#: src/MirrorView.vala:141
 msgid "Vers la gauche"
 msgstr ""
 
-#: src/MirrorView.vala:147
+#: src/MirrorView.vala:148
 msgid "Rotation"
 msgstr ""
 
-#: src/MirrorView.vala:155
+#: src/MirrorView.vala:156
 msgid "Plein écran"
 msgstr ""
 
-#: src/MirrorView.vala:155
+#: src/MirrorView.vala:156
 msgid "Échap ou F11 dans la fenêtre de recopie pour en sortir"
 msgstr ""
 
-#: src/MirrorView.vala:160
+#: src/MirrorView.vala:165
+msgid "Enregistrer la recopie"
+msgstr ""
+
+#: src/MirrorView.vala:166
+msgid "Image et son en MP4 dans le dossier Vidéos, un fichier daté par recopie"
+msgstr ""
+
+#: src/MirrorView.vala:171
 msgid "Décodage vidéo"
 msgstr ""
 
-#: src/MirrorView.vala:161
+#: src/MirrorView.vala:172
 msgid "Choisi selon la carte graphique ; repli en logiciel en cas d'échec"
 msgstr ""
 
-#: src/MirrorView.vala:163
+#: src/MirrorView.vala:174
 msgid "Les changements s'appliquent au prochain démarrage de la recopie."
 msgstr ""
 
-#: src/MirrorView.vala:221
+#: src/MirrorView.vala:232
 msgid "Souris et clavier Bluetooth"
 msgstr ""
 
-#: src/MirrorView.vala:222
+#: src/MirrorView.vala:233
 msgid ""
 "Le PC se présente à l'iPhone comme une souris et un clavier. Expérimental, "
 "désactivé par défaut."
 msgstr ""
 
-#: src/MirrorView.vala:237
+#: src/MirrorView.vala:248
 msgid "Accueil"
 msgstr ""
 
-#: src/MirrorView.vala:237
+#: src/MirrorView.vala:248
 msgid "⌘H : retour à l'écran d'accueil"
 msgstr ""
 
-#: src/MirrorView.vala:238
+#: src/MirrorView.vala:249
 msgid "Recherche"
 msgstr ""
 
-#: src/MirrorView.vala:238
+#: src/MirrorView.vala:249
 msgid "⌘Espace : recherche de l'iPhone"
 msgstr ""
 
-#: src/MirrorView.vala:239
+#: src/MirrorView.vala:250
 msgid "Changer d'app"
 msgstr ""
 
-#: src/MirrorView.vala:239
+#: src/MirrorView.vala:250
 msgid "⌘Tab : app précédente"
 msgstr ""
 
-#: src/MirrorView.vala:241
+#: src/MirrorView.vala:252
 msgid ""
 "Maintenir ⌘ enfoncé pour la prochaine touche (la touche Super du PC est "
 "souvent prise par le bureau)"
 msgstr ""
 
-#: src/MirrorView.vala:248
+#: src/MirrorView.vala:259
 msgid "Recaler le pointeur"
 msgstr ""
 
-#: src/MirrorView.vala:249
+#: src/MirrorView.vala:260
 msgid "Ramène le pointeur au centre de l'écran de l'iPhone"
 msgstr ""
 
-#: src/MirrorView.vala:256
+#: src/MirrorView.vala:267
 msgid "Texte à taper sur l'iPhone"
 msgstr ""
 
-#: src/MirrorView.vala:259
+#: src/MirrorView.vala:270
 msgid "Taper"
 msgstr ""
 
-#: src/MirrorView.vala:273
+#: src/MirrorView.vala:284
 msgid "Largeur de l'écran pour le pointeur"
 msgstr ""
 
-#: src/MirrorView.vala:274
+#: src/MirrorView.vala:285
 msgid "Si « Recaler » ne tombe pas au centre, ajustez ces deux valeurs"
 msgstr ""
 
-#: src/MirrorView.vala:276
+#: src/MirrorView.vala:287
 msgid "Hauteur de l'écran pour le pointeur"
 msgstr ""
 
-#: src/MirrorView.vala:277
+#: src/MirrorView.vala:288
 msgid "Réglage du pointeur"
 msgstr ""
 
-#: src/MirrorView.vala:318
+#: src/MirrorView.vala:329
 msgid "Pavé de contrôle de l'iPhone"
 msgstr ""
 
-#: src/MirrorView.vala:322
+#: src/MirrorView.vala:333
 msgid "Souris et clavier dirigés vers l'iPhone"
 msgstr ""
 
-#: src/MirrorView.vala:323
+#: src/MirrorView.vala:334
 msgid "Cliquez ici, puis déplacez la souris : le pointeur de l'iPhone suit"
 msgstr ""
 
-#: src/MirrorView.vala:419
+#: src/MirrorView.vala:430
 msgid "La recopie d'écran"
 msgstr ""
 
-#: src/MirrorView.vala:429
+#: src/MirrorView.vala:440
 #, c-format
 msgid ""
 "En attente de l'iPhone sous le nom « %s ». Code à saisir sur l'iPhone : %s"
 msgstr ""
 
-#: src/MirrorView.vala:432
+#: src/MirrorView.vala:443
 #, c-format
 msgid "En attente de l'iPhone sous le nom « %s »"
 msgstr ""
 
-#: src/MirrorView.vala:434
+#: src/MirrorView.vala:445
 msgid "Le récepteur s'est arrêté. Vérifiez qu'Avahi fonctionne et réessayez."
 msgstr ""
 
-#: src/MirrorView.vala:436
+#: src/MirrorView.vala:447
 #, c-format
 msgid "Le récepteur s'est arrêté : %s"
 msgstr ""
 
-#: src/MirrorView.vala:438
+#: src/MirrorView.vala:449
 msgid "Arrêté"
 msgstr ""
 
-#: src/MirrorView.vala:440
+#: src/MirrorView.vala:452
+msgid "Enregistrement dans Vidéos"
+msgstr ""
+
+#: src/MirrorView.vala:454
 #, c-format
 msgid ""
 "1. Ouvrez le Centre de contrôle.\n"
@@ -4457,34 +4836,34 @@ msgid ""
 "4. Saisissez le code affiché ici."
 msgstr ""
 
-#: src/MirrorView.vala:448
+#: src/MirrorView.vala:463
 msgid "NVIDIA"
 msgstr ""
 
-#: src/MirrorView.vala:449
+#: src/MirrorView.vala:464
 msgid "VA-API"
 msgstr ""
 
-#: src/MirrorView.vala:450
+#: src/MirrorView.vala:465
 msgid "Logiciel"
 msgstr ""
 
-#: src/MirrorView.vala:459
+#: src/MirrorView.vala:474
 msgid ""
 "Activez l'interrupteur, puis suivez le guide : appairage dans Réglages › "
 "Bluetooth de l'iPhone et AssistiveTouch pour le pointeur."
 msgstr ""
 
-#: src/MirrorView.vala:462
+#: src/MirrorView.vala:477
 #, c-format
 msgid "Bluetooth a refusé la souris et le clavier : %s"
 msgstr ""
 
-#: src/MirrorView.vala:464
+#: src/MirrorView.vala:479
 msgid "L'iPhone utilise la souris et le clavier de Boomerang."
 msgstr ""
 
-#: src/MirrorView.vala:466
+#: src/MirrorView.vala:481
 msgid ""
 "Publiés. Sur l'iPhone : Réglages › Bluetooth, touchez « Boomerang » sous "
 "Autres appareils (ou reconnectez-le)."

@@ -47,17 +47,19 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
     }
 
     construct {
-        // Headers live in the panes (sidebar | content), like elementary's Mail and Settings.
-        titlebar = new Gtk.Grid () { visible = false };
+        // One header bar across the window in Boomerang's colour, its name in the middle,
+        // like Cassette and the web apps.
         pages = new Gtk.Stack () { transition_type = Gtk.StackTransitionType.CROSSFADE };
         sidebar = new Sidebar (pages);
+        var app_name = new Gtk.Label (_("Boomerang"));
+        app_name.add_css_class ("title");
         main_header = new Gtk.HeaderBar () {
             show_title_buttons = true,
-            decoration_layout = split_layout (false),
-            title_widget = new Gtk.Label ("") { visible = false }
+            title_widget = app_name
         };
         main_header.add_css_class ("flat");
-        var header = main_header;
+        main_header.add_css_class ("brand");
+        titlebar = main_header;
 
         var setup_action = new SimpleAction ("setup", null);
         setup_action.activate.connect (() => show_page ("setup"));
@@ -94,6 +96,7 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
         pages.add_titled (new HeadphonesView (daemon), "headphones", _("Écouteurs"));
         pages.add_titled (new ServicesView (daemon), "services", _("Services Apple"));
         pages.add_titled (build_settings_page (), "settings", _("Réglages"));
+        pages.add_titled (new ContributorsView (), "contributors", _("Contributeurs"));
         sidebar.add ("device", "iPhone", "phone", _("Aperçu"));
         sidebar.add ("messages", "iPhone", Config.APP_ID + ".Messages", _("Messages"));
         sidebar.add ("phone", "iPhone", Config.APP_ID + ".Phone", _("Téléphone"));
@@ -108,6 +111,7 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
         sidebar.add_footer_action ("guide", "help-contents", _("Guide"));
         sidebar.action_activated.connect ((id) => open_help ());
         sidebar.add_footer ("settings", "preferences-system", _("Réglages"));
+        sidebar.add_footer ("contributors", "system-users", _("Contributeurs"));
         var mini_player = new MiniPlayer (daemon);
         mini_player.open_requested.connect (() => pages.visible_child_name = "nowplaying");
         sidebar.set_player (mini_player);
@@ -147,32 +151,11 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
                                            _("Relancer la connexion au service"));
         retry.clicked.connect (() => daemon.connect_bus.begin ());
 
-        // Main view: sidebar with its own header (close button), content with the menu.
-        var logo = new Gtk.Image.from_icon_name (Config.APP_ID) { pixel_size = 24 };
-        var app_name = new Gtk.Label (_("Boomerang"));
-        app_name.add_css_class (Granite.HeaderLabel.Size.H4.to_string ());
-        var brand = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 6) { margin_start = 3 };
-        brand.append (logo);
-        brand.append (app_name);
-        var sidebar_header = new Gtk.HeaderBar () {
-            show_title_buttons = true,
-            decoration_layout = split_layout (true),
-            title_widget = new Gtk.Label ("") { visible = false }
-        };
-        sidebar_header.pack_start (brand);
-        // Follow the system's window buttons (e.g. minimize added in the desktop settings):
-        // the left ones over the sidebar, the right ones over the content.
-        Gtk.Settings.get_default ().notify["gtk-decoration-layout"].connect (() => {
-            sidebar_header.decoration_layout = split_layout (true);
-            main_header.decoration_layout = split_layout (false);
-        });
-        sidebar_header.add_css_class ("flat");
-        var side = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) { width_request = 210 };
+        // Main view: the section list, then the page.
+        var side = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
         side.add_css_class (Granite.STYLE_CLASS_SIDEBAR);
-        side.append (sidebar_header);
         side.append (sidebar);
         var content = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-        content.append (main_header);
         content.append (new CallBar (daemon));
         pages.vexpand = true;
         content.append (pages);
@@ -183,6 +166,7 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
             shrink_start_child = false,
             shrink_end_child = false
         };
+        sidebar.attach_paned (paned);
 
         stack = new Gtk.Stack () { transition_type = Gtk.StackTransitionType.CROSSFADE, vexpand = true };
         stack.add_named (full_page (offline), "offline");
@@ -192,7 +176,11 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
         child = stack;
         update_header ();
 
-        daemon.changed.connect (update);
+        daemon.changed.connect (() => {
+            if (daemon.touched ({ "Paired", "Connected", "BluetoothAvailable", "Battery", "DeviceName", "LinkProblem", "Modules", "NotificationsLinked", "MediaLinked", "CallsLinked", "CallsSupported", "MessagesState", "MessagesSend", "PhoneAudio", "UnreadMessages", "MissedCalls", "Update" })) {
+                update ();
+            }
+        });
         foreach (var row in new ModuleRow[] { notifications_row, media_row, calls_row,
                                              messages_row, battery_row }) {
             row.toggled.connect ((active) => daemon.set_module_enabled (row.module, active));
@@ -254,7 +242,13 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
         }), "connection", _("Connexion"));
         settings_tabs.add_titled (settings_tab ({
             new Granite.HeaderLabel (_("Lecture")), build_read_full_card (),
-            new Granite.HeaderLabel (_("Codes SMS")), new CodesCard (daemon)
+            new Granite.HeaderLabel (_("Codes SMS")), new CodesCard (daemon),
+            new Granite.HeaderLabel (_("Liens")), new MessagesOptionsCard (daemon),
+            new Granite.HeaderLabel (_("Apparence des conversations")) {
+                secondary_text = _("Pour toutes les conversations. Chacune peut garder la sienne : "
+                                   + "bouton palette en haut de la conversation.")
+            },
+            default_look_card ()
         }), "messages", _("Messages"));
         settings_tabs.add_titled (settings_tab ({
             new Granite.HeaderLabel (_("Choix des sons")), new SoundsCard (daemon),
@@ -263,6 +257,7 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
         settings_tabs.add_titled (settings_tab ({
             new Granite.HeaderLabel (_("Langue")), language,
             new Granite.HeaderLabel (_("Barre du haut")), indicator_card (),
+            new Granite.HeaderLabel (_("Colonne de gauche")), sidebar_card (),
             new Granite.HeaderLabel (_("Apps séparées")), detached, detached_hint
         }), "display", _("Affichage"));
         settings_tabs.add_titled (settings_tab ({
@@ -306,14 +301,11 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
     }
 
     /* The tab of Réglages last shown, kept in apps.conf [general] settings-tab. */
-    private static string settings_prefs_path () {
-        return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
-    }
 
     private static string saved_settings_tab () {
         var prefs = new KeyFile ();
         try {
-            prefs.load_from_file (settings_prefs_path (), KeyFileFlags.NONE);
+            prefs.load_from_file (Setup.prefs_path (), KeyFileFlags.NONE);
             return prefs.get_string ("general", "settings-tab");
         } catch (Error e) {
             return "connection";
@@ -323,14 +315,14 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
     private static void save_settings_tab (string name) {
         var prefs = new KeyFile ();
         try {
-            prefs.load_from_file (settings_prefs_path (), KeyFileFlags.KEEP_COMMENTS);
+            prefs.load_from_file (Setup.prefs_path (), KeyFileFlags.KEEP_COMMENTS);
         } catch (Error e) {
             // first choice
         }
         prefs.set_string ("general", "settings-tab", name);
         try {
-            DirUtils.create_with_parents (Path.get_dirname (settings_prefs_path ()), 0700);
-            prefs.save_to_file (settings_prefs_path ());
+            DirUtils.create_with_parents (Path.get_dirname (Setup.prefs_path ()), 0700);
+            prefs.save_to_file (Setup.prefs_path ());
         } catch (Error e) {
             warning ("cannot save the settings tab: %s", e.message);
         }
@@ -378,6 +370,9 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
             return false;
         });
         daemon.changed.connect (() => {
+            if (!daemon.touched ({ "CallsQuiet" })) {
+                return;
+            }
             var wanted = daemon.get_bool ("CallsQuiet");
             if (sw.active != wanted) {
                 updating = true;
@@ -397,6 +392,51 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
     }
 
     /* Whole text of unread messages (FetchUnread): downloading marks them read on the iPhone. */
+    /* Réglages › Affichage: the section list folded to its icons, or not. */
+    private Gtk.Widget sidebar_card () {
+        var folded = new Gtk.Switch () { valign = Gtk.Align.CENTER };
+        sidebar.bind_property ("collapsed", folded, "active",
+                               BindingFlags.BIDIRECTIONAL | BindingFlags.SYNC_CREATE);
+        var title = new Gtk.Label (_("Réduite aux icônes")) { xalign = 0 };
+        var detail = new Gtk.Label (_("Les compteurs passent sur les icônes, comme dans le dock. "
+                                      + "Vous pouvez aussi glisser le bord de la colonne, ou appuyer sur F9.")) {
+            xalign = 0,
+            wrap = true
+        };
+        detail.add_css_class (Granite.CssClass.DIM);
+        detail.add_css_class (Granite.CssClass.SMALL);
+        var text = new Gtk.Box (Gtk.Orientation.VERTICAL, 2) { hexpand = true, valign = Gtk.Align.CENTER };
+        text.append (title);
+        text.append (detail);
+        var box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 12) {
+            margin_top = 9, margin_bottom = 9, margin_start = 12, margin_end = 12
+        };
+        box.append (new Gtk.Image.from_icon_name ("preferences-desktop-workspaces") { pixel_size = 32, valign = Gtk.Align.START });
+        box.append (text);
+        box.append (folded);
+        var list = new Gtk.ListBox () { selection_mode = Gtk.SelectionMode.NONE };
+        list.add_css_class (Granite.CssClass.CARD);
+        list.append (new Gtk.ListBoxRow () { child = box, activatable = false });
+        return list;
+    }
+
+    /* The default look of conversations: the same editor as a conversation's palette. */
+    private Gtk.Widget default_look_card () {
+        var editor = new ThreadStyleEditor (ThreadStyle.DEFAULTS, ThreadStyle.load_raw (ThreadStyle.DEFAULTS),
+                                            this, daemon) {
+            margin_top = 12,
+            margin_bottom = 12,
+            margin_start = 12,
+            margin_end = 12,
+            halign = Gtk.Align.START
+        };
+        editor.changed.connect (() => messages_view.apply_style ());
+        var card = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+        card.add_css_class (Granite.CssClass.CARD);
+        card.append (editor);
+        return card;
+    }
+
     private Gtk.Widget build_read_full_card () {
         var title_label = new Gtk.Label (_("Toujours lire les messages en entier")) { xalign = 0 };
         var subtitle_label = new Gtk.Label (
@@ -444,6 +484,9 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
             return false;
         });
         daemon.changed.connect (() => {
+            if (!daemon.touched ({ "FetchUnread" })) {
+                return;
+            }
             var wanted = daemon.get_bool ("FetchUnread");
             if (sw.active != wanted) {
                 updating = true;
@@ -513,6 +556,12 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
                                 _("Étoile sur les contacts favoris, lus à la prochaine synchronisation")));
         list.append (alpha_row ("iphone_control", _("Contrôler l'iPhone depuis le PC"),
                                 _("Le PC comme souris et clavier Bluetooth de l'iPhone (app Recopie)")));
+        list.append (alpha_row ("head_gestures", _("Répondre d'un geste de tête"),
+                                _("AirPods portés : hocher la tête répond à un appel entrant, la secouer "
+                                  + "le refuse (d'après LibrePods)")));
+        list.append (alpha_row ("mirror_ble", _("Balise Bluetooth pour la recopie"),
+                                _("L'iPhone trouve le PC par Bluetooth quand le réseau bloque la découverte "
+                                  + "(app Recopie, pendant la recopie seulement)")));
         return list;
     }
 
@@ -533,6 +582,9 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
             }
         });
         daemon.changed.connect (() => {
+            if (!daemon.touched ({ "AlphaFeatures" })) {
+                return;
+            }
             var wanted = daemon.alpha_enabled (feature);
             if (sw.active != wanted) {
                 updating = true;
@@ -588,12 +640,9 @@ public class Boomerang.MainWindow : Gtk.ApplicationWindow {
         sidebar.set_badge ("settings", UpdatesCard.pending (daemon));
     }
 
-    /* Offline and first-run screens take the whole window, under a plain header. */
+    /* Offline and first-run screens take the whole window, under the window's header. */
     private static Gtk.Widget full_page (Gtk.Widget page) {
-        var header = new Gtk.HeaderBar ();
-        header.add_css_class ("flat");
         var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-        box.append (header);
         page.vexpand = true;
         box.append (page);
         return box;

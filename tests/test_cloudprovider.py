@@ -3,6 +3,7 @@
 """iCloud Drive in Files' sidebar: state rules, and the D-Bus export on a private bus."""
 
 import unittest
+from unittest import mock
 
 from gi.repository import Gio, GLib
 
@@ -95,6 +96,18 @@ class ExportTest(unittest.TestCase):
                                     "Status": cp.SYNCING, "StatusDetails": ""})
         actions = self.call(cp.ACCOUNT, "org.gtk.Actions", "List")
         self.assertEqual(sorted(actions), ["disconnect", "open", "options"])
+
+    def test_poll_slows_down_once_up_to_date(self):
+        delays = []
+        self.provider._schedule = delays.append
+        self.provider._set_account = lambda account: None
+        with mock.patch.object(cp.os.path, "ismount", return_value=True):
+            self.provider._update("active", "enabled", {"diskCache": {"uploadsQueued": 2}})
+            self.provider._update("active", "enabled", {"diskCache": {}})
+            self.provider._update("inactive", "enabled", None)
+        with mock.patch.object(cp.os.path, "ismount", return_value=False):
+            self.provider._update("active", "enabled", None)  # still connecting
+        self.assertEqual(delays, [cp.POLL_ACTIVE, cp.POLL_SETTLED, cp.POLL_IDLE, cp.POLL_ACTIVE])
 
 
 if __name__ == "__main__":

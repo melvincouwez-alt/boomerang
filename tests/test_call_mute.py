@@ -65,5 +65,21 @@ class CallMuteTest(unittest.TestCase):
         self.assertEqual(self.commands, [])
 
 
+class CallWindowTest(unittest.TestCase):
+    def test_a_finished_call_path_opens_the_window_again(self):
+        from boomerangd import daemon
+        d = daemon.Daemon.__new__(daemon.Daemon)
+        d.calls, d.config, d.service = mock.Mock(), mock.Mock(), mock.Mock()
+        d.calls.calls = {"/call1": {}}
+        d.config.boolean.side_effect = lambda group, key, default=False: key == "window"
+        d.call_windows, d.link_changed, d._open_call_window = set(), mock.Mock(), mock.Mock()
+        d._call_started("/call1")
+        d.calls.calls = {}
+        d._calls_state_changed()  # the call is over
+        d.calls.calls = {"/call1": {}}
+        d._call_started("/call1")  # a later call under the same path
+        self.assertEqual(d._open_call_window.call_count, 2)
+
+
 if __name__ == "__main__":
     unittest.main()

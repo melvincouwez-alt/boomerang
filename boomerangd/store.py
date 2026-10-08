@@ -42,6 +42,10 @@ CREATE TABLE IF NOT EXISTS messages(
   status TEXT
 );
 CREATE INDEX IF NOT EXISTS messages_thread ON messages(thread, time);
+-- Display names of unknown senders, MNS events (handle), unread counts: no full scans.
+CREATE INDEX IF NOT EXISTS messages_sender ON messages(sender, time);
+CREATE INDEX IF NOT EXISTS messages_handle ON messages(handle);
+CREATE INDEX IF NOT EXISTS messages_unread ON messages(thread) WHERE outgoing=0 AND seen=0;
 CREATE TABLE IF NOT EXISTS threads(
   id TEXT PRIMARY KEY,
   participants TEXT NOT NULL,
@@ -509,12 +513,16 @@ class Store:
             body, complete = old["body"], 1
         elif not complete and len(old["body"] or "") > len(body or ""):
             body = old["body"]
-        self.db.execute(
-            "UPDATE messages SET thread=?, sender=?, sender_name=?, time=?, body=?, complete=?,"
-            " kind=?, phone_read=?, seen=MAX(seen, ?), status=? WHERE key=?",
-            (thread, sender or old["sender"], sender_name or old["sender_name"], int(when), body,
-             int(complete), kind or old["kind"], int(phone_read), int(phone_read or seen),
-             status or old["status"], key))
+        new = {"thread": thread, "sender": sender or old["sender"],
+               "sender_name": sender_name or old["sender_name"], "time": int(when), "body": body,
+               "complete": int(complete), "kind": kind or old["kind"], "phone_read": int(phone_read),
+               "seen": max(old["seen"], int(phone_read or seen)), "status": status or old["status"]}
+        if any(old[column] != value for column, value in new.items()):
+            # Only a real change is written: a listing that brings nothing new leaves
+            # total_changes alone, and the app is not told to reload (see Messages._merge).
+            self.db.execute(
+                "UPDATE messages SET thread=?, sender=?, sender_name=?, time=?, body=?, complete=?,"
+                " kind=?, phone_read=?, seen=?, status=? WHERE key=?", (*new.values(), key))
         return False
 
     def _reused_handle(self, old, body, when):
@@ -653,11 +661,16 @@ class Store:
         return dict(self.db.execute("SELECT thread, text FROM drafts"))
 
     def set_draft(self, tid, text):
+        """False when the draft was already this text (nothing written)."""
+        row = self.db.execute("SELECT text FROM drafts WHERE thread=?", (tid,)).fetchone()
+        if (row[0] if row else "") == (text if text.strip() else ""):
+            return False
         if text.strip():
             self.db.execute("INSERT OR REPLACE INTO drafts VALUES(?, ?)", (tid, text))
         else:
             self.db.execute("DELETE FROM drafts WHERE thread=?", (tid,))
         self.commit()
+        return True
 
     @staticmethod
     def _pattern(query):
@@ -701,10 +714,14 @@ class Store:
         return real + marked
 
     def mark_seen(self, tid):
+        """False when the thread was already all seen (nothing written)."""
+        before = self.db.total_changes
         self.db.execute("UPDATE messages SET seen=1 WHERE thread=? AND seen=0", (tid,))
-        self.db.execute("UPDATE thread_flags SET marked_unread=0 WHERE thread=?", (tid,))
+        self.db.execute("UPDATE thread_flags SET marked_unread=0 WHERE thread=? AND marked_unread=1",
+                        (tid,))
         self.db.execute("DELETE FROM thread_flags WHERE pinned=0 AND marked_unread=0")
         self.commit()
+        return self.db.total_changes != before
 
     def needing_body(self, limit=40, include_unread=False):
         """Messages whose full text is not cached: by default only those already read

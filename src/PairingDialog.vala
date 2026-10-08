@@ -128,6 +128,9 @@ public class Boomerang.PairingDialog : Gtk.Window {
                                       : _("Code refusé. Recommencez depuis l'iPhone si besoin.");
         });
         daemon.changed.connect (() => {
+            if (!daemon.touched ({ "Pairing", "Paired" })) {
+                return;
+            }
             if (daemon.get_bool ("Pairing")) {
                 started = true;
                 return;

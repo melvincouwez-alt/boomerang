@@ -105,6 +105,7 @@ class SearchTest(unittest.TestCase):
         row = next(t for t in self.m.threads() if t["id"] == alice)
         self.assertEqual((row["unread"], row["marked_unread"]), (0, False))
         self.assertEqual(self.m.unread_total(), before)
+        self.assertFalse(self.m.store.mark_seen(alice))  # already seen: nothing to tell
 
     def test_marked_on_a_thread_with_real_unread_counts_once(self):
         bruno = self.thread_of(BRUNO)

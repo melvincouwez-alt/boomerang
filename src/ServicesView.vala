@@ -142,15 +142,15 @@ public class Boomerang.ServicesView : Gtk.Box {
             vexpand = true
         });
 
-        daemon.changed.connect (update);
-        map.connect (update);
-        map.connect (fill_apps);
-        Timeout.add_seconds (5, () => {
-            if (get_mapped ()) {
+        daemon.changed.connect (() => {
+            // update () reads the mounts and drive.env: not for a hidden page
+            if (get_mapped () && daemon.touched ({ "ICloudState", "Modules" })) {
                 update ();
             }
-            return Source.CONTINUE;
         });
+        map.connect (update);
+        map.connect (fill_apps);
+        Setup.poll_while_mapped (this, 5, update);
     }
 
     private void update () {
@@ -340,40 +340,6 @@ public class Boomerang.ServicesView : Gtk.Box {
         foreach (var widget in suffix) {
             box.append (widget);
         }
-        return new Gtk.ListBoxRow () { child = box, activatable = false };
-    }
-
-    private Gtk.Widget app_row (string title, string subtitle, string app_id, string? content_type) {
-        AppInfo? info = content_type != null ? AppInfo.get_default_for_type (content_type, false) : null;
-        if (info == null) {
-            info = new DesktopAppInfo (app_id + ".desktop");
-        }
-        var state = dim_label ();
-        state.label = info != null ? subtitle : _("Non installée");
-        var open = new Gtk.Button.with_label (_("Ouvrir")) { sensitive = info != null, valign = Gtk.Align.CENTER };
-        open.clicked.connect (() => {
-            try {
-                info.launch (null, get_display ().get_app_launch_context ());
-            } catch (Error e) {
-                warning ("cannot open %s: %s", app_id, e.message);
-            }
-        });
-        var icon = info != null ? info.get_icon () : null;
-        var image = icon != null ? new Gtk.Image.from_gicon (icon) : new Gtk.Image.from_icon_name ("application-x-executable");
-        image.pixel_size = 32;
-        var title_label = new Gtk.Label (title) { xalign = 0 };
-        var text = new Gtk.Box (Gtk.Orientation.VERTICAL, 2) { hexpand = true, valign = Gtk.Align.CENTER };
-        text.append (title_label);
-        text.append (state);
-        var box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 12) {
-            margin_top = 9,
-            margin_bottom = 9,
-            margin_start = 12,
-            margin_end = 12
-        };
-        box.append (image);
-        box.append (text);
-        box.append (open);
         return new Gtk.ListBoxRow () { child = box, activatable = false };
     }
 }

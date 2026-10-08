@@ -55,6 +55,8 @@ class Calls:
         self.on_calls = None  # callable() when calls, audio route or mute change
         self.on_started = None  # callable(path) when a call starts ringing out or is answered
         self.on_show = None  # callable() to bring the call window up
+        self.on_ringing = None  # callable(path) once when an incoming call starts ringing here
+        self.rung = set()  # incoming call paths already passed to on_ringing
         self.ringer = None  # sounds.Sounds: the ringtone chosen in Réglages
         self.quiet = lambda: False  # callable() -> True: no ring, popup or audio taken on this PC
         self.started = {}  # call path -> monotonic time it became active
@@ -261,6 +263,10 @@ class Calls:
             return
         summary = f"{_(STATE_LABELS[state])} · {self._caller(props)}"
         body = _("Sur {device}").format(device=self.device_name)
+        if state == "incoming" and path not in self.rung and path not in self.demo:
+            self.rung.add(path)
+            if self.on_ringing:
+                self.on_ringing(path)
         if state in ("incoming", "waiting"):
             actions = [("answer", pgettext("call", "Répondre")), ("hangup", _("Refuser"))]
             hints = {"urgency": GLib.Variant("y", 2),
@@ -518,6 +524,7 @@ class Calls:
         self.muted = False
 
     def _call_gone(self, path, keep_record=False):
+        self.rung.discard(path)
         self.notifier.close(self.notifications.pop(path, 0))
         if self.ringer is not None and not any(
                 p != path and c.get("State") == "incoming" for p, c in self.calls.items()):

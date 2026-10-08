@@ -182,6 +182,20 @@ class CallersTest(unittest.TestCase):
                          [key, link_to_key, "/etc/passwd", home])
 
 
+class PropertySnapshotTest(unittest.TestCase):
+    def test_get_all_computes_the_properties_once(self):
+        svc = service.Service.__new__(service.Service)
+        svc.snapshot = None
+        svc.daemon = mock.Mock()
+        svc.daemon.properties.return_value = {"Version": "1", "Paired": True}
+        for name in ("Version", "Paired"):  # what GetAll does, in one main loop pass
+            svc._get(None, ":1.9", None, None, name)
+        self.assertEqual(svc.daemon.properties.call_count, 1)
+        svc._method(None, ":1.9", None, None, "Reconnect", None, mock.Mock())
+        svc._get(None, ":1.9", None, None, "Paired")  # a method call may change the state
+        self.assertEqual(svc.daemon.properties.call_count, 2)
+
+
 class GuardTest(unittest.TestCase):
     """service.Service._method with a fake caller identity."""
 

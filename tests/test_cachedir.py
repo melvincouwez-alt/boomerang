@@ -31,6 +31,17 @@ class PruneTest(unittest.TestCase):
             os.utime(path, (1, 1))
             cachedir.touch(path)
             self.assertEqual(cachedir.prune(d, 10, 30), 0)
+            os.utime(path, (5, time.time() - 60))
+            cachedir.touch(path)  # used a minute ago: no new write
+            self.assertEqual(os.stat(path).st_atime, 5)
+
+    def test_cached_for_keeps_then_forgets(self):
+        from boomerangd.util import cached_for
+        calls = []
+        probe = cached_for(60)(lambda: calls.append(1) or len(calls))
+        self.assertEqual((probe(), probe()), (1, 1))
+        probe.forget()
+        self.assertEqual(probe(), 2)
 
     def test_missing_directory_is_harmless(self):
         self.assertEqual(cachedir.prune("/nonexistent/boomerang-test", 1, 1), 0)

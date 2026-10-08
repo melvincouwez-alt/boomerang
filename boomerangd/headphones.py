@@ -4,9 +4,12 @@
 #
 # Contains a Python rewrite (modified by melvincouwez-alt, 2026) of parts of
 # LibrePods (https://github.com/librepods-org/librepods): linux/airpods_packets.h,
-# linux/main.cpp, docs/AAP Definitions.md, docs/control_commands.md.
+# linux/main.cpp, docs/AAP Definitions.md, docs/control_commands.md, and of the
+# head gestures of the Android app (utils/GestureDetector.kt, utils/HeadOrientation.kt,
+# bluetooth/AACPManager.kt).
 """AirPods (and compatible Apple headphones) control: battery, ear detection,
-listening modes, conversation awareness, name.
+listening modes, conversation awareness, name, and head gestures to answer a
+call (experimental: nod to answer, shake to decline).
 
 The protocol (AAP, over L2CAP PSM 0x1001 of the classic Bluetooth link) and
 the packet formats come from LibrePods (https://github.com/librepods-org/librepods,
@@ -26,6 +29,7 @@ boomerangd.conf and written again on each connection, as LibrePods advises.
 
 import socket
 import threading
+import time
 
 from gi.repository import Gio, GLib
 
@@ -45,6 +49,15 @@ FEATURES_ACK = bytes.fromhex("040004002b00")
 
 HEADER = bytes.fromhex("04000400")
 OP_BATTERY, OP_EAR, OP_CONTROL, OP_METADATA, OP_CONVERSATION = 0x04, 0x06, 0x09, 0x1D, 0x4B
+OP_HEAD = 0x17
+
+# Head tracking (LibrePods, bluetooth/AACPManager.kt: the "alternate" start and stop
+# packets, the ones the Android app sends by default). While it runs, the AirPods
+# stream motion packets of 70 bytes or more; the accelerations used for gestures are
+# little-endian signed 16-bit values at offsets 51 (horizontal) and 53 (vertical).
+HEAD_START = HEADER + bytes.fromhex("170000001000 0f00 0873 420b 0810 1002 1a05 0140 9c00 00".replace(" ", ""))
+HEAD_STOP = HEADER + bytes.fromhex("170000001000 0f00 0875 420b 0810 1002 1a05 0100 0000 00".replace(" ", ""))
+HEAD_PACKET_MIN = 70
 
 # Control command identifiers (docs/control_commands.md)
 CMD_MODE = 0x0D          # 1 off, 2 noise cancellation, 3 transparency, 4 adaptive
@@ -99,6 +112,125 @@ def rename_packet(name):
     return HEADER + bytes([0x1A, 0x00, 0x01, len(data), 0x00]) + data
 
 
+def head_motion(data):
+    """(horizontal, vertical) from a head-tracking packet, or None if it is not one."""
+    if len(data) < HEAD_PACKET_MIN or not data.startswith(HEADER) or data[4] != OP_HEAD:
+        return None
+    horizontal = int.from_bytes(data[51:53], "little", signed=True)
+    vertical = int.from_bytes(data[53:55], "little", signed=True)
+    return horizontal, vertical
+
+
+class HeadGestures:
+    """A nod ("yes") or a shake ("no") in a stream of head motion values.
+
+    Python rewrite of LibrePods' GestureDetector.kt (GPL-3.0-or-later): values are
+    smoothed over 3 samples, direction changes beyond a threshold become peaks and
+    troughs, and a gesture is a run of 3 or 4 alternating extremes (4 when the head
+    moves fast) whose confidence (amplitude, rhythm, alternation, and the other axis
+    staying still) reaches 0.7. Vertical motion means yes, horizontal means no.
+    `feed()` returns True, False, or None while nothing is recognised; `clock` is
+    injectable for the tests.
+    """
+
+    MAX_VALID = 6000         # larger values are calibration data
+    PEAK = 400               # an extreme must go beyond this
+    DIRECTION_CHANGE = 150   # upper bound of the dynamic direction-change threshold
+    FAST = 300.0             # ms between extremes below which a gesture needs 4 of them
+    MIN_EXTREMES, MAX_EXTREMES = 3, 4
+    RHYTHM = 0.5
+    CONFIDENCE = 0.7
+
+    def __init__(self, clock=time.monotonic):
+        self.clock = clock
+        self.reset()
+
+    def reset(self):
+        self.h, self.v = [], []                  # smoothed values (last 100)
+        self.h_avg, self.v_avg = [0.0] * 3, [0.0] * 3
+        self.h_extremes, self.v_extremes = [], []  # (index, value, ms)
+        self.h_up = self.v_up = None
+        self.last_extreme = 0.0
+        self.intervals = []                      # seconds between extremes (last 5)
+        self.speeds = []                         # ms between extremes (last 5)
+
+    @staticmethod
+    def _smooth(value, window):
+        window.append(value)
+        del window[:-3]
+        return sum(window) / len(window)
+
+    def feed(self, horizontal, vertical):
+        if abs(horizontal) > self.MAX_VALID or abs(vertical) > self.MAX_VALID:
+            return None
+        self.h.append(self._smooth(float(horizontal), self.h_avg))
+        self.v.append(self._smooth(float(vertical), self.v_avg))
+        del self.h[:-100]
+        del self.v[:-100]
+        if len(self.h) >= 4:
+            self.h_up = self._direction(self.h, self.h_up, self.h_extremes)
+            self.v_up = self._direction(self.v, self.v_up, self.v_extremes)
+        return self.detect()
+
+    @staticmethod
+    def _variance(values):
+        mean = sum(values) / len(values)
+        return sum((x - mean) ** 2 for x in values) / len(values)
+
+    def _direction(self, buffer, increasing, extremes):
+        current, prev = buffer[-1], buffer[-2]
+        if increasing is None:
+            increasing = current > prev
+        threshold = max(50.0, min(float(self.DIRECTION_CHANGE), self._variance(buffer[-4:]) / 3))
+        if increasing and current < prev - threshold or not increasing and current > prev + threshold:
+            if abs(prev) > self.PEAK:
+                now = self.clock() * 1000.0
+                extremes.append((len(buffer) - 1, prev, now))
+                if self.last_extreme > 0:
+                    self.intervals = (self.intervals + [(now - self.last_extreme) / 1000.0])[-5:]
+                    self.speeds = (self.speeds + [now - self.last_extreme])[-5:]
+                self.last_extreme = now
+            increasing = not increasing
+        return increasing
+
+    def _required(self):
+        if not self.speeds:
+            return self.MIN_EXTREMES
+        fast = sum(self.speeds) / len(self.speeds) < self.FAST
+        return self.MAX_EXTREMES if fast else self.MIN_EXTREMES
+
+    def _rhythm(self):
+        if len(self.intervals) < 2:
+            return 0.0
+        mean = sum(self.intervals) / len(self.intervals)
+        if mean == 0:
+            return 0.0
+        spread = sum((i / mean - 1.0) ** 2 for i in self.intervals) / len(self.intervals)
+        return max(0.0, 1.0 - min(1.0, spread / self.RHYTHM))
+
+    def _confidence(self, extremes, other):
+        needed = self._required()
+        if len(extremes) < needed:
+            return 0.0
+        recent = sorted(extremes)[-needed:]
+        amplitude = sum(abs(e[1]) for e in recent) / len(recent)
+        signs = [e[1] > 0 for e in recent]
+        alternating = all(signs[i] != signs[i - 1] for i in range(1, len(signs)))
+        tail = other[-len(recent) * 2:]
+        other_amplitude = sum(abs(x) for x in tail) / len(tail) if tail else 0.0
+        return (min(1.0, amplitude / 600) * 0.4 + self._rhythm() * 0.2
+                + (1.0 if alternating else 0.5) * 0.2
+                + min(1.0, amplitude / (other_amplitude + 0.1) * 1.2) * 0.2)
+
+    def detect(self):
+        needed = self._required()
+        if len(self.v_extremes) >= needed and self._confidence(self.v_extremes, self.h) >= self.CONFIDENCE:
+            return True
+        if len(self.h_extremes) >= needed and self._confidence(self.h_extremes, self.v) >= self.CONFIDENCE:
+            return False
+        return None
+
+
 class Pods:
     """One pair of AirPods and its AAP session."""
 
@@ -112,6 +244,8 @@ class Pods:
         self.watch = 0
         self.linked = False
         self.retry = 0
+        self.gestures = None      # HeadGestures while waiting for a nod or a shake
+        self.on_gesture = None    # callable(bool) for that wait
         self.reset()
 
     def reset(self):
@@ -191,6 +325,7 @@ class Pods:
                                         if self.sock and not self.linked else None) and False)
 
     def close(self):
+        self.stop_gestures()
         if self.watch:
             GLib.source_remove(self.watch)
             self.watch = 0
@@ -246,6 +381,9 @@ class Pods:
         if not data.startswith(HEADER) or len(data) < 6:
             return
         opcode = data[4] | (data[5] << 8)
+        if opcode == OP_HEAD:
+            self._head(data)
+            return  # a stream of motion packets: nothing for the app
         if opcode == OP_BATTERY and len(data) >= 7:
             self._battery(data)
         elif opcode == OP_EAR and len(data) >= 8:
@@ -309,6 +447,42 @@ class Pods:
         if len(fields) > 4:
             self.firmware = fields[4]
         log(f"écouteurs : {self.model or f'modèle inconnu ({model_number or '?'})'} reconnus")
+
+    # --- head gestures -------------------------------------------------------------------
+
+    def worn(self):
+        return "in" in self.ear
+
+    def start_gestures(self, on_gesture):
+        """Stream head motion and call on_gesture(True for a nod, False for a shake) once."""
+        if not self.sock or not self.linked:
+            return False
+        self.gestures = HeadGestures()
+        self.on_gesture = on_gesture
+        if not self._send(HEAD_START):
+            self.gestures = self.on_gesture = None
+            return False
+        log("écouteurs : gestes de tête attendus")
+        return True
+
+    def stop_gestures(self):
+        if self.gestures is None:
+            return
+        self.gestures = self.on_gesture = None
+        self._send(HEAD_STOP)
+        log("écouteurs : gestes de tête arrêtés")
+
+    def _head(self, data):
+        motion = head_motion(data)
+        if motion is None or self.gestures is None:
+            return
+        result = self.gestures.feed(*motion)
+        if result is not None:
+            callback = self.on_gesture
+            self.stop_gestures()
+            log(f"écouteurs : geste {'oui (hochement)' if result else 'non (secousse)'} reconnu")
+            if callback:
+                callback(result)
 
     # --- commands ------------------------------------------------------------------------
 
@@ -404,6 +578,28 @@ class Headphones:
         cycle = self.cycle(pods.address)
         if cycle:
             pods.set("cycle", cycle)
+
+    # --- head gestures for calls (experimental) ---------------------------------------------
+
+    def listen_for_answer(self, on_answer, timeout=30):
+        """While a call rings: a nod calls on_answer(True), a shake on_answer(False).
+        Only AirPods that are worn and linked are asked; False when there are none."""
+        self.stop_listening()
+        pods = next((p for p in self.pods.values() if p.sock and p.linked and p.worn()), None)
+        if pods is None or not pods.start_gestures(on_answer):
+            return False
+        self.listening = pods
+        self.listen_timeout = GLib.timeout_add_seconds(timeout, lambda: self.stop_listening() and False)
+        return True
+
+    def stop_listening(self):
+        if getattr(self, "listen_timeout", 0):
+            GLib.source_remove(self.listen_timeout)
+            self.listen_timeout = 0
+        pods = getattr(self, "listening", None)
+        self.listening = None
+        if pods is not None:
+            pods.stop_gestures()
 
     # --- BlueZ ------------------------------------------------------------------------
 

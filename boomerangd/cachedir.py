@@ -9,8 +9,11 @@ import time
 
 
 def touch(path):
+    """Mark as used. The getters call this at every property refresh: write the mtime
+    at most once an hour, prune counts in days."""
     try:
-        os.utime(path)
+        if time.time() - os.stat(path).st_mtime > 3600:
+            os.utime(path)
     except OSError:
         pass
 

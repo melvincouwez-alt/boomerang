@@ -11,6 +11,7 @@ destination) is skipped. HEIC photos can be converted to JPEG with heif-convert.
 Nothing is ever written to the iPhone. Logs record counts and states only.
 """
 
+import glob
 import json
 import os
 import shutil
@@ -20,7 +21,7 @@ import threading
 
 from gi.repository import GLib
 
-from .util import log
+from .util import cached_for, log
 
 TOOLS = (("idevice_id", "libimobiledevice-utils"), ("idevicepair", "libimobiledevice-utils"),
          ("ideviceinfo", "libimobiledevice-utils"), ("ifuse", "ifuse"),
@@ -41,6 +42,28 @@ def pictures_folder():
 
 def missing_packages():
     return sorted({package for tool, package in TOOLS if shutil.which(tool) is None})
+
+
+def apple_on_usb(root="/sys/bus/usb/devices"):
+    """An Apple device (vendor 05ac) on USB, read from sysfs; True when sysfs cannot tell.
+    The Photos page asks every 5 s: no idevice_* command runs with nothing plugged in."""
+    if not os.path.isdir(root):
+        return True
+    for path in glob.glob(os.path.join(root, "*", "idVendor")):
+        try:
+            with open(path, encoding="ascii") as f:
+                if f.read().strip() == "05ac":
+                    return True
+        except (OSError, ValueError):
+            continue
+    return False
+
+
+@cached_for(60)
+def _tools():
+    """(missing packages, heif-convert present) for the state: installs are seen within 60 s,
+    and at once by refresh()."""
+    return missing_packages(), shutil.which("heif-convert") is not None
 
 
 def _run(argv, timeout=20):
@@ -161,7 +184,8 @@ class PhotosUsb:
         return self.config.boolean("photos", "convert_heic", False)
 
     def state(self):
-        return {"missing": missing_packages(), "heic_tool": shutil.which("heif-convert") is not None,
+        missing, heic_tool = _tools()
+        return {"missing": missing, "heic_tool": heic_tool,
                 "device": self.device, "udid": self.udid, "paired": self.paired,
                 "state": self.state_name, "total": self.total, "done": self.done,
                 "imported": self.imported, "skipped": self.skipped, "error": self.error,
@@ -181,11 +205,14 @@ class PhotosUsb:
 
     def refresh(self):
         """Look for an iPhone on USB (cheap: a few short commands in a thread)."""
+        _tools.forget()
         if self.busy or missing_packages():
             self.changed()
             return
 
         def job():
+            if not apple_on_usb():
+                return "", "", False
             code, out = _run(["idevice_id", "-l"])
             udids = [line.strip() for line in out.splitlines() if code == 0 and line.strip()]
             if not udids:

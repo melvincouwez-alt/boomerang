@@ -121,7 +121,11 @@ public class Boomerang.CodesCard : Gtk.Box {
         list.append (browser_row);
         append (list);
 
-        daemon.changed.connect (update);
+        daemon.changed.connect (() => {
+            if (daemon.touched ({ "OneTimeCodes", "AutoCopyCodes" })) {
+                update ();
+            }
+        });
         update ();
     }
 

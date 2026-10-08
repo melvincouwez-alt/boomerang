@@ -18,6 +18,7 @@ from .headphones import Headphones
 from .hotspot import Hotspot
 from .icloud import ICloud
 from .link import Link
+from .linkpreview import LinkPreviews
 from .messages import Messages
 from .migrate import migrate
 from .mirror import Mirror
@@ -58,6 +59,7 @@ class Daemon:
         self.icloud = ICloud(self.notifier, self.link_changed)
         self.mpris = MprisPlayer(self.session, "iPhone")
         self.messages = Messages(self.session, self.notifier, self)
+        self.link_previews = LinkPreviews(self.config)
         self.notifications = Notifications(self.config, self._notifications_changed)
         self.now_playing = NowPlaying(self.system, self.config, self.notifications.icons,
                                       self.link_changed)
@@ -65,6 +67,7 @@ class Daemon:
         self.calls.on_calls = self._calls_state_changed
         self.calls.on_started = self._call_started
         self.calls.on_show = self._open_call_window
+        self.calls.on_ringing = self._call_ringing
         self.call_windows = set()
         self.contact_book = ContactBook(self.config, self._contacts_changed)
         self.headphones = Headphones(self.system, self.session, self.config, self._headphones_changed)
@@ -120,6 +123,8 @@ class Daemon:
             "ReactionsSend": self.messages.reactions_enabled(),
             "OneTimeCodes": self.messages.code_mode(),
             "AutoCopyCodes": self.messages.auto_copy_codes(),
+            "LinkPreviews": self.link_previews.enabled(),
+            "QuickReplies": self.messages.quick_replies(),
             "ContactsState": self.messages.contacts_state,
             "UnreadMessages": self.messages.unread_total() if self.config.module_enabled("messages") else 0,
             "MissedCalls": self.messages.missed_unseen() if self.config.module_enabled("messages") else 0,
@@ -196,6 +201,9 @@ class Daemon:
     def notification_seen(self, uid, app_id, app_name, title, body, category, actions=None):
         return self.notifications.seen(uid, app_id, app_name, title, body, category, actions)
 
+    def notification_settings(self, app_id):
+        return self.notifications.app_settings(app_id)
+
     def notification_action(self, uid, key):
         """Alpha « ancs_actions »: the iPhone's positive/negative action, from the app."""
         ancs = self.link.ancs if self.link else None
@@ -229,6 +237,10 @@ class Daemon:
         self._update_badge()
 
     def _calls_state_changed(self):
+        # A call that is over: forget its window, its path may be given to a later call.
+        self.call_windows.intersection_update(self.calls.calls)
+        if not self.calls.has_ringing_call():
+            self.headphones.stop_listening()
         self.link_changed()
         self.service.active_calls_changed()
 
@@ -244,6 +256,18 @@ class Daemon:
             result.append(dict(call, name=name,
                                avatar=store.photo(address) if store else ""))
         return result
+
+    def _call_ringing(self, path):
+        """Experimental: a nod with the AirPods on answers, a shake declines."""
+        if not self.config.alpha("head_gestures") or self.config.boolean("calls", "quiet"):
+            return
+
+        def answer(yes):
+            if path in self.calls.calls:
+                log(f"appels : {'réponse' if yes else 'refus'} par geste de tête")
+                self.calls.call_action(path, "answer" if yes else "hangup", lambda _error: None)
+
+        self.headphones.listen_for_answer(answer)
 
     def _call_started(self, path):
         """Open the in-call window once per call, when it rings out or is answered."""
@@ -294,9 +318,17 @@ class Daemon:
     def contacts_changed(self):
         self._contacts_changed()
 
-    def play_sound(self, kind):
+    def play_sound(self, kind, value=None, force=False):
         """Messages and iPhone notifications: True when Boomerang played the sound itself."""
-        return self.sounds.play(kind)
+        return self.sounds.play(kind, value, force)
+
+    def set_link_previews(self, enabled):
+        self.link_previews.set_enabled(enabled)
+        self.link_changed()
+
+    def set_quick_replies(self, replies):
+        self.messages.set_quick_replies(replies)
+        self.link_changed()
 
     def set_sound(self, kind, value):
         self.sounds.set(kind, value)

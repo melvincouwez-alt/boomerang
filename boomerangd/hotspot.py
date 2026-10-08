@@ -44,6 +44,27 @@ class NetworkManagerClient:
                                   GLib.VariantType(reply) if reply else None,
                                   Gio.DBusCallFlags.NONE, 10000, None)
 
+    def watch(self, on_change):
+        """on_change(connections) when NetworkManager's state may have moved: an active
+        connection came, went or changed state (connections=False), or a connection profile
+        was added or removed (True). Also when NetworkManager itself starts or stops."""
+        def changed(connections):
+            return lambda *_args: on_change(connections)
+
+        def properties(_conn, _sender, _path, _iface, _signal, params):
+            if "ActiveConnections" in params.unpack()[1]:
+                on_change(False)
+
+        self.bus.signal_subscribe(NM, "org.freedesktop.DBus.Properties", "PropertiesChanged",
+                                  NM_PATH, NM, Gio.DBusSignalFlags.NONE, properties)
+        self.bus.signal_subscribe(NM, NM + ".Connection.Active", "StateChanged", None, None,
+                                  Gio.DBusSignalFlags.NONE, changed(False))
+        for member in ("NewConnection", "ConnectionRemoved"):
+            self.bus.signal_subscribe(NM, NM + ".Settings", member, SETTINGS_PATH, None,
+                                      Gio.DBusSignalFlags.NONE, changed(True))
+        Gio.bus_watch_name_on_connection(self.bus, NM, Gio.BusNameWatcherFlags.NONE,
+                                         changed(True), changed(True))
+
     def _get(self, path, iface, prop):
         return self._call(path, "org.freedesktop.DBus.Properties", "Get",
                           GLib.Variant("(ss)", (iface, prop)), "(v)").unpack()[0]
@@ -112,6 +133,12 @@ class Hotspot:
     def __init__(self, system_bus, device_info, on_changed=lambda: None, client=None):
         """device_info() -> (address, uuids of the iPhone) or ("", [])."""
         self.client = client or NetworkManagerClient(system_bus)
+        # NetworkManager's answer, kept until one of its signals says it may have changed:
+        # state() runs at every property refresh. Without signals (tests), never kept.
+        self.watching = hasattr(self.client, "watch")
+        self.known = None  # (address, connection state)
+        if self.watching:
+            self.client.watch(self._nm_changed)
         self.device_info = device_info
         self.on_changed = on_changed
         self.error = ""
@@ -119,9 +146,17 @@ class Hotspot:
         self.timer = 0
         self.cached = (None, None)  # (address, connection path): state() runs on each refresh
 
+    def _nm_changed(self, connections):
+        if connections:
+            self.cached = (None, None)
+        self.known = None
+        self.on_changed()
+
     def _find(self, address):
-        if self.cached[0] == address and self.cached[1]:
+        # Watching NetworkManager, "no connection" is kept too (NewConnection resets it).
+        if self.cached[0] == address and (self.cached[1] or self.watching):
             return self.cached[1]
+        self.cached = (address, None)
         for path, settings in self.client.connections():
             if _is_ours(settings, address):
                 self.cached = (address, path)
@@ -133,12 +168,17 @@ class Hotspot:
         if not address or NAP_UUID not in [u.lower() for u in uuids]:
             return {"state": "unavailable", "error": ""}
         try:
+            if self.known is None or self.known[0] != address:
+                path = self._find(address)
+                _active, state = self.client.active_for(path) if path else (None, 0)
+                self.known = (address, state) if self.watching else None
+            else:
+                state = self.known[1]
+        except GLib.Error as error:
+            # state() runs at every property refresh: NetworkManager is only pinged on failure.
+            self.cached = (None, None)
             if not self.client.available():
                 return {"state": "unavailable", "error": _("NetworkManager ne répond pas")}
-            path = self._find(address)
-            _active, state = self.client.active_for(path) if path else (None, 0)
-        except GLib.Error as error:
-            self.cached = (None, None)
             return {"state": "failed", "error": error.message}
         if state == ACTIVATED:
             name = "on"
@@ -170,7 +210,8 @@ class Hotspot:
                 "ipv6": {"method": GLib.Variant("s", "auto")},
             })
             log("partage de connexion : connexion NetworkManager créée")
-        self.error, self.pending = "", True
+            self.cached = (address, path)
+        self.error, self.pending, self.known = "", True, None
         try:
             self.client.activate(path, self.client.device_for(address))
         except GLib.Error as error:
@@ -187,7 +228,7 @@ class Hotspot:
         address, _uuids = self.device_info()
         path = self._find(address) if address else None
         active, _state = self.client.active_for(path) if path else (None, 0)
-        self.pending, self.error = False, ""
+        self.pending, self.error, self.known = False, "", None
         if active:
             self.client.deactivate(active)
             log("partage de connexion : coupé")
@@ -201,6 +242,7 @@ class Hotspot:
 
         def tick():
             count[0] -= 1
+            self.known = None  # in case a NetworkManager signal was missed
             state = self.state()["state"]
             if state == "on" or count[0] <= 0:
                 if state != "on" and self.pending:

@@ -33,6 +33,9 @@ namespace Boomerang {
         private Gtk.Scale volume;
         private bool updating = false;
         private uint tick = 0;
+        // Pictures shown: update () runs at every daemon property change, decode only new ones.
+        private string shown_artwork = "";
+        private string shown_app_image = "";
         private uint volume_timer = 0;
 
         private string status = "stopped";
@@ -157,7 +160,11 @@ namespace Boomerang {
             }, "player");
             append (stack);
 
-            daemon.changed.connect (update);
+            daemon.changed.connect (() => {
+                if (daemon.touched ({ "NowPlaying" })) {
+                    update ();
+                }
+            });
             map.connect (() => {
                 update ();
                 if (tick == 0) {
@@ -238,21 +245,25 @@ namespace Boomerang {
             var app = text (d, "app");
             var image = text (d, "app_image");
             var icon = text (d, "app_icon");
-            if (image != "") {
-                app_icon.set_from_file (image);
-            } else {
+            if (image == "") {
                 app_icon.set_from_icon_name (icon != "" ? icon : "phone");
+            } else if (image != shown_app_image) {
+                app_icon.set_from_file (image);
             }
+            shown_app_image = image;
             app_label.label = app != "" ? _("Sur l'iPhone · %s").printf (app) : _("Sur l'iPhone");
 
             var artwork = text (d, "artwork");
             if (artwork != "") {
-                art.set_filename (artwork);
+                if (artwork != shown_artwork) {
+                    art.set_filename (artwork);
+                }
                 art_stack.visible_child_name = "art";
             } else {
                 art.set_paintable (null);
                 art_stack.visible_child_name = "empty";
             }
+            shown_artwork = artwork;
 
             position = number (d, "position");
             position_time = number (d, "position_time");
@@ -330,6 +341,7 @@ namespace Boomerang {
 
         private Gtk.Stack art_stack;
         private Gtk.Image art;
+        private string shown_artwork = "";
         private Gtk.Label title_label;
         private Gtk.Label artist_label;
         private Gtk.Button toggle;
@@ -396,7 +408,11 @@ namespace Boomerang {
             });
             add_controller (click);
             tooltip_text = _("Lecture en cours");
-            daemon.changed.connect (update);
+            daemon.changed.connect (() => {
+                if (daemon.touched ({ "NowPlaying", "Modules" })) {
+                    update ();
+                }
+            });
             update ();
         }
 
@@ -423,7 +439,10 @@ namespace Boomerang {
             artist_label.visible = artist_label.label != "";
             var artwork = text (d, "artwork");
             if (artwork != "") {
-                art.set_from_file (artwork);
+                if (artwork != shown_artwork) {
+                    art.set_from_file (artwork);
+                    shown_artwork = artwork;
+                }
                 art_stack.visible_child_name = "art";
             } else {
                 art_stack.visible_child_name = "empty";

@@ -223,14 +223,25 @@ class AncsClient(GattClient):
             log(f"notification {uid} non affichée (app masquée)")
             return
 
+        settings = getattr(self.hooks, "notification_settings", None)
+        mode, sound, private = settings(app_id) if settings else ("", "", False)
+        if private:
+            # The app's choice in Boomerang: which app, not what it says.
+            summary = app_name or "iPhone"
+            body = _("Nouvelle notification")
+            actions = []
+
         hints = {}
-        if category in (CATEGORY_INCOMING_CALL, CATEGORY_MISSED_CALL) or flags & FLAG_IMPORTANT:
+        if category in (CATEGORY_INCOMING_CALL, CATEGORY_MISSED_CALL) or flags & FLAG_IMPORTANT \
+                or mode == "priority":
             hints["urgency"] = GLib.Variant("y", 2)
         play = getattr(self.hooks, "play_sound", None)
         if play:
-            # The sound chosen in Réglages, played by the daemon (none for a silent one).
-            if not flags & (FLAG_SILENT | FLAG_PREEXISTING) and category != CATEGORY_INCOMING_CALL:
-                play("notifications")
+            # The sound chosen in Réglages or for this app, played by the daemon (none for a
+            # silent one or a quiet app); a priority app sounds under Do Not Disturb too.
+            if not flags & (FLAG_SILENT | FLAG_PREEXISTING) and category != CATEGORY_INCOMING_CALL \
+                    and mode != "quiet" and sound != "none":
+                play("notifications", sound or None, mode == "priority")
             hints["suppress-sound"] = GLib.Variant("b", True)
         elif flags & FLAG_SILENT:
             hints["suppress-sound"] = GLib.Variant("b", True)

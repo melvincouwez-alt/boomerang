@@ -181,6 +181,35 @@ class MirrorOptionsTest(unittest.TestCase):
         self.assertFalse(m.set_option("profile", "turbo"))
         self.assertTrue(m.set_option("fullscreen", "true"))
         self.assertEqual((m.option("profile"), m.option("fullscreen")), ("quality", True))
+        self.assertTrue(m.set_option("record", "true"))
+        self.assertTrue(m.option("record"))
+
+    def test_screensaver_held_off(self):
+        args = mirror.build_args("X")
+        self.assertEqual(args[args.index("-scrsv") + 1], "1")
+        self.assertNotIn("-mp4", args)
+        self.assertNotIn("-ble", args)
+
+    def test_record_and_beacon(self):
+        args = mirror.build_args("X", record="/v/Recopie", ble="/c/uxplay.ble")
+        self.assertEqual(args[args.index("-mp4") + 1], "/v/Recopie")
+        self.assertEqual(args[args.index("-ble") + 1], "/c/uxplay.ble")
+
+    def test_own_window(self):
+        # Boomerang's window shows the picture: frames to shared memory, no UxPlay window options.
+        args = mirror.build_args("X", fullscreen=True, decoder="nvidia", viewer="/run/u/m.shm")
+        sink = args[args.index("-vs") + 1]
+        self.assertIn("shmsink socket-path=/run/u/m.shm", sink)
+        self.assertIn("gdppay", sink)
+        self.assertIn("wait-for-connection=true", sink)
+        self.assertNotIn("glimagesink", args)
+        self.assertNotIn("-fs", args)
+        self.assertEqual(args.count("-vs"), 1)
+
+    def test_recording_name(self):
+        now = GLib.DateTime.new_local(2026, 10, 4, 21, 30, 5)
+        self.assertEqual(mirror.recording_base(now, "/home/m/Vidéos"),
+                         "/home/m/Vidéos/Recopie iPhone 2026-10-04 21-30-05")
 
 
 if __name__ == "__main__":

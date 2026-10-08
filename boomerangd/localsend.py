@@ -30,9 +30,7 @@ boomerangd.conf turns it on. Logs record counts and states only.
 
 import hashlib
 import http.client
-import http.server
 import json
-import mimetypes
 import os
 import secrets
 import socket
@@ -214,6 +212,8 @@ class Receiver:
         self.session = None
         self.server = self._make_server(host, port)
         self.port = self.server.server_address[1]
+        # ponytail: serve_forever wakes every 0.5 s to see shutdown(), only while LocalSend is
+        # on; a longer interval would block the daemon that long when it is turned off.
         self.thread = threading.Thread(target=self.server.serve_forever, name="boomerang-localsend",
                                        daemon=True)
 
@@ -232,6 +232,7 @@ class Receiver:
         return device_info(self.alias, self.fingerprint, self.port)
 
     def _make_server(self, host, port):
+        import http.server  # only once LocalSend is on (off by default)
         receiver = self
 
         class Handler(http.server.BaseHTTPRequestHandler):
@@ -345,6 +346,7 @@ class Receiver:
         path = free_path(self.folder, meta["name"])
         part = path + ".part"
         remaining = length
+        shown = -1  # progress goes to the main loop once per percent, not per 64 KiB chunk
         try:
             with open(part, "wb") as out:
                 while remaining > 0:
@@ -356,7 +358,10 @@ class Receiver:
                     session.received += len(chunk)
                     if session.cancelled:
                         raise OSError("cancelled")
-                    self.dispatch(self.on_event, "progress", session)
+                    percent = session.received * 100 // session.total if session.total else 100
+                    if percent != shown:
+                        shown = percent
+                        self.dispatch(self.on_event, "progress", session)
             os.replace(part, path)
         except OSError:
             if os.path.exists(part):
@@ -404,8 +409,7 @@ class Discovery:
         membership = struct.pack("4sl", socket.inet_aton(GROUP), socket.INADDR_ANY)
         self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, membership)
         self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 2)
-        self.sock.settimeout(1.0)
-        self.running = True
+        self.running = True  # no receive timeout: stop() wakes the thread with shutdown()
         self.thread = threading.Thread(target=self._listen, name="boomerang-localsend-udp",
                                        daemon=True)
 
@@ -415,6 +419,12 @@ class Discovery:
 
     def stop(self):
         self.running = False
+        try:
+            # Linux wakes a blocked recvfrom on shutdown, even for an unconnected UDP socket
+            # (it then reports ENOTCONN, ignored here).
+            self.sock.shutdown(socket.SHUT_RDWR)
+        except OSError:
+            pass
         try:
             self.sock.close()
         except OSError:
@@ -430,11 +440,12 @@ class Discovery:
     def _listen(self):
         while self.running:
             try:
-                data, (address, _port) = self.sock.recvfrom(65536)
-            except socket.timeout:
-                continue
+                data, origin = self.sock.recvfrom(65536)
             except OSError:
                 return
+            if not self.running or not origin:
+                return  # woken by stop()
+            address = origin[0]
             try:
                 info = json.loads(data)
             except (ValueError, UnicodeDecodeError):
@@ -527,6 +538,7 @@ def verified_peer(peer, timeout=5):
 
 def send_files(own_info, peer, paths, progress=lambda sent, total: None, cancelled=lambda: False):
     """Send files to a peer; returns the number of files it took. Raises SendError."""
+    import mimetypes  # only for a send
     peer = verified_peer(peer)
     files, sizes = {}, {}
     for path in paths:

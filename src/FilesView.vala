@@ -117,7 +117,11 @@ public class Boomerang.FilesView : Gtk.Box {
         content.append (on_box);
         append (scroll);
 
-        daemon.changed.connect (update);
+        daemon.changed.connect (() => {
+            if (daemon.touched ({ "Files" })) {
+                update ();
+            }
+        });
         map.connect (() => {
             load_peers.begin ();
             timer = Timeout.add_seconds (10, () => {

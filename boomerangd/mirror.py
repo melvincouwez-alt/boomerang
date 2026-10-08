@@ -20,7 +20,15 @@ Options ([mirror] in boomerangd.conf):
 - profile: "fluid" (default: no audio/video sync, lowest latency) or "quality"
   (audio kept in sync with the picture, a little more delay);
 - rotation: "", "R" or "L"; fullscreen: true or false;
-- screen: "WxH" of the PC's screen, sent by the app, asked of the iPhone (-s).
+- screen: "WxH" of the PC's screen, sent by the app, asked of the iPhone (-s);
+- record: true to save the mirrored screen and sound as an MP4 file in the Videos
+  folder (UxPlay -mp4, one dated file per session).
+The screensaver is held off while the iPhone mirrors (UxPlay -scrsv 1, through D-Bus).
+Experimental (AlphaFeatures "mirror_ble"): a Bluetooth LE beacon (UxPlay -ble and its
+uxplay-beacon script) so that the iPhone lists the PC even when mDNS does not get
+through the network. It is a second BlueZ advertisement beside Boomerang's own
+(adapters offer several instances, see LEAdvertisingManager1.SupportedInstances), and
+it only runs while UxPlay does.
 The H.264 decoder is chosen once: NVIDIA (nvh264dec, needs libcuda), then VA-API
 (vah264dec, needs a render node), then software (libav). If UxPlay stops with an
 error on a hardware decoder, it is restarted once in software.
@@ -31,10 +39,11 @@ import os
 import secrets
 import shutil
 import socket
+import sys
 
 from gi.repository import Gio, GLib
 
-from .util import log
+from .util import cached_for, log
 
 # GStreamer plugins UxPlay needs at start ("Required gstreamer plugin … not found"),
 # by file name, with the package that provides them.
@@ -45,7 +54,11 @@ PROFILES = ("fluid", "quality")
 ROTATIONS = ("", "R", "L")
 
 TYPES = {"available": "b", "running": "b", "name": "s", "error": "s", "missing": "as",
-         "profile": "s", "rotation": "s", "fullscreen": "b", "decoder": "s", "pin": "s"}
+         "profile": "s", "rotation": "s", "fullscreen": "b", "decoder": "s", "pin": "s",
+         "record": "b", "recording": "s", "beacon": "b"}
+BLE_FILE = os.path.join(GLib.get_user_cache_dir(), "boomerang", "uxplay.ble")
+# Decoded frames from UxPlay to Boomerang's mirroring window.
+VIEWER_SOCKET = os.path.join(GLib.get_user_runtime_dir(), "boomerang-mirror.shm")
 
 
 def _plugin_dirs():
@@ -70,33 +83,64 @@ def pick_decoder(dirs=None, cuda=None, render=None):
     return "software"
 
 
+@cached_for(60)
+def _probe():
+    """(missing packages, decoder) for the state, which runs at every property refresh:
+    an install is seen within 60 s, at once after StopMirror; start() always looks again."""
+    return Mirror.missing(), pick_decoder()
+
+
 def new_pin():
     """A 4-digit AirPlay code, never 0000 (UxPlay reads a missing code as « draw one »)."""
     return "%04d" % (1 + secrets.randbelow(9999))
 
 
+def viewer_sink(socket_path):
+    """UxPlay's video sink when Boomerang's own window shows the picture: the decoded
+    frames go to shared memory in I420, gdppay carrying their size and format along.
+    UxPlay waits for the window to be connected: gdppay sends the format only once,
+    with the first frame, and a window joining later could not read the rest."""
+    return (f"videoconvert ! video/x-raw,format=I420 ! gdppay ! shmsink socket-path={socket_path} "
+            "shm-size=134217728 wait-for-connection=true sync=false")
+
+
 def build_args(name, profile="fluid", rotation="", fullscreen=False, screen="", decoder="software",
-               pin=""):
-    """UxPlay's command line for these options."""
-    args = ["uxplay", "-n", name, "-nh", "-fps", "60"]
+               pin="", record="", ble="", viewer=""):
+    """UxPlay's command line for these options. viewer: shared memory socket of
+    Boomerang's mirroring window, which then shows the picture instead of UxPlay."""
+    args = ["uxplay", "-n", name, "-nh", "-fps", "60", "-scrsv", "1"]
     if pin:
         args += ["-pin", pin]
+    if record:
+        args += ["-mp4", record]  # UxPlay adds .<n>.<format>.mp4
+    if ble:
+        args += ["-ble", ble]
     if profile != "quality":
         args += ["-vsync", "no"]  # no audio/video timestamp sync: lowest latency
     size = _screen(screen)
     if size:
         args += ["-s", "%dx%d@60" % size]
     if decoder == "nvidia":
-        args += ["-vd", "nvh264dec", "-vs", "glimagesink"]
+        args += ["-vd", "nvh264dec"] + ([] if viewer else ["-vs", "glimagesink"])
     elif decoder == "vaapi":
         args += ["-vd", "vah264dec"]
     else:
         args += ["-avdec"]
+    if viewer:
+        args += ["-vs", viewer_sink(viewer)]
     if rotation in ("R", "L"):
         args += ["-r", rotation]
-    if fullscreen:
-        args += ["-fs"]
+    if fullscreen and not viewer:
+        args += ["-fs"]  # the window does it otherwise
     return args
+
+
+def recording_base(now=None, videos=None):
+    """Videos/Recopie iPhone 2026-10-04 21-30-05 (UxPlay appends the extension)."""
+    now = now or GLib.DateTime.new_now_local()
+    videos = videos or GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS) \
+        or os.path.join(GLib.get_home_dir(), "Videos")
+    return os.path.join(videos, now.format("Recopie iPhone %Y-%m-%d %H-%M-%S"))
 
 
 def _screen(text):
@@ -123,6 +167,10 @@ class Mirror:
         self.decoder = ""
         self.fallback = False
         self.pin = ""
+        self.recording = ""   # base path of the MP4 being written, while UxPlay runs
+        self.beacon = None    # uxplay-beacon process, while UxPlay runs with mirror_ble
+        self.viewer = None    # Boomerang's mirroring window (mirror_viewer.py), while UxPlay runs
+        self._viewer_ok = None
         self.name = "Boomerang (%s)" % (socket.gethostname().split(".")[0] or "PC")
 
     @staticmethod
@@ -150,8 +198,8 @@ class Mirror:
             return default
 
     def option(self, key):
-        if key == "fullscreen":
-            return self._get("fullscreen", "false") == "true"
+        if key in ("fullscreen", "record"):
+            return self._get(key, "false") == "true"
         if key == "profile":
             value = self._get("profile", "fluid")
             return value if value in PROFILES else "fluid"
@@ -164,9 +212,9 @@ class Mirror:
         """profile, rotation, fullscreen or screen; applied at the next start."""
         if key == "profile" and value not in PROFILES or key == "rotation" and value not in ROTATIONS:
             return False
-        if key == "fullscreen":
+        if key in ("fullscreen", "record"):
             value = "true" if value in ("true", "1", "yes") else "false"
-        if key not in ("profile", "rotation", "fullscreen", "screen"):
+        if key not in ("profile", "rotation", "fullscreen", "screen", "record"):
             return False
         if self.config is not None and self._get(key, None) != value:
             self.config.keyfile.set_string("mirror", key, value)
@@ -175,13 +223,15 @@ class Mirror:
         return True
 
     def state(self):
-        missing = self.missing()
+        missing, decoder = _probe()
         return {"available": not missing, "running": self.process is not None,
                 "name": self.name, "error": self.error, "missing": missing,
                 "profile": self.option("profile"), "rotation": self.option("rotation"),
                 "fullscreen": self.option("fullscreen"),
-                "decoder": self.decoder or pick_decoder(),
-                "pin": self.pin if self.process is not None else ""}
+                "decoder": self.decoder or decoder,
+                "pin": self.pin if self.process is not None else "",
+                "record": self.option("record"), "recording": self.recording,
+                "beacon": self.beacon is not None}
 
     # --- process ------------------------------------------------------------------------------
 
@@ -197,8 +247,19 @@ class Mirror:
         self.fallback = decoder is not None
         if not self.fallback or not self.pin:
             self.pin = new_pin()
+        self.recording = recording_base() if self.option("record") else ""
+        if self.recording:
+            os.makedirs(os.path.dirname(self.recording), exist_ok=True)
+        ble = BLE_FILE if self._beacon_wanted() else ""
+        socket_path = VIEWER_SOCKET if self._viewer_usable() else ""
+        if socket_path:
+            try:
+                os.remove(socket_path)  # a socket left by a crash would be taken for a live one
+            except OSError:
+                pass
         args = build_args(self.name, self.option("profile"), self.option("rotation"),
-                          self.option("fullscreen"), self.option("screen"), self.decoder, self.pin)
+                          self.option("fullscreen"), self.option("screen"), self.decoder, self.pin,
+                          self.recording, ble, socket_path)
         try:
             # Its output goes to a file (a pipe left unread would block it); read on exit.
             os.makedirs(os.path.dirname(LOG), exist_ok=True)
@@ -212,6 +273,10 @@ class Mirror:
             self.changed()
             return False
         self.process.wait_async(None, self._ended)
+        if socket_path:
+            self._start_viewer(socket_path)
+        if ble:
+            self._start_beacon()
         log(f"recopie : récepteur AirPlay démarré (décodage {self.decoder}, "
             f"profil {self.option('profile')})")
         self.changed()
@@ -226,6 +291,11 @@ class Mirror:
             return
         status = process.get_exit_status() if process.get_if_exited() else 0
         self.process = None
+        self._stop_beacon()
+        self._stop_viewer()
+        if self.recording:
+            log("recopie : enregistrement terminé (dossier Vidéos)")
+            self.recording = ""
         failed = status not in (0,) and not process.get_if_signaled()
         if failed and self.decoder != "software" and not self.fallback:
             log(f"recopie : échec avec le décodage {self.decoder}, nouvel essai en logiciel")
@@ -249,8 +319,99 @@ class Mirror:
                 return line.strip("* ")[:200]
         return ""
 
+    # --- Boomerang's mirroring window ----------------------------------------------------------
+
+    def _viewer_usable(self):
+        """GTK 4's GStreamer sink (package gstreamer1.0-gtk4) is needed; without it
+        UxPlay keeps its own window."""
+        if self._viewer_ok is None:
+            try:
+                import gi
+                gi.require_version("Gst", "1.0")
+                from gi.repository import Gst
+                Gst.init(None)
+                self._viewer_ok = Gst.ElementFactory.find("gtk4paintablesink") is not None
+            except (ImportError, ValueError):
+                self._viewer_ok = False
+            if not self._viewer_ok:
+                log("recopie : gstreamer1.0-gtk4 absent, fenêtre d'UxPlay")
+        return self._viewer_ok
+
+    def _start_viewer(self, socket_path):
+        package_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        args = [sys.executable, "-m", "boomerangd.mirror_viewer", "--socket", socket_path,
+                "--name", self.name]
+        if self.option("fullscreen"):
+            args.append("--fullscreen")
+        try:
+            launcher = Gio.SubprocessLauncher.new(Gio.SubprocessFlags.NONE)
+            launcher.setenv("PYTHONPATH", package_root, True)
+            launcher.set_stdout_file_path(LOG + ".viewer")
+            launcher.set_stderr_file_path(LOG + ".viewer")
+            self.viewer = launcher.spawnv(args)
+        except GLib.Error:
+            log("recopie : fenêtre de recopie non lancée")
+            self.viewer = None
+            return
+        self.viewer.wait_async(None, self._viewer_ended)
+
+    def _viewer_ended(self, process, result):
+        try:
+            process.wait_finish(result)
+        except GLib.Error:
+            pass
+        if process is not self.viewer:
+            return
+        # The window is gone (closed, or crashed): UxPlay would wait for it forever.
+        self.viewer = None
+        if self.process is not None:
+            log("recopie : fenêtre fermée, recopie arrêtée")
+            self.stop()
+
+    def _stop_viewer(self):
+        if self.viewer is not None:
+            self.viewer.send_signal(15)
+            self.viewer = None
+        try:
+            os.remove(VIEWER_SOCKET)
+        except OSError:
+            pass
+
+    # --- Bluetooth LE beacon (experimental) ---------------------------------------------------
+
+    def _beacon_wanted(self):
+        return (self.config is not None and self.config.alpha("mirror_ble")
+                and shutil.which("uxplay-beacon") is not None)
+
+    def _start_beacon(self):
+        """uxplay-beacon reads what UxPlay writes in BLE_FILE (address, port) and
+        advertises it through BlueZ; it stops advertising when that file goes away."""
+        if self.beacon is not None:
+            return
+        try:
+            launcher = Gio.SubprocessLauncher.new(Gio.SubprocessFlags.NONE)
+            launcher.set_stdout_file_path(LOG + ".ble")
+            launcher.set_stderr_file_path(LOG + ".ble")
+            self.beacon = launcher.spawnv(["uxplay-beacon", "--path", BLE_FILE])
+        except GLib.Error:
+            log("recopie : balise Bluetooth non lancée")
+            self.beacon = None
+            return
+        log("recopie : balise Bluetooth LE active")
+
+    def _stop_beacon(self):
+        if self.beacon is not None:
+            self.beacon.send_signal(15)
+            self.beacon = None
+            log("recopie : balise Bluetooth LE arrêtée")
+        try:
+            os.remove(BLE_FILE)
+        except OSError:
+            pass
+
     def stop(self):
         if self.process is not None:
             self.process.send_signal(15)
         else:
+            _probe.forget()
             self.changed()  # also a refresh after installing UxPlay

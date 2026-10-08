@@ -10,11 +10,6 @@
 
 namespace Boomerang {
 
-    private static string dict_str (Variant? dict, string key) {
-        var v = dict != null ? dict.lookup_value (key, VariantType.STRING) : null;
-        return v != null ? v.get_string () : "";
-    }
-
     public class HotspotCard : Gtk.Box {
         private Daemon daemon;
         private Gtk.Label status;
@@ -62,7 +57,11 @@ namespace Boomerang {
             box.append (button);
             list.append (new Gtk.ListBoxRow () { child = box, activatable = false });
 
-            daemon.changed.connect (refresh);
+            daemon.changed.connect (() => {
+                if (daemon.touched ({ "TetheringState", "TetheringError" })) {
+                    refresh ();
+                }
+            });
             refresh ();
         }
 
@@ -135,7 +134,11 @@ namespace Boomerang {
             toggle.notify["active"].connect (send);
             distance.notify["selected"].connect (send);
             delay.notify["selected"].connect (send);
-            daemon.changed.connect (refresh);
+            daemon.changed.connect (() => {
+                if (daemon.touched ({ "Proximity" })) {
+                    refresh ();
+                }
+            });
             refresh ();
         }
 
@@ -177,7 +180,7 @@ namespace Boomerang {
             updating = true;
             var enabled = dict.lookup_value ("enabled", VariantType.BOOLEAN);
             toggle.active = enabled != null && enabled.get_boolean ();
-            var wanted = dict_str (dict, "distance");
+            var wanted = Props.str (dict, "distance");
             for (uint i = 0; i < DISTANCES.length; i++) {
                 if (DISTANCES[i] == wanted) {
                     distance.selected = i;

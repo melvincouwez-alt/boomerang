@@ -7,6 +7,7 @@ Privacy rule from the design document: logs record events, never content
 """
 
 import os
+import time
 
 import gi
 
@@ -165,3 +166,20 @@ class Notifier:
         handler = self.handlers.pop(notification_id, None)
         if handler and handler[1]:
             handler[1]()
+
+
+def cached_for(seconds):
+    """Decorator: keep a function's result (no arguments) this long. For which() and glob()
+    lookups that the property refresh would otherwise repeat each time; .forget() drops it."""
+    def wrap(function):
+        kept = []  # [(expiry, value)]
+
+        def get():
+            now = time.monotonic()
+            if not kept or now >= kept[0][0]:
+                kept[:] = [(now + seconds, function())]
+            return kept[0][1]
+
+        get.forget = kept.clear
+        return get
+    return wrap

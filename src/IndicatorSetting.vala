@@ -8,14 +8,10 @@
 
 namespace Boomerang.IndicatorSetting {
 
-    private static string prefs_path () {
-        return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
-    }
-
     public bool enabled () {
         var prefs = new KeyFile ();
         try {
-            prefs.load_from_file (prefs_path (), KeyFileFlags.NONE);
+            prefs.load_from_file (Setup.prefs_path (), KeyFileFlags.NONE);
             return prefs.get_boolean ("general", "indicator");
         } catch (Error e) {
             return true;
@@ -25,14 +21,14 @@ namespace Boomerang.IndicatorSetting {
     public void set_enabled (bool enabled) {
         var prefs = new KeyFile ();
         try {
-            prefs.load_from_file (prefs_path (), KeyFileFlags.KEEP_COMMENTS);
+            prefs.load_from_file (Setup.prefs_path (), KeyFileFlags.KEEP_COMMENTS);
         } catch (Error e) {
             // first choice
         }
         prefs.set_boolean ("general", "indicator", enabled);
         try {
-            DirUtils.create_with_parents (Path.get_dirname (prefs_path ()), 0700);
-            prefs.save_to_file (prefs_path ());
+            DirUtils.create_with_parents (Path.get_dirname (Setup.prefs_path ()), 0700);
+            prefs.save_to_file (Setup.prefs_path ());
         } catch (Error e) {
             warning ("cannot save the top bar choice: %s", e.message);
         }

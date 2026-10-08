@@ -38,10 +38,6 @@ namespace Boomerang {
                     content_type: content_type);
         }
 
-        private static string prefs_path () {
-            return Path.build_filename (Environment.get_user_config_dir (), "boomerang", "apps.conf");
-        }
-
         public static bool installed (string id) {
             return new DesktopAppInfo (id + ".desktop") != null;
         }
@@ -50,7 +46,7 @@ namespace Boomerang {
         public int chosen () {
             var prefs = new KeyFile ();
             try {
-                prefs.load_from_file (prefs_path (), KeyFileFlags.NONE);
+                prefs.load_from_file (Setup.prefs_path (), KeyFileFlags.NONE);
                 var id = prefs.get_string ("default-apps", key);
                 for (int i = 0; i < ids.length; i++) {
                     if (ids[i] == id) {
@@ -66,14 +62,14 @@ namespace Boomerang {
         public void choose (int index) {
             var prefs = new KeyFile ();
             try {
-                prefs.load_from_file (prefs_path (), KeyFileFlags.KEEP_COMMENTS);
+                prefs.load_from_file (Setup.prefs_path (), KeyFileFlags.KEEP_COMMENTS);
             } catch (Error e) {
                 // first choice
             }
             prefs.set_string ("default-apps", key, ids[index]);
             try {
-                DirUtils.create_with_parents (Path.get_dirname (prefs_path ()), 0700);
-                prefs.save_to_file (prefs_path ());
+                DirUtils.create_with_parents (Path.get_dirname (Setup.prefs_path ()), 0700);
+                prefs.save_to_file (Setup.prefs_path ());
             } catch (Error e) {
                 warning ("cannot save default app: %s", e.message);
             }

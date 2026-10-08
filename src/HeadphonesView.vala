@@ -90,9 +90,14 @@ namespace Boomerang {
                 refresh ();
                 return;
             }
-            daemon.headphones_changed.connect (() => reload.begin ());
+            daemon.headphones_changed.connect (() => {
+                if (get_mapped ()) {  // hidden: map reloads it
+                    reload.begin ();
+                }
+            });
             daemon.changed.connect (() => {
-                if (pairs.length == 0 && daemon.running && get_mapped ()) {
+                // The daemon came: the first list (headphones_changed brings the others).
+                if (pairs.length == 0 && daemon.touched ({}) && daemon.running && get_mapped ()) {
                     reload.begin ();
                 }
             });
@@ -105,7 +110,7 @@ namespace Boomerang {
             picker = new Gtk.DropDown.from_strings ({ "" }) { halign = Gtk.Align.CENTER, visible = false };
             picker.notify["selected"].connect (() => {
                 if (!updating && picker.selected < pairs.length) {
-                    current = str (pairs[picker.selected], "address");
+                    current = Props.str (pairs[picker.selected], "address");
                     refresh ();
                 }
             });
@@ -292,21 +297,6 @@ namespace Boomerang {
 
         // --- data ------------------------------------------------------------------------
 
-        private static string str (Variant pair, string key) {
-            var v = pair.lookup_value (key, VariantType.STRING);
-            return v != null ? v.get_string () : "";
-        }
-
-        private static int num (Variant pair, string key, int fallback = -1) {
-            var v = pair.lookup_value (key, VariantType.INT32);
-            return v != null ? v.get_int32 () : fallback;
-        }
-
-        private static bool flag (Variant pair, string key) {
-            var v = pair.lookup_value (key, VariantType.BOOLEAN);
-            return v != null && v.get_boolean ();
-        }
-
         private static bool has_feature (Variant pair, string feature) {
             var v = pair.lookup_value ("features", new VariantType ("as"));
             if (v == null) {
@@ -330,19 +320,19 @@ namespace Boomerang {
 
         private Variant? pair () {
             foreach (var p in pairs) {
-                if (str (p, "address") == current) {
+                if (Props.str (p, "address") == current) {
                     return p;
                 }
             }
             // Prefer a connected pair.
             foreach (var p in pairs) {
-                if (flag (p, "connected")) {
-                    current = str (p, "address");
+                if (Props.flag (p, "connected")) {
+                    current = Props.str (p, "address");
                     return p;
                 }
             }
             if (pairs.length > 0) {
-                current = str (pairs[0], "address");
+                current = Props.str (pairs[0], "address");
                 return pairs[0];
             }
             return null;
@@ -360,8 +350,8 @@ namespace Boomerang {
             string[] names = {};
             uint selected = 0;
             for (int i = 0; i < pairs.length; i++) {
-                names += str (pairs[i], "name");
-                if (str (pairs[i], "address") == current) {
+                names += Props.str (pairs[i], "name");
+                if (Props.str (pairs[i], "address") == current) {
                     selected = i;
                 }
             }
@@ -369,16 +359,16 @@ namespace Boomerang {
             picker.selected = selected;
             picker.visible = pairs.length > 1;
 
-            if (!flag (p, "connected")) {
-                waiting.title = str (p, "name");
+            if (!Props.flag (p, "connected")) {
+                waiting.title = Props.str (p, "name");
                 waiting.description = _("Hors de portée ou dans le boîtier fermé. Sortez-les du boîtier "
                                       + "pour les connecter à ce PC.");
                 stack.visible_child_name = "waiting";
                 updating = false;
                 return;
             }
-            if (!flag (p, "linked")) {
-                waiting.title = str (p, "name");
+            if (!Props.flag (p, "linked")) {
+                waiting.title = Props.str (p, "name");
                 waiting.description = _("Connectés. Lecture de l'état des écouteurs…");
                 stack.visible_child_name = "waiting";
                 updating = false;
@@ -386,36 +376,36 @@ namespace Boomerang {
             }
             stack.visible_child_name = "details";
 
-            name_label.label = str (p, "name");
-            var model = str (p, "model");
+            name_label.label = Props.str (p, "name");
+            var model = Props.str (p, "model");
             model_label.label = model != "" ? _(model) : "AirPods";
-            model_label.tooltip_text = str (p, "firmware") != "" ? _("Micrologiciel %s").printf (str (p, "firmware")) : null;
-            state_label.label = wearing (str (p, "ear_left"), str (p, "ear_right"));
+            model_label.tooltip_text = Props.str (p, "firmware") != "" ? _("Micrologiciel %s").printf (Props.str (p, "firmware")) : null;
+            state_label.label = wearing (Props.str (p, "ear_left"), Props.str (p, "ear_right"));
 
-            left.update (num (p, "left"), flag (p, "left_charging"), str (p, "ear_left"));
-            right.update (num (p, "right"), flag (p, "right_charging"), str (p, "ear_right"));
-            case_gauge.update (num (p, "case"), flag (p, "case_charging"), "");
+            left.update (Props.integer (p, "left", -1), Props.flag (p, "left_charging"), Props.str (p, "ear_left"));
+            right.update (Props.integer (p, "right", -1), Props.flag (p, "right_charging"), Props.str (p, "ear_right"));
+            case_gauge.update (Props.integer (p, "case", -1), Props.flag (p, "case_charging"), "");
 
-            var mode = num (p, "mode", 0);
+            var mode = Props.integer (p, "mode", 0);
             noise_box.visible = has_feature (p, "anc");
             for (int i = 0; i < mode_buttons.length; i++) {
                 mode_buttons[i].visible = has_feature (p, MODE_FEATURES[i]);
                 mode_buttons[i].active = MODE_VALUES[i] == mode;
             }
             adaptive_box.visible = mode == 4 && has_feature (p, "adaptive");
-            var level = num (p, "adaptive");
+            var level = Props.integer (p, "adaptive", -1);
             if (level >= 0) {
                 adaptive_scale.set_value (level);
             }
 
             conversation_row.visible = has_feature (p, "conversation");
-            conversation.active = num (p, "conversation", 0) == 1;
+            conversation.active = Props.integer (p, "conversation", 0) == 1;
             one_bud_row.visible = has_feature (p, "one_bud");
-            one_bud.active = num (p, "one_bud", 0) == 1;
-            auto_pause.active = flag (p, "auto_pause");
+            one_bud.active = Props.integer (p, "one_bud", 0) == 1;
+            auto_pause.active = Props.flag (p, "auto_pause");
 
             cycle_box.visible = has_feature (p, "anc");
-            var cycle = num (p, "cycle", 0);
+            var cycle = Props.integer (p, "cycle", 0);
             for (int i = 0; i < cycle_checks.length; i++) {
                 cycle_checks[i].visible = has_feature (p, MODE_FEATURES[i]);
                 // Never set from Boomerang: show the usual default (noise cancellation and transparency).

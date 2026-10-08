@@ -119,7 +119,11 @@ public class Boomerang.PhotosView : Gtk.Box {
         content.append (stack);
         append (scroll);
 
-        daemon.changed.connect (update);
+        daemon.changed.connect (() => {
+            if (daemon.touched ({ "PhotosUsb" })) {
+                update ();
+            }
+        });
         map.connect (() => {
             daemon.call.begin ("RefreshPhotosUsb");
             timer = Timeout.add_seconds (5, () => {

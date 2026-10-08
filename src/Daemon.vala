@@ -3,6 +3,10 @@
 /*
  * Client of the boomerangd session bus API. Properties are read from the proxy
  * cache, which GDBus keeps current from PropertiesChanged.
+ *
+ * changed is emitted once per PropertiesChanged (and when the daemon comes or goes).
+ * A handler that follows a few properties starts with touched ({ ... }): the battery,
+ * media position or a transfer's progress no longer run every view's update.
  */
 
 public class Boomerang.Daemon : Object {
@@ -23,6 +27,22 @@ public class Boomerang.Daemon : Object {
     public signal void send_progress (string thread, string id, double fraction);
 
     private DBusProxy? proxy = null;
+    // Properties of the PropertiesChanged being handled; null: all of them (daemon came or went).
+    private GenericSet<string>? batch = null;
+
+    /* Inside a changed handler: whether one of these properties may have changed. An empty
+       list answers true only when the daemon itself came or went. */
+    public bool touched (string[] names) {
+        if (batch == null) {
+            return true;
+        }
+        foreach (var name in names) {
+            if (batch.contains (name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public bool running {
         get { return proxy != null && proxy.g_name_owner != null; }
@@ -36,7 +56,20 @@ public class Boomerang.Daemon : Object {
             proxy = yield new DBusProxy.for_bus (
                 BusType.SESSION, DBusProxyFlags.NONE, null, name, PATH, IFACE, null
             );
-            proxy.g_properties_changed.connect (() => changed ());
+            proxy.g_properties_changed.connect ((changed_properties, invalidated) => {
+                batch = new GenericSet<string> (str_hash, str_equal);
+                var iter = changed_properties.iterator ();
+                string key;
+                Variant value;
+                while (iter.next ("{sv}", out key, out value)) {
+                    batch.add (key);
+                }
+                foreach (var gone in invalidated) {
+                    batch.add (gone);
+                }
+                changed ();
+                batch = null;
+            });
             proxy.notify["g-name-owner"].connect (() => changed ());
             proxy.g_signal.connect ((sender, signal_name, parameters) => {
                 if (signal_name == "PairingCode") {
@@ -173,20 +206,6 @@ public class Boomerang.Daemon : Object {
         return items;
     }
 
-    /* Methods returning as (SearchThreads). */
-    public async string[] call_strings (string method, Variant? args = null) {
-        if (proxy == null) {
-            return new string[0];
-        }
-        try {
-            var reply = yield proxy.call (method, args, DBusCallFlags.NONE, 15000, null);
-            return reply.get_child_value (0).dup_strv ();
-        } catch (Error e) {
-            warning ("%s failed: %s", method, e.message);
-            return new string[0];
-        }
-    }
-
     /* Any method, errors passed on to the caller (contact editing shows them). */
     public async Variant call_checked (string method, Variant? args = null) throws Error {
         if (proxy == null) {
@@ -221,15 +240,6 @@ public class Boomerang.Daemon : Object {
             warning ("%s failed: %s", method, e.message);
             return false;
         }
-    }
-
-    /* SendMessage can take a while: the iPhone answers over Bluetooth. */
-    public async void send_message (string thread, string text) throws Error {
-        if (proxy == null) {
-            throw new IOError.NOT_CONNECTED ("boomerangd unreachable");
-        }
-        yield proxy.call ("SendMessage", new Variant ("(ss)", thread, text),
-                          DBusCallFlags.NONE, 90000, null);
     }
 
     public void set_module_enabled (string module, bool enabled) {

@@ -47,9 +47,10 @@ from . import bmsg
 from . import i18n
 from . import otp
 from . import reactions
+from . import sounds as sounds_module
 from . import store as store_module
 from .store import Store, excerpt, sender_from_title
-from .i18n import _, ngettext
+from .i18n import N_, _, ngettext
 from .util import log
 
 OBEX = "org.bluez.obex"
@@ -89,11 +90,19 @@ ANCS_SAME_DATED = 600  # dated copy: same text within 10 min (a second « Ok » 
 NOTIFY_BURST = 3
 SEND_CONFIRM = 45  # seconds before looking for a sent message in outbox/sent
 SEND_TIMEOUT = 45
+TRANSFER_GUARD = 1.0  # seconds between two looks at an obexd transfer when no signal comes
 MAX_TEXT = 2000  # characters: beyond that an SMS becomes a long chain of parts
 SYNC_TIMEOUT = 150  # seconds: a manual sync not over by then is reported as failed
 HISTORY_PAGE = 500  # alpha « map_history »: listing pages beyond the usual one
 HISTORY_PAGES = 6
 HISTORY_DAYS = 365
+THREAD_MODES = ("", "mute", "priority")  # per conversation: normal, no alert, through DND
+# Offered as buttons on a message notification (the first two), editable in Réglages.
+QUICK_REPLIES = (N_("J'arrive"), N_("Je te rappelle"), N_("OK 👍"), N_("Merci !"),
+                 N_("Je suis occupé, je te réponds vite"))
+QUICK_MAX = 8
+QUICK_MAX_CHARS = 120
+QUICK_IN_NOTIFICATION = 2
 
 
 
@@ -381,9 +390,22 @@ class Messages:
                                   Gio.DBusCallFlags.NONE, timeout, None).unpack()
 
     def _wait_transfer(self, path, timeout=60, progress=None):
-        """Poll an obexd transfer until it ends (worker thread only)."""
+        """Wait for an obexd transfer to end (worker thread only): its PropertiesChanged
+        wakes the wait, a look every TRANSFER_GUARD seconds covers a missed signal."""
+        moved = threading.Event()
+        # Delivered on the main loop (this thread has no context of its own): only sets moved.
+        sub = self.bus.signal_subscribe(OBEX, "org.freedesktop.DBus.Properties", "PropertiesChanged",
+                                        path, TRANSFER, Gio.DBusSignalFlags.NONE,
+                                        lambda *_args: moved.set())
+        try:
+            self._follow_transfer(path, timeout, progress, moved)
+        finally:
+            self.bus.signal_unsubscribe(sub)
+
+    def _follow_transfer(self, path, timeout, progress, moved):
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
+            moved.clear()
             try:
                 props = self._call(path, "org.freedesktop.DBus.Properties", "GetAll",
                                    GLib.Variant("(s)", (TRANSFER,)), "(a{sv})")[0]
@@ -396,7 +418,7 @@ class Messages:
                 return
             if status == "error":
                 raise RuntimeError("transfer failed")
-            time.sleep(0.1)
+            moved.wait(max(0.0, min(TRANSFER_GUARD, deadline - time.monotonic())))
         raise RuntimeError("transfer timed out")
 
     # --- device presence -----------------------------------------------------------------------
@@ -620,6 +642,16 @@ class Messages:
             if _is_forbidden(error):
                 self.map_state = "forbidden"
                 self.hooks.messages_changed()
+            elif not getattr(self, "_listing_retry", 0):
+                # Often a passing refusal of the iPhone just after the session opens:
+                # one more try soon instead of waiting for the periodic sync.
+                def again():
+                    self._listing_retry = 0
+                    if self.session == session:
+                        self.sync(initial=initial)
+                    return False
+                self._listing_retry = GLib.timeout_add_seconds(20, again)
+                log("messages : nouvel essai dans 20 s")
             if manual:
                 self._finish_waiters(_("lecture des messages impossible"))
         else:
@@ -683,6 +715,7 @@ class Messages:
                 store.add_self_address(e["sender"])
         selves = store.self_addresses()
         last_sync = int(store.meta("last_sync", "0") or 0)
+        writes = store.db.total_changes
         fresh = []
         for e in entries:
             self.listed.add(e["handle"])
@@ -732,6 +765,7 @@ class Messages:
                 fresh.remove((m["thread"], key))
                 if not found["removed"] and not found["duplicate"]:
                     reacted.append((m["thread"], key, found))
+        changed = store.db.total_changes != writes  # the periodic sync mostly brings nothing
         store.set_meta("last_sync", int(time.time()))
         store.commit()
         self.first_sync_done = True
@@ -740,7 +774,7 @@ class Messages:
             self._notify_reaction(tid, key, found)
         if fresh:
             log(f"messages : {len(fresh)} nouveau(x) message(s)")
-        if entries or fresh or reacted:
+        if changed or fresh or reacted:
             self.hooks.messages_changed(threads=True)
         for tid, key in fresh[-NOTIFY_BURST:]:
             self._settle_ancs(key)
@@ -982,7 +1016,8 @@ class Messages:
             # First run: what was already in the history counts as seen.
             self.store.set_meta("calls_seen", int(time.time()))
             return 0
-        return sum(1 for c in self.store.calls() if c["kind"] == "missed" and c["time"] > seen)
+        return self.store.db.execute("SELECT COUNT(*) FROM calls WHERE kind='missed' AND time>?",
+                                     (seen,)).fetchone()[0]
 
     def mark_calls_seen(self):
         if self.store:
@@ -1181,6 +1216,9 @@ class Messages:
                     self._copy_code(key, False)
         if tid == self.viewing:
             return  # the conversation is on screen: the new bubble is enough
+        mode, sound = self.thread_notify(tid)
+        if mode == "mute":
+            return  # muted conversation: unread as usual, no banner and no sound
         sender = self.store.display_name(m["sender"], m["sender_name"] or _("Inconnu"))
         if thread["is_group"]:
             summary = f"{sender} · {self.store.thread_title(thread)}"
@@ -1192,27 +1230,100 @@ class Messages:
             # As on the iPhone: the code is one click away; nobody answers these senders.
             actions += [("copy-code", _("Copier le code")),
                         ("copy-code-delete", _("Copier et supprimer"))]
-        elif self.can_send(thread):
+        quick = []
+        if not code and self.can_send(thread):
             inline = "inline-reply" in self.notifier.capabilities() \
                 if hasattr(self.notifier, "capabilities") else False
             actions.append(("inline-reply" if inline else "reply", _("Répondre")))
+            # The texts shown are the texts sent, even if Réglages changes them meanwhile.
+            quick = self.quick_replies()[:QUICK_IN_NOTIFICATION]
+            actions += [(f"quick:{i}", text) for i, text in enumerate(quick)]
         hints = {"category": GLib.Variant("s", "im.received")}
         photo = self.store.photo(m["sender"] or "")
         if photo:
             hints["image-path"] = GLib.Variant("s", photo)
-        self._sound(hints)
+        self._sound(hints, mode, sound)
         self.notifications[tid] = self.notifier.notify(
             f"Boomerang ({self.hooks.device_name})", "io.github.melvincouwez.Boomerang.Messages", summary, body, actions, hints,
             replaces=self.notifications.get(tid, 0),
-            on_action=lambda action, t=tid, k=key: self._on_notification_action(t, action, k),
+            on_action=lambda action, t=tid, k=key, q=tuple(quick):
+                self._on_notification_action(t, action, k, q),
             on_closed=lambda t=tid: self.notifications.pop(t, None))
 
-    def _sound(self, hints):
-        """The sound chosen in Réglages, played by the daemon; the server stays silent."""
+    def _sound(self, hints, mode="", sound=""):
+        """The sound chosen in Réglages (or the conversation's own), played by the daemon;
+        the server stays silent. A priority conversation also gets through Do Not Disturb."""
+        if mode == "priority":
+            hints["urgency"] = GLib.Variant("y", 2)  # critical: elementary shows it under DND
         play = getattr(self.hooks, "play_sound", None)
         if play:
-            play("messages")
+            play("messages", sound or None, mode == "priority")
             hints["suppress-sound"] = GLib.Variant("b", True)
+
+    # --- per-conversation alerts and quick replies --------------------------------------------------
+
+    @staticmethod
+    def _thread_key(tid):
+        # Thread ids hold characters a keyfile key cannot (« [ ] = », spaces).
+        return hashlib.sha1((tid or "").encode()).hexdigest()
+
+    def thread_notify(self, tid):
+        """(mode, sound) of a conversation: mode "" | "mute" | "priority"; sound "" for the
+        Messages sound of Réglages, else a value as Sounds.set takes ("none" included)."""
+        config = getattr(self.hooks, "config", None)
+        if not config or not tid:
+            return "", ""
+        key = self._thread_key(tid)
+        mode = config.string("thread-notify-mode", key, "")
+        return (mode if mode in THREAD_MODES else ""), config.string("thread-notify-sound", key, "")
+
+    def set_thread_notify(self, tid, mode, sound):
+        """ValueError for an unknown mode or a sound that cannot be found."""
+        config = getattr(self.hooks, "config", None)
+        mode, sound = (mode or "").strip(), (sound or "").strip()
+        if not tid or mode not in THREAD_MODES:
+            raise ValueError(mode)
+        if sound == "default":
+            sound = ""
+        if sound and sound != "none" and not sounds_module.resolve(sound):
+            raise ValueError(sound)
+        if not config:
+            return
+        key = self._thread_key(tid)
+        for group, value in (("thread-notify-mode", mode), ("thread-notify-sound", sound)):
+            if value:
+                config.set_string(group, key, value)
+            elif hasattr(config, "remove_key"):
+                config.remove_key(group, key)
+            else:
+                config.set_string(group, key, "")
+        log(f"messages : alertes d'une conversation → {mode or 'normales'}, son "
+            f"{'fichier' if os.path.isabs(sound) else sound or 'par défaut'}")
+
+    def quick_replies(self):
+        config = getattr(self.hooks, "config", None)
+        stored = config.string_list("messages", "quick_replies") \
+            if config and hasattr(config, "string_list") else None
+        if stored is None:
+            return [_(text) for text in QUICK_REPLIES]
+        return self._clean_replies(stored)
+
+    @staticmethod
+    def _clean_replies(replies):
+        cleaned = []
+        for text in replies or []:
+            text = " ".join(str(text).split())[:QUICK_MAX_CHARS].strip()
+            if text and text not in cleaned:
+                cleaned.append(text)
+        return cleaned[:QUICK_MAX]
+
+    def set_quick_replies(self, replies):
+        cleaned = self._clean_replies(replies)
+        config = getattr(self.hooks, "config", None)
+        if config:
+            config.set_string_list("messages", "quick_replies", cleaned)
+        log(f"messages : {len(cleaned)} réponse(s) rapide(s) enregistrée(s)")
+        return cleaned
 
     # --- one-time codes ----------------------------------------------------------------------------
 
@@ -1317,7 +1428,8 @@ class Messages:
                     note = row["key"]
                     break
             if note is None:
-                store.db.execute("UPDATE messages SET kind='reaction-note' WHERE key=?", (key,))
+                store.db.execute("UPDATE messages SET kind='reaction-note' WHERE key=? "
+                                 "AND COALESCE(kind, '')<>'reaction-note'", (key,))
                 return dict(found, target=None, author=author, duplicate=False)
             store.add_reaction(key, "note:" + note, m["thread"], author, found["emoji"],
                                m["time"], found["removed"])
@@ -1352,6 +1464,9 @@ class Messages:
         target = self.store.message(found["target"]) if found["target"] else None
         if not m or not thread or tid == self.viewing:
             return
+        mode, sound = self.thread_notify(tid)
+        if mode == "mute":
+            return
         name = self.store.display_name(m["sender"], m["sender_name"] or _("Inconnu"))
         quote = reactions.quote_of(target["body"] if target else found["quote"] or "")
         body = _("{name} a réagi {emoji} à « {quote} »").format(
@@ -1361,7 +1476,7 @@ class Messages:
         photo = self.store.photo(m["sender"] or "")
         if photo:
             hints["image-path"] = GLib.Variant("s", photo)
-        self._sound(hints)
+        self._sound(hints, mode, sound)
         self.notifications[tid] = self.notifier.notify(
             f"Boomerang ({self.hooks.device_name})", "io.github.melvincouwez.Boomerang.Messages",
             summary, body, [("default", _("Ouvrir"))], hints,
@@ -1394,10 +1509,20 @@ class Messages:
                 return app
         return ""
 
-    def _on_notification_action(self, tid, action, key=""):
+    def _on_notification_action(self, tid, action, key="", quick=None):
         self.notifications.pop(tid, None)
         if action in ("copy-code", "copy-code-delete"):
             self._copy_code(key, action == "copy-code-delete")
+            return
+        if action.startswith("quick:"):
+            # A quick reply button: clicking it is the user's explicit request, as typing is.
+            texts = list(quick) if quick is not None else self.quick_replies()
+            try:
+                text = texts[int(action.split(":", 1)[1])]
+            except (ValueError, IndexError):
+                return
+            self.send(tid, text, lambda error: error and log("messages : réponse rapide non envoyée"))
+            self.mark_seen(tid)
             return
         if action.startswith("inline-reply:"):
             # Typed in the notification itself: that is the user's explicit request.
@@ -1452,8 +1577,8 @@ class Messages:
             self.hooks.messages_changed(threads=True)
 
     def set_draft(self, tid, text):
-        if self.store and self.store.thread(tid):
-            self.store.set_draft(tid, text[:MAX_TEXT])
+        # The app saves the draft at each pause in typing: unchanged, nobody is told.
+        if self.store and self.store.thread(tid) and self.store.set_draft(tid, text[:MAX_TEXT]):
             self.hooks.messages_changed(threads=True)
 
     def search(self, query):
@@ -1569,9 +1694,10 @@ class Messages:
 
     def mark_seen(self, tid):
         if self.store:
-            self.store.mark_seen(tid)
+            changed = self.store.mark_seen(tid)
             self.notifier.close(self.notifications.pop(tid, 0))
-            self.hooks.messages_changed(threads=True)
+            if changed:  # the app marks the open thread seen at each focus
+                self.hooks.messages_changed(threads=True)
             if self._alpha("mark_read"):
                 self._mark_read_on_phone(tid)
 

@@ -349,50 +349,58 @@ class Updates:
             self._failed(_("Téléchargement impossible ({reason})").format(reason=error), on_done)
             return
         log("mises à jour : paquet téléchargé et vérifié (SHA-256)")
-        installer = installer_path()
-        if not installer:
-            self._failed(_("Installation impossible (programme d'installation absent)"), on_done)
-            return
         _url, _size, sha = deb_asset(self.release, _arch())
         self.state_name, self.progress = "installing", 0.9
         self._changed()
-        try:
-            process = Gio.Subprocess.new(["pkexec", installer, target, sha],
-                                         Gio.SubprocessFlags.STDOUT_SILENCE
-                                         | Gio.SubprocessFlags.STDERR_PIPE)
-        except GLib.Error as failure:
-            self._failed(_("Installation impossible ({reason})").format(reason=failure.message),
-                         on_done)
-            return
 
-        def finished(proc, result):
-            try:
-                # PyGObject returns (ok, stdout, stderr).
-                err = proc.communicate_utf8_finish(result)[-1]
-            except GLib.Error as failure:
-                self._failed(failure.message, on_done)
-                return
-            status = proc.get_exit_status()
-            if status == 0:
-                self.state_name, self.progress = "ready", 1.0
-                self.release = None
-                log("mises à jour : paquet installé, redémarrage à proposer")
-                self._changed()
-                on_done(None)
-            elif status in (126, 127):  # polkit: dialog dismissed or not authorised
-                self._failed(_("Installation annulée"), on_done)
-            else:
-                last = (err or "").strip().splitlines()[-1:] or [""]
-                self._failed(_("Installation impossible ({reason})").format(
-                    reason=last[0][:160] or status), on_done)
+        def installed():
+            self.state_name, self.progress = "ready", 1.0
+            self.release = None
+            log("mises à jour : paquet installé, redémarrage à proposer")
+            self._changed()
+            on_done(None)
 
-        process.communicate_utf8_async(None, None, finished)
+        pkexec_install([target, sha], installed, lambda message: self._failed(message, on_done))
 
     def _failed(self, message, on_done):
         self.state_name, self.error, self.progress = "error", message, 0.0
         log("mises à jour : échec de l'installation")
         self._changed()
         on_done(message)
+
+
+def pkexec_install(args, on_success, on_failure):
+    """Run boomerang-install-update as root through pkexec with these arguments (Boomerang's
+    own update, or an optional app): on_success(), or on_failure(message to show)."""
+    installer = installer_path()
+    if not installer:
+        on_failure(_("Installation impossible (programme d'installation absent)"))
+        return
+    try:
+        process = Gio.Subprocess.new(["pkexec", installer, *args],
+                                     Gio.SubprocessFlags.STDOUT_SILENCE
+                                     | Gio.SubprocessFlags.STDERR_PIPE)
+    except GLib.Error as failure:
+        on_failure(_("Installation impossible ({reason})").format(reason=failure.message))
+        return
+
+    def finished(proc, result):
+        try:
+            # PyGObject returns (ok, stdout, stderr).
+            err = proc.communicate_utf8_finish(result)[-1]
+        except GLib.Error as failure:
+            on_failure(failure.message)
+            return
+        status = proc.get_exit_status()
+        if status == 0:
+            on_success()
+        elif status in (126, 127):  # polkit: dialog dismissed or not authorised
+            on_failure(_("Installation annulée"))
+        else:
+            last = (err or "").strip().splitlines()[-1:] or [""]
+            on_failure(_("Installation impossible ({reason})").format(reason=last[0][:160] or status))
+
+    process.communicate_utf8_async(None, None, finished)
 
 
 def _app_path():

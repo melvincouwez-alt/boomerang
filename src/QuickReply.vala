@@ -24,6 +24,7 @@ public class Boomerang.QuickReply : Gtk.Window {
     private Gtk.Stack bottom;
     private Gtk.Label limit;
     private Gtk.ScrolledWindow canned;
+    private Gtk.Box chips;
 
     public QuickReply (Gtk.Application app, string thread_id) {
         Object (application: app, thread_id: thread_id, title: _("Répondre"),
@@ -75,19 +76,11 @@ public class Boomerang.QuickReply : Gtk.Window {
         field = new ComposeField ();
         field.submitted.connect (send);
 
-        // Ready-made answers: one click puts them in the field, Enter sends.
-        var chips = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 6);
-        foreach (var answer in new string[] {
+        // Ready-made answers (Réglages › Messages): one click puts them in the field, Enter sends.
+        chips = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 6);
+        fill_chips ({
             _("J'arrive"), _("Je te rappelle"), _("OK 👍"), _("Merci !"), _("Je suis occupé, je te réponds vite")
-        }) {
-            var chip = new Gtk.Button.with_label (answer);
-            chip.add_css_class ("quick-answer");
-            chip.clicked.connect (() => {
-                field.buffer.text = answer;
-                field.grab_focus ();
-            });
-            chips.append (chip);
-        }
+        });
         canned = new Gtk.ScrolledWindow () {
             child = chips,
             vscrollbar_policy = Gtk.PolicyType.NEVER,
@@ -143,8 +136,29 @@ public class Boomerang.QuickReply : Gtk.Window {
         load.begin ();
     }
 
+    private void fill_chips (string[] answers) {
+        Gtk.Widget? child;
+        while ((child = chips.get_first_child ()) != null) {
+            chips.remove (child);
+        }
+        foreach (var answer in answers) {
+            var chip = new Gtk.Button.with_label (answer);
+            chip.add_css_class ("quick-answer");
+            chip.clicked.connect (() => {
+                field.buffer.text = answer;
+                field.grab_focus ();
+            });
+            chips.append (chip);
+        }
+    }
+
     private async void load () {
         yield daemon.connect_bus ();
+        var replies = daemon.get_value ("QuickReplies");
+        if (replies != null) {
+            fill_chips (replies.dup_strv ());
+            canned.visible = replies.n_children () > 0;
+        }
         foreach (var item in yield daemon.call_list ("ListThreads")) {
             var d = new VariantDict (item);
             if (dict_string (d, "id") != thread_id) {

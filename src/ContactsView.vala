@@ -409,12 +409,20 @@ namespace Boomerang {
             };
             append (paned);
             map.connect (() => contacts.reload.begin ());
-            daemon.contacts_changed.connect (() => contacts.reload.begin ());
-            daemon.changed.connect (update_source);
+            daemon.contacts_changed.connect (() => {
+                if (get_mapped ()) {  // hidden: map reloads it
+                    contacts.reload.begin ();
+                }
+            });
+            daemon.changed.connect (() => {
+                if (daemon.touched ({ "ContactsSource", "ContactsBook" })) {
+                    update_source ();
+                }
+            });
             update_source ();
             // The detached Contacts app is mapped before it reaches the daemon: load once it does.
             daemon.changed.connect (() => {
-                if (!loaded && daemon.running && get_mapped ()) {
+                if (!loaded && daemon.touched ({}) && daemon.running && get_mapped ()) {
                     contacts.reload.begin ();
                 }
             });

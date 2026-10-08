@@ -12,12 +12,14 @@ src/Components.vala
 src/ComposeField.vala
 src/ContactEditor.vala
 src/ContactsView.vala
+src/ContributorsView.vala
 src/DriveOptions.vala
 src/Guide.vala
 src/HeadphonesView.vala
 src/Language.vala
 src/MainWindow.vala
 src/MessagesView.vala
+src/ThreadStyle.vala
 src/ModuleRow.vala
 src/NotificationsView.vala
 src/NowPlayingView.vala
@@ -80,3 +82,7 @@ boomerangd/nowplaying.py
 boomerangd/otp.py
 boomerangd/proximity.py
 src/OptionalAppRow.vala
+src/ConversationExport.vala
+src/MessagesOptions.vala
+boomerangd/linkpreview.py
+boomerangd/mirror_viewer.py

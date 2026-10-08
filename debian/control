@@ -41,7 +41,7 @@ Depends: ${shlibs:Depends},
          pipewire,
          wireplumber,
          libspa-0.2-bluetooth
-Recommends: heif-gdk-pixbuf, openssl, pkexec, gnupg
+Recommends: heif-gdk-pixbuf, openssl, pkexec, gnupg, gstreamer1.0-gtk4, gir1.2-gstreamer-1.0
 Suggests: rclone (>= 1.69), uxplay, gstreamer1.0-plugins-bad, avahi-daemon, libimobiledevice-utils, ifuse,
  libheif-examples
 Description: iPhone and iCloud companion for elementary OS

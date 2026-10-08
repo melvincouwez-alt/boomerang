@@ -127,6 +127,7 @@ public class Boomerang.GuideWindow : Gtk.Window {
             title_widget = new Gtk.Label ("") { visible = false }
         };
         side_header.add_css_class ("flat");
+        side_header.add_css_class ("brand");
         side_header.pack_start (new Gtk.WindowControls (Gtk.PackType.START));
         side_title = new Gtk.Label ("") { xalign = 0, margin_start = 12 };
         side_title.add_css_class (Granite.HeaderLabel.Size.H4.to_string ());
@@ -161,6 +162,7 @@ public class Boomerang.GuideWindow : Gtk.Window {
         header_title.add_css_class ("title");
         var main_header = new Gtk.HeaderBar () { title_widget = header_title, decoration_layout = MainWindow.split_layout (false) };
         main_header.add_css_class ("flat");
+        main_header.add_css_class ("brand");
         main_header.pack_end (switcher);
 
         content = new Gtk.Box (Gtk.Orientation.VERTICAL, 12) {

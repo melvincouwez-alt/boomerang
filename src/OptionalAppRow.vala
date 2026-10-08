@@ -45,7 +45,7 @@ public class Boomerang.OptionalAppRow : Gtk.ListBoxRow {
         box.append (action);
         child = box;
 
-        daemon.changed.connect (update);
+        daemon.changed.connect (on_daemon_changed);  // a method: no reference kept on the row
         // Boomerang only looks for the package once the row is on screen.
         map.connect (() => {
             daemon.call.begin ("CheckApps");
@@ -61,6 +61,12 @@ public class Boomerang.OptionalAppRow : Gtk.ListBoxRow {
     private Variant? entry () {
         var all = daemon.get_value ("Apps");
         return all != null ? all.lookup_value (package, VariantType.VARDICT) : null;
+    }
+
+    private void on_daemon_changed () {
+        if (daemon.touched ({ "Apps" })) {
+            update ();
+        }
     }
 
     private void update () {
