@@ -21,7 +21,7 @@
 Boomerang amène l'iPhone et iCloud sur elementary OS : notifications, messages, appels,
 contacts, AirPods, courriel, agendas, rappels, iCloud Drive et Photos. Tout tourne sur votre
 ordinateur. L'iPhone passe par le Bluetooth, iCloud par Internet, et rien ne transite par un
-serveur à nous.
+serveur hors Apple.
 
 *Boomerang s'appelait Covalence jusqu'à la version 0.6. Passer à Boomerang garde vos réglages,
 vos messages et vos comptes iCloud.*
