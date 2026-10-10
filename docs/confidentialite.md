@@ -16,7 +16,7 @@ de rapport de plantage envoyé.
 
 | Données | Emplacement |
 |---|---|
-| Messages, contacts de l'iPhone, photos des contacts, journal d'appels, brouillons | `~/.local/share/boomerang/messages/` (dossier 0700, fichiers 0600, lisibles par votre seul compte) |
+| Messages, contacts de l'iPhone, photos des contacts, journal d'appels, brouillons | `~/.local/share/boomerang/messages/` (dossier 0700, fichiers 0600, lisibles par votre compte uniquement) |
 | Notifications de l'iPhone | en mémoire seulement, jamais écrites sur disque |
 | Réglages (modules, choix par application, écouteurs) | `~/.config/boomerang/` |
 | Configuration d'iCloud Drive et Photos | `~/.config/boomerang/rclone.conf`, chiffrée par rclone |
@@ -29,18 +29,19 @@ nombres, jamais le texte d'un message, un nom ou un numéro.
 
 ## Échanges réseau
 
-Uniquement entre votre ordinateur et Apple (iCloud), selon les conditions d'Apple. Le Bluetooth
-relie l'ordinateur et l'iPhone sans passer par Internet. Trois autres accès réseau existent :
+Les échanges avec iCloud ont lieu directement entre votre ordinateur et Apple, selon les
+conditions d'Apple. Le Bluetooth relie l'ordinateur et l'iPhone sans passer par Internet.
+Boomerang effectue aussi trois autres accès réseau :
 
 - les icônes des apps de l'iPhone qui envoient des notifications : Boomerang demande l'icône
   d'une app au service public de recherche de l'App Store d'Apple, en n'envoyant que son
   identifiant (par exemple `net.whatsapp.WhatsApp`), jamais le contenu d'une notification.
-  Les icônes sont gardées dans `~/.cache/boomerang/app-icons/`. Pour désactiver, mettez
-  `app-icons=false` dans le groupe `[notifications]` de `~/.config/boomerang/boomerangd.conf` ;
-- les pochettes de ce que joue l'iPhone (Lecture en cours) : l'iPhone ne les envoie pas,
+  Les icônes sont gardées dans `~/.cache/boomerang/app-icons/`. Pour désactiver cette fonction,
+  ajoutez `app-icons=false` dans le groupe `[notifications]` de `~/.config/boomerang/boomerangd.conf` ;
+- les pochettes de ce que joue l'iPhone (Lecture en cours) : l'iPhone ne les transmet pas ;
   Boomerang interroge donc le service public de recherche iTunes d'Apple avec seulement
   l'artiste et le titre, et ne garde l'image que si les deux correspondent. Les pochettes sont
-  gardées dans `~/.cache/boomerang/artwork/`. Pour désactiver, mettez `artwork=false` dans le
+  gardées dans `~/.cache/boomerang/artwork/`. Pour désactiver cette fonction, ajoutez `artwork=false` dans le
   groupe `[media]` de `~/.config/boomerang/boomerangd.conf` ;
 - le téléchargement de rclone, sur votre demande, depuis <https://downloads.rclone.org>.
 

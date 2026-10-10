@@ -94,7 +94,7 @@ Uninstall with `sudo apt remove boomerang`. Your data stays in `~/.local/share/b
 | System | Status |
 |---|---|
 | elementary OS 8 or later | Everything works. Calls need PipeWire 1.4 or later: with an older PipeWire, Boomerang greys the calls out and says why. |
-| Ubuntu 24.04 or later | The package needs Granite 7.8 or later (building from source accepts 7.7). Calls need PipeWire 1.4 or later. Ubuntu 24.04 ships rclone 1.60, too old for iCloud: use the "Download rclone" button. |
+| Ubuntu 24.04 or later | The package needs Granite 7.7 or later. Calls need PipeWire 1.4 or later. Ubuntu 24.04 ships rclone 1.60, too old for iCloud: use the "Download rclone" button. |
 
 Hardware: a Bluetooth adapter that supports Bluetooth Low Energy (almost all recent ones).
 

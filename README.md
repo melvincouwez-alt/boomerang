@@ -18,17 +18,17 @@
 
 </div>
 
-Boomerang amène l'iPhone et iCloud sur elementary OS : notifications, messages, appels,
-contacts, AirPods, courriel, agendas, rappels, iCloud Drive et Photos. Tout tourne sur votre
-ordinateur. L'iPhone passe par le Bluetooth, iCloud par Internet, et rien ne transite par un
-serveur hors Apple.
+Boomerang intègre l'iPhone et iCloud à elementary OS : notifications, messages, appels,
+contacts, AirPods, courriel, agendas, rappels, iCloud Drive et Photos. Boomerang fonctionne
+entièrement sur votre ordinateur. L'iPhone communique avec l'ordinateur par Bluetooth, iCloud
+par Internet, et aucune donnée ne transite par un serveur autre que ceux d'Apple.
 
-*Boomerang s'appelait Covalence jusqu'à la version 0.6. Passer à Boomerang garde vos réglages,
-vos messages et vos comptes iCloud.*
+*Boomerang s'appelait Covalence jusqu'à la version 0.6. La mise à jour vers Boomerang conserve
+vos réglages, vos messages et vos comptes iCloud.*
 
-> **Alpha.** La version 0.8 est un aperçu public. Elle sert tous les jours sur
-> l'ordinateur de son auteur, mais attendez-vous à quelques accrocs. L'interface est en
-> français, l'anglais est en bêta.
+> **Alpha.** La version 0.8 est un aperçu public. Son auteur l'utilise tous les
+> jours sur son ordinateur, mais des anomalies restent possibles. L'interface est en français ;
+> la traduction anglaise est en bêta.
 
 ## Deux connexions
 
@@ -36,14 +36,14 @@ vos messages et vos comptes iCloud.*
 
 | | |
 |---|---|
-| **Notifications** | Toutes les notifications de l'iPhone sur le bureau, avec leurs actions et l'icône de l'app qui les envoie. Vous choisissez les apps affichées. |
-| **Lecture en cours** | Ce que joue l'iPhone, avec pochette, progression et volume, dans sa page et dans un mini-lecteur au-dessus de Réglages. Lecture relance la musique de l'iPhone même à l'arrêt. |
-| **Batterie** | Niveau dans le panneau, alertes à 20 % et 10 %. |
-| **Messages** | Lire vos conversations SMS, répondre à une personne, brouillons, recherche. Supprimer un message ou une conversation de Boomerang (il reste sur l'iPhone). |
-| **Téléphone** | Répondre, refuser et passer des appels avec le micro et les haut-parleurs de l'ordinateur, clavier, journal d'appels. Demande PipeWire 1.4 ou plus récent. |
+| **Notifications** | Toutes les notifications de l'iPhone sur le bureau, avec leurs actions et l'icône de l'app qui les envoie. Vous choisissez les apps dont les notifications s'affichent. |
+| **Lecture en cours** | Ce que joue l'iPhone, avec pochette, progression et volume, dans sa page et dans un mini-lecteur au-dessus de Réglages. Le bouton Lecture relance la musique de l'iPhone, même lorsqu'elle est arrêtée. |
+| **Batterie** | Niveau de batterie de l'iPhone dans le panneau, alertes à 20 % et à 10 %. |
+| **Messages** | Lire vos conversations SMS, répondre à un seul destinataire, enregistrer des brouillons, rechercher. Supprimer un message ou une conversation dans Boomerang (l'élément reste sur l'iPhone). |
+| **Téléphone** | Répondre, refuser et passer des appels avec le micro et les haut-parleurs de l'ordinateur, clavier, journal d'appels. Nécessite PipeWire 1.4 ou une version plus récente. |
 | **Contacts** | Les contacts de l'iPhone en Bluetooth (lecture seule), ou vos contacts iCloud, modifiables. |
-| **AirPods** | Batterie de chaque écouteur et du boîtier, contrôle du bruit, détection de conversation, détection des oreilles, renommage. Expérimental : hocher la tête pour répondre à un appel, la secouer pour le refuser. D'après le protocole documenté par LibrePods. |
-| **Son de l'iPhone** | Envoyer le son de l'iPhone vers l'ordinateur depuis le bouton AirPlay, ou le refuser. |
+| **AirPods** | Batterie de chaque écouteur et du boîtier, contrôle du bruit, détection de conversation, détection des oreilles, renommage, d'après le protocole documenté par LibrePods. Expérimental : hocher la tête pour répondre à un appel, la secouer pour le refuser. |
+| **Son de l'iPhone** | Recevoir sur l'ordinateur le son que l'iPhone envoie depuis le bouton AirPlay, ou refuser cette diffusion. |
 
 <p align="center">
 <img src="docs/screenshots/fr/messages.png" width="49%" alt="Messages">
@@ -54,7 +54,7 @@ vos messages et vos comptes iCloud.*
 
 | | |
 |---|---|
-| **Courriel, agendas, rappels et contacts iCloud** | Ajoutés aux apps Courriel, Tâches et agenda d'elementary par Evolution Data Server, avec un mot de passe pour app. |
+| **Courriel, agendas, rappels et contacts iCloud** | Evolution Data Server les ajoute aux apps Courriel, Tâches et agenda d'elementary. La connexion utilise un mot de passe pour app. |
 | **iCloud Drive** | Un dossier dans Fichiers, grâce à [rclone](https://rclone.org). |
 | **iCloud Photos** | Vos albums dans Fichiers, en lecture seule, grâce à rclone. |
 
@@ -66,8 +66,8 @@ vos messages et vos comptes iCloud.*
 > **À propos d'iCloud Drive et Photos.** rclone se connecte comme le site icloud.com, avec le
 > mot de passe de votre compte Apple et la double authentification. Apple ne propose pas cet
 > accès officiellement : ses conditions d'utilisation d'iCloud limitent l'accès automatisé et
-> l'autorisent à suspendre un compte. Il faut aussi désactiver la Protection avancée des
-> données, ce qui réduit le chiffrement de bout en bout de vos données iCloud. Le jeton de
+> l'autorisent à suspendre un compte. Cette fonction demande aussi de désactiver la Protection
+> avancée des données, ce qui réduit le chiffrement de bout en bout de vos données iCloud. Le jeton de
 > connexion expire environ une fois par mois. Vous utilisez cette fonction à vos risques ;
 > Boomerang vous demande d'accepter ces risques avant la connexion.
 
@@ -78,15 +78,15 @@ vos messages et vos comptes iCloud.*
 1. Téléchargez `boomerang_0.8.2-1_amd64.deb` depuis la
    [dernière version](https://github.com/melvincouwez-alt/boomerang/releases/latest).
 2. Installez-le dans un terminal, depuis le dossier du téléchargement :
-   `sudo apt install ./boomerang_0.8.2-1_amd64.deb`. apt installe aussi les paquets nécessaires.
-   Sur Ubuntu, l'App Center peut aussi ouvrir le fichier d'un double-clic.
+   `sudo apt install ./boomerang_0.8.2-1_amd64.deb`. apt installe également les dépendances
+   nécessaires. Sur Ubuntu, un double-clic sur le fichier l'ouvre aussi dans l'App Center.
 3. Fermez puis rouvrez votre session (ou lancez `systemctl --user start boomerangd`), puis
    ouvrez Boomerang. L'assistant vous guide pour appairer l'iPhone et vous connecter à iCloud.
 
-S'il manque quelque chose plus tard, Boomerang l'affiche dans « Composants manquants » avec un
+Si un composant manque par la suite, Boomerang le signale dans « Composants manquants » avec un
 bouton « Installer » (PackageKit demande votre mot de passe). Pour iCloud Drive et Photos, le
 bouton « Télécharger rclone » récupère la version officielle de rclone et vérifie son empreinte
-SHA-256 (`boomerangd --fetch-rclone` fait la même chose en terminal).
+SHA-256 (la commande `boomerangd --fetch-rclone` fait la même opération dans un terminal).
 
 Désinstallation : `sudo apt remove boomerang`. Vos données restent dans
 `~/.local/share/boomerang` et `~/.config/boomerang` tant que vous ne les supprimez pas (voir
@@ -96,11 +96,11 @@ Désinstallation : `sudo apt remove boomerang`. Vos données restent dans
 
 | Système | État |
 |---|---|
-| elementary OS 8 ou plus récent | Tout fonctionne. Les appels demandent PipeWire 1.4 ou plus récent : avec un PipeWire plus ancien, Boomerang grise les appels et explique pourquoi. |
-| Ubuntu 24.04 ou plus récent | Le paquet demande Granite 7.8 ou plus récent (la compilation depuis les sources accepte la 7.7). Les appels demandent PipeWire 1.4 ou plus récent. Ubuntu 24.04 fournit rclone 1.60, trop ancien pour iCloud : utilisez le bouton « Télécharger rclone ». |
+| elementary OS 8 ou plus récent | Tout fonctionne. Les appels demandent PipeWire 1.4 ou plus récent : avec un PipeWire plus ancien, Boomerang désactive les appels et en indique la raison. |
+| Ubuntu 24.04 ou plus récent | Le paquet demande Granite 7.7 ou plus récent. Les appels demandent PipeWire 1.4 ou plus récent. Ubuntu 24.04 fournit rclone 1.60, trop ancien pour iCloud : utilisez le bouton « Télécharger rclone ». |
 
-Matériel : un adaptateur Bluetooth compatible Bluetooth Low Energy (presque tous les modèles
-récents).
+Matériel : un adaptateur Bluetooth compatible Bluetooth Low Energy (c'est le cas de presque
+tous les modèles récents).
 
 ### Depuis les sources
 
@@ -118,15 +118,15 @@ ligne : `python3 -m unittest tests.test_offline`. Paquet : `packaging/build-deb.
 
 Ces limites viennent surtout de ce qu'un iPhone accepte d'un ordinateur non Apple :
 
-- Pas d'envoi d'iMessage, pas de réponse dans les groupes, pas de pièces jointes : le Bluetooth
-  n'envoie qu'un SMS à une seule personne.
-- Pas de presse-papiers universel, de Handoff, d'AirDrop ni de Caméra de continuité : il leur
-  faut le chiffrement et la pile Wi-Fi d'Apple.
-- Supprimer un message ne le retire que de Boomerang. iOS ignore les suppressions par
-  Bluetooth.
-- L'iPhone ne se reconnecte pas toujours seul à un accessoire Bluetooth LE. Le
-  [guide](data/guide/fr/12-troubleshooting.md) explique quoi faire.
-- Déverrouiller l'ordinateur avec l'iPhone est volontairement exclu : la force du signal
+- Pas d'envoi d'iMessage, pas de réponse dans les groupes, pas de pièces jointes : par Bluetooth,
+  l'iPhone permet seulement d'envoyer un SMS à une seule personne.
+- Pas de presse-papiers universel, de Handoff, d'AirDrop ni de Caméra de continuité : ces
+  fonctions exigent le chiffrement et la pile Wi-Fi propres à Apple.
+- Supprimer un message ne le retire que de Boomerang. iOS ignore les suppressions
+  demandées par Bluetooth.
+- L'iPhone ne se reconnecte pas toujours automatiquement à un accessoire Bluetooth LE. Le
+  [guide](data/guide/fr/12-troubleshooting.md) décrit la procédure à suivre.
+- Le déverrouillage de l'ordinateur avec l'iPhone est volontairement exclu : la force du signal
   Bluetooth peut être falsifiée.
 
 ## Nouveautés de la 0.8
@@ -135,11 +135,11 @@ Depuis la 0.7.0 :
 
 - Messages : chaque conversation s'ouvre sur le dernier message. Vous pouvez la personnaliser
   (surnom, emoji, couleur des bulles, fond, taille du texte) et régler ses notifications
-  (prioritaires, silencieuses, son propre). Recherche dans la conversation (Ctrl+F), bouton
+  (prioritaires, silencieuses, son personnalisé). Recherche dans la conversation (Ctrl+F), bouton
   pour revenir aux nouveaux messages, ligne « Non lus », réponses rapides personnalisées,
   aperçus de liens (désactivés par défaut), export en PDF ou en texte.
 - Notifications : réglage par application de l'iPhone (normales, prioritaires ou discrètes),
-  son propre et contenu masqué dans la bannière si vous le souhaitez.
+  son personnalisé et, si vous le souhaitez, contenu masqué dans la bannière.
 - Recopie de l'écran dans une fenêtre Boomerang à la taille de l'image, avec plein écran (F11),
   enregistrement MP4 facultatif et, en expérimental, une balise Bluetooth pour que l'iPhone
   trouve l'ordinateur.
@@ -149,7 +149,7 @@ Depuis la 0.7.0 :
   auteurs, leurs licences et leurs liens.
 - Fenêtre principale avec une seule barre d'en-tête aux couleurs de Boomerang, colonne de
   gauche repliable en icônes (F9).
-- Service et application plus légers en arrière-plan, nouvelle icône dans le style
+- Service et application moins actifs en arrière-plan, nouvelle icône dans le style
   d'elementary.
 
 ## Aide
@@ -159,28 +159,28 @@ explique l'appairage, les réglages à activer sur l'iPhone, iCloud, les AirPods
 dépannage. Questions et signalements :
 [Issues](https://github.com/melvincouwez-alt/boomerang/issues).
 
-## Qui le fait
+## Auteur
 
-Je ne suis pas développeur. Je suis un passionné d'elementary OS avec quelques idées et un
-iPhone dans la poche, et je construis Boomerang en « vibe coding » avec Claude, l'assistant
-d'Anthropic : je décris ce que je veux, je teste tous les jours sur mon propre ordinateur, et
-on corrige ensemble. Le code est ouvert pour que les personnes qui s'y connaissent mieux
+Je ne suis pas développeur. Je suis un passionné d'elementary OS, utilisateur d'iPhone, avec
+quelques idées, et je construis Boomerang en « vibe coding » avec Claude, l'assistant
+d'Anthropic : je décris ce que je veux, je teste chaque jour sur mon propre ordinateur, et
+nous corrigeons ensemble. Le code est ouvert pour que les personnes qui s'y connaissent mieux
 puissent le lire, signaler les erreurs et aider. Contributions, signalements et conseils
 bienveillants sont les bienvenus.
 
 melvincouwez-alt
 
-## Comment ça marche
+## Fonctionnement
 
-- **boomerangd**, le service (Python, PyGObject) : il tient la liaison Bluetooth et les
-  secrets. Il parle à l'iPhone par BlueZ (ANCS et AMS en Bluetooth LE, MAP et PBAP par obexd,
+- **boomerangd**, le service (Python, PyGObject) : il maintient la liaison Bluetooth et
+  conserve les secrets. Il communique avec l'iPhone par BlueZ (ANCS et AMS en Bluetooth LE, MAP et PBAP par obexd,
   HFP par `org.pipewire.Telephony` de PipeWire), à iCloud par Evolution Data Server et
   libsecret, et lance rclone pour Drive et Photos.
 - **L'application** (Vala, GTK 4, Granite) : une fenêtre, plus des apps séparées Messages,
-  Téléphone, Contacts et Écouteurs pour le dock. Elle parle au service par D-Bus
+  Téléphone, Contacts et Écouteurs pour le dock. Elle communique avec le service par D-Bus
   (`io.github.melvincouwez.Boomerang.Daemon`).
-- Les journaux ne contiennent jamais le texte des notifications ou des messages, ni noms ni
-  numéros.
+- Les journaux ne contiennent jamais le texte des notifications ou des messages, ni les noms ni
+  les numéros.
 
 ## Merci
 
@@ -212,7 +212,7 @@ et construit sur [CastLabs Electron](https://github.com/castlabs/electron-releas
 
 Un merci particulier à l'équipe de LibrePods pour son remarquable travail de rétro-ingénierie,
 et à [nRF Connect](https://www.nordicsemi.com/Products/Development-tools/nRF-Connect-for-mobile)
-(Nordic Semiconductor), une app iPhone gratuite qui a aidé aux premiers appairages (plus nécessaire).
+(Nordic Semiconductor), une app iPhone gratuite qui a servi aux premiers appairages et peut encore servir au besoin.
 
 ## Mentions légales
 
@@ -222,7 +222,8 @@ fourni sans aucune garantie.
 Boomerang est un projet indépendant. Il n'est ni affilié à Apple Inc. ou à elementary, Inc., ni
 approuvé, sponsorisé ou soutenu par eux. Apple, iPhone, iCloud, iMessage, AirPods, AirPlay et
 Apple Music sont des marques d'Apple Inc., déposées aux États-Unis et dans d'autres pays et
-régions. Elles ne sont citées que pour indiquer ce avec quoi Boomerang fonctionne.
+régions. Ces noms sont cités uniquement pour indiquer les produits et services avec lesquels Boomerang
+fonctionne.
 
 Boomerang utilise des protocoles publiés (Bluetooth HFP, MAP, PBAP ; ANCS et AMS, spécifiés par
 Apple ; CalDAV, CardDAV, IMAP). Deux fonctions reposent sur des interfaces non documentées : les

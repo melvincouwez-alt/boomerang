@@ -38,7 +38,7 @@ Boomerang fournit dix-neuf sons, en plus de ceux du thème sonore du système. I
   Licence : Apache License 2.0, déclarée pour tout le dossier par `data/sounds/Android.bp` (`default_applicable_licenses: ["Android-Apache-2.0"]`). Vérifié le 27/09/2026.
 - **Kenney, Interface Sounds 1.0** (créé le 11/02/2020) : fichiers `Audio/confirmation_002.ogg`, `glass_001.ogg`, `pluck_001.ogg`, `drop_002.ogg` et `glass_005.ogg`.
   https://kenney.nl/assets/interface-sounds
-  Licence : Creative Commons Zero (CC0 1.0), indiquée sur la page et dans le `License.txt` du paquet. Vérifié le 27/09/2026. Le crédit n'est pas obligatoire, nous le donnons quand même.
+  Licence : Creative Commons Zero (CC0 1.0), indiquée sur la page et dans le `License.txt` du paquet. Vérifié le 27/09/2026. Le crédit n'est pas obligatoire ; Boomerang le mentionne néanmoins.
 - **Téléphone** : sonnerie de téléphone à cloche synthétisée pour Boomerang en 2026 (deux tons de 440 et 480 Hz frappés à 20 Hz, deux sonneries puis une pause). Versée dans le domaine public (CC0 1.0).
 
 ## Modifications

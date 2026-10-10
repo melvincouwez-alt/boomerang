@@ -2,35 +2,35 @@ title: Messages
 icon: @APP_ID@.Messages
 summary: Lire vos SMS et y répondre depuis l'ordinateur.
 ---
-!warn Il faut avoir activé **Afficher les notifications** sur l'iPhone (Réglages › Bluetooth › ⓘ). Voir [Relier l'iPhone](guide:link).
+!warn Cette fonction nécessite l'option **Afficher les notifications** sur l'iPhone (Réglages › Bluetooth › ⓘ). Voir [Relier l'iPhone](guide:link).
 
 ## Ce que vous voyez
-- L'iPhone ne transmet que ses messages récents. L'historique se construit dans Boomerang au fil des jours et reste sur cet ordinateur.
-- Tant qu'un message n'est pas lu sur l'iPhone, Boomerang n'en montre que le début (environ 120 caractères), pour ne pas le marquer comme lu à votre place. Le texte complet arrive une fois le message lu.
+- L'iPhone transmet seulement ses messages récents. Boomerang constitue l'historique au fil des jours et le conserve sur cet ordinateur.
+- Tant qu'un message n'est pas lu sur l'iPhone, Boomerang en affiche seulement le début (environ 120 caractères), pour ne pas le marquer comme lu à votre place. Le texte complet s'affiche une fois le message lu sur l'iPhone.
 - Les iMessage et les conversations de groupe peuvent être incomplets : l'iPhone n'en partage qu'une partie. Les photos, vidéos et pièces jointes ne sont pas transmises.
 
 ## Répondre
 1. Ouvrez la conversation.
-2. Tapez votre texte en bas, puis appuyez sur Entrée. Maj+Entrée va à la ligne.
-3. Une fine barre sous l'en-tête montre l'envoi. Le message part de votre iPhone, depuis votre numéro.
+2. Saisissez votre texte dans le champ en bas de la fenêtre, puis appuyez sur Entrée. Maj+Entrée insère un retour à la ligne.
+3. Une fine barre sous l'en-tête indique la progression de l'envoi. Votre iPhone envoie le message depuis votre numéro.
 
-- L'envoi fonctionne seulement dans les conversations avec **une seule personne**. Les conversations de groupe se lisent ici mais se répondent sur l'iPhone.
-- Un message qui n'a pas pu partir reste dans la conversation avec **Réessayer** et **Supprimer**. Boomerang ne renvoie jamais un message sans votre clic, pour éviter les doublons.
-- **Nouveau message**, en haut de la liste : choisissez un contact ou tapez un numéro.
+- L'envoi fonctionne seulement dans les conversations avec **une seule personne**. Vous pouvez lire les conversations de groupe dans Boomerang, mais vous devez y répondre depuis l'iPhone.
+- Un message dont l'envoi a échoué reste dans la conversation avec les boutons **Réessayer** et **Supprimer**. Boomerang ne renvoie jamais un message sans votre confirmation, pour éviter les doublons.
+- Pour écrire à un nouveau correspondant, cliquez sur **Nouveau message** en haut de la liste, puis choisissez un contact ou saisissez un numéro.
 - Dans une notification, **Répondre** ouvre une petite fenêtre de réponse rapide.
 
 ## Réactions
-- Quand quelqu'un réagit à un message (❤️, 👍, 😂…), la réaction apparaît en petite pastille sur la bulle concernée, avec son auteur au survol. Un retrait de réaction la fait disparaître.
-- Pour réagir : clic droit sur une bulle, puis **Réagir** et un emoji, ou **Autre emoji…**. Seulement dans les conversations avec une seule personne.
+- Quand quelqu'un réagit à un message (❤️, 👍, 😂…), la réaction apparaît sous forme de petite pastille sur la bulle concernée ; son auteur s'affiche au survol. Si la personne retire sa réaction, la pastille disparaît.
+- Pour réagir, faites un clic droit sur une bulle, choisissez **Réagir**, puis un emoji ou **Autre emoji…**. Cette fonction est disponible uniquement dans les conversations avec une seule personne.
 
-!warn Le Bluetooth ne transporte que du texte. Les réactions reçues arrivent sous forme de SMS (« A adoré « à demain » ») que Boomerang reconnaît en français et en anglais ; un format inconnu reste affiché comme un message normal. Une réaction envoyée part elle aussi en SMS : un iPhone récent peut l'afficher comme une réaction, d'autres téléphones montreront simplement ce texte.
+!warn Le Bluetooth transporte uniquement du texte. Les réactions reçues arrivent sous forme de SMS (« A adoré « à demain » »). Boomerang reconnaît ces SMS en français et en anglais ; un format inconnu s'affiche comme un message normal. Une réaction envoyée est elle aussi transmise par SMS : un iPhone récent peut l'afficher comme une réaction, alors que les autres téléphones affichent simplement le texte.
 
 ## Supprimer
-- Un message : clic droit sur la bulle, puis **Supprimer de Boomerang**.
-- Une conversation : clic droit dans la liste, puis **Supprimer la conversation…**
+- Pour supprimer un message, faites un clic droit sur la bulle, puis choisissez **Supprimer de Boomerang**.
+- Pour supprimer une conversation, faites un clic droit sur la conversation dans la liste, puis choisissez **Supprimer la conversation…**
 
-!warn La suppression ne concerne que Boomerang : le message reste sur l'iPhone, qui ne permet pas de supprimer un message par Bluetooth. Il ne réapparaîtra pas dans Boomerang, et les nouveaux messages de la même personne s'afficheront normalement.
+!warn La suppression s'applique uniquement à Boomerang : le message reste sur l'iPhone, car l'iPhone ne permet pas de supprimer un message par Bluetooth. Le message supprimé ne réapparaîtra pas dans Boomerang, et les nouveaux messages de la même personne s'afficheront normalement.
 
-## Autres commodités
-- Brouillons gardés par conversation, recherche, liens et numéros cliquables, réponses toutes faites.
+## Autres fonctions
+- Boomerang conserve un brouillon par conversation et propose la recherche, des liens et des numéros cliquables, ainsi que des réponses prédéfinies.
 - Le nombre de messages non lus s'affiche sur l'icône de l'app Messages.

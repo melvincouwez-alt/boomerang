@@ -2,7 +2,7 @@ title: À propos et licences
 icon: help-about
 summary: Licence, marques et remerciements.
 ---
-Boomerang est un logiciel libre, distribué sous licence GNU GPL version 3 ou ultérieure, **sans aucune garantie**. Vous pouvez l'utiliser, l'étudier, la modifier et la redistribuer selon cette licence.
+Boomerang est un logiciel libre, distribué sous licence GNU GPL version 3 ou ultérieure, **sans aucune garantie**. Vous pouvez l'utiliser, l'étudier, le modifier et le redistribuer selon cette licence.
 
 ## Marques
 Boomerang n'est ni affilié à Apple Inc., ni approuvé, sponsorisé ou soutenu par Apple Inc. ou par elementary, Inc. Apple, iPhone, iCloud, iCloud Drive, iMessage, Apple Music et AirPods sont des marques d'Apple Inc., déposées aux États-Unis et dans d'autres pays et régions. elementary est une marque d'elementary, Inc. Ces noms servent uniquement à indiquer la compatibilité.
@@ -14,4 +14,4 @@ Boomerang utilise des protocoles publiés : Bluetooth HFP, MAP et PBAP, ANCS et 
 - LibrePods (Kavish Devar et ses contributeurs) pour le protocole des AirPods.
 - rclone, BlueZ, PipeWire, Evolution Data Server, GTK et Granite.
 
-La version et les détails de licence sont dans **À propos de Boomerang**, depuis les [Réglages](app:settings).
+La fenêtre **À propos de Boomerang**, accessible depuis les [Réglages](app:settings), indique la version et les détails de la licence.
